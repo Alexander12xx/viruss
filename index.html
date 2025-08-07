@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Contact App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #121212, #333);
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 500px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    #output {
+      text-align: center;
+      margin: 1rem 0;
+    }
+    button {
+      padding: 1rem;
+      margin: 1rem auto;
+      display: block;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #6200ea;
+      color: white;
+      cursor: pointer;
+    }
+    #feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    input, textarea {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .contact-card {
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 10px;
+    }
+    .dark-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dark-toggle">
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  </div>
+  <div class="container">
+    <h1>Voice Contact App</h1>
+    <p id="output">Tap below and say: "Call Nancy"</p>
+    <button onclick="startListening()">Start Voice Command</button><h2>Contacts</h2>
+<div id="contacts"></div>
+
+<h2>Feedback</h2>
+<form id="feedback-form">
+  <input type="text" id="name" placeholder="Your Name" required />
+  <input type="text" id="number" placeholder="Phone Number" required />
+  <textarea id="message" placeholder="Your Feedback" required></textarea>
+  <button type="submit">Send to WhatsApp</button>
+</form>
+
+  </div>  <script>
+    const contacts = [
+      { name: "Nancy", phone: "0794564340" },
+      { name: "Alex", phone: "0712345678" },
+      { name: "James", phone: "0700112233" },
+      { name: "Linda", phone: "0722334455" },
+      { name: "Brian", phone: "0733445566" }
+    ];
+
+    const contactContainer = document.getElementById("contacts");
+    contacts.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "contact-card";
+      div.textContent = `${c.name}: ${c.phone}`;
+      contactContainer.appendChild(div);
+    });
+
+    function startListening() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('Speech recognition not supported');
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.start();
+      recognition.onresult = function(event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+        document.getElementById("output").textContent = `You said: ${command}`;
+        handleCommand(command);
+      };
+    }
+
+    function handleCommand(command) {
+      const matched = contacts.find(c => command.includes(`call ${c.name.toLowerCase()}`));
+      if (matched) {
+        window.location.href = `tel:${matched.phone}`;
+      } else {
+        document.getElementById("output").textContent += "\nNo matching contact found.";
+      }
+    }
+
+    document.getElementById("feedback-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const number = document.getElementById("number").value;
+      const message = document.getElementById("message").value;
+      const encoded = encodeURIComponent(`Name: ${name}\nNumber: ${number}\nMessage: ${message}`);
+      const whatsappUrl = `https://wa.me/254706389206?text=${encoded}`;
+      window.open(whatsappUrl, '_blank');
+    });
+
+    function toggleDarkMode() {
+      const current = document.body.style.background;
+      document.body.style.background = current.includes("#121212") ? "#fafafa" : "linear-gradient(to bottom, #121212, #333)";
+      document.body.style.color = current.includes("#121212") ? "#000" : "#fff";
+    }
+  </script></body>
+</html>
