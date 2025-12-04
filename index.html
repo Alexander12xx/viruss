@@ -4,26 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#007bff">
-    <meta name="description" content="Advanced AI Assistant with voice control, notes, reminders, and search">
-    <title>ALTECH AI</title>
+    <title>ALTECH AI - Advanced Assistant</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ================ ROOT VARIABLES ================ */
+        /* ================ CSS VARIABLES ================ */
         :root {
             --primary: #007bff;
             --primary-dark: #0056b3;
             --primary-light: #3298fe;
             --secondary: #6c757d;
             --success: #28a745;
-            --success-dark: #218838;
             --danger: #dc3545;
             --warning: #ffc107;
             --info: #17a2b8;
             --dark: #343a40;
             --light: #f8f9fa;
+            --white: #ffffff;
+            --black: #212529;
+            
             --bg-color: #ffffff;
             --surface: #f8f9fa;
             --text: #212529;
@@ -34,8 +33,9 @@
             --radius-sm: 8px;
             --radius-lg: 20px;
             --transition: all 0.3s ease;
-            --header-height: 80px;
-            --bottom-nav-height: 70px;
+            
+            --header-height: 70px;
+            --bottom-nav-height: 65px;
         }
         
         .dark-mode {
@@ -44,7 +44,6 @@
             --primary-light: #4da6fe;
             --secondary: #8a93a2;
             --success: #2bc155;
-            --success-dark: #24a046;
             --danger: #e74c3c;
             --warning: #f1c40f;
             --info: #3498db;
@@ -67,44 +66,23 @@
         }
         
         html {
-            scroll-behavior: smooth;
+            font-size: 16px;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI Emoji', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-color);
             color: var(--text);
             min-height: 100vh;
-            padding: 0;
-            margin: 0;
+            line-height: 1.6;
             overflow-x: hidden;
             transition: var(--transition);
         }
         
-        /* ================ ACCESSIBILITY ================ */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        
-        .focus-visible:focus {
-            outline: 3px solid var(--primary);
-            outline-offset: 2px;
-        }
-        
-        /* ================ APP LAYOUT ================ */
+        /* ================ APP CONTAINER ================ */
         .app-container {
-            max-width: 100%;
             min-height: 100vh;
-            background: var(--bg-color);
-            position: relative;
+            max-width: 100%;
             overflow-x: hidden;
         }
         
@@ -112,22 +90,15 @@
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 20px;
+            padding: 0 20px;
             height: var(--header-height);
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: 0 4px 20px var(--shadow);
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
         }
         
         .logo {
@@ -172,10 +143,9 @@
             justify-content: center;
             font-size: 1.2em;
             transition: var(--transition);
-            -webkit-tap-highlight-color: transparent;
         }
         
-        .header-btn:hover, .header-btn:active {
+        .header-btn:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: scale(1.05);
         }
@@ -189,7 +159,7 @@
         .main-content {
             padding: 20px;
             padding-bottom: calc(var(--bottom-nav-height) + 30px);
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             width: 100%;
         }
@@ -209,7 +179,6 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            border-bottom: 2px solid var(--border);
             background: var(--bg-color);
         }
         
@@ -247,18 +216,16 @@
         .tab-btn.active::after {
             content: '';
             position: absolute;
-            bottom: -2px;
+            bottom: 0;
             left: 0;
             right: 0;
             height: 3px;
             background: var(--primary);
-            border-radius: 3px 3px 0 0;
         }
         
         .tab-content {
             display: none;
             animation: fadeIn 0.3s ease;
-            min-height: 300px;
         }
         
         .tab-content.active {
@@ -270,14 +237,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ================ VOICE ASSISTANT SECTION ================ */
+        /* ================ VOICE ASSISTANT ================ */
         .voice-section {
             padding: 30px 20px;
             text-align: center;
         }
         
         .voice-status {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .status-text {
@@ -347,12 +314,11 @@
             background: var(--surface);
             padding: 20px;
             border-radius: var(--radius);
-            margin: 20px 0;
+            margin: 25px 0;
             min-height: 100px;
             border-left: 5px solid var(--primary);
             text-align: left;
             font-size: 1.1em;
-            line-height: 1.6;
         }
         
         .ai-response {
@@ -362,17 +328,25 @@
             margin: 25px 0;
             border-left: 5px solid var(--success);
             text-align: left;
-            position: relative;
+        }
+        
+        .ai-response h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .response-controls {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .control-btn {
-            padding: 10px 15px;
+            flex: 1;
+            padding: 12px;
             border: none;
             border-radius: var(--radius-sm);
             background: var(--primary);
@@ -380,11 +354,10 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             font-weight: 600;
             transition: var(--transition);
-            flex: 1;
-            justify-content: center;
         }
         
         .control-btn:hover {
@@ -403,13 +376,13 @@
         /* ================ QUICK ACTIONS ================ */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
             margin: 30px 0;
         }
         
         .action-btn {
-            padding: 20px;
+            padding: 20px 15px;
             background: var(--primary);
             color: white;
             border: none;
@@ -430,7 +403,7 @@
             font-size: 1.8em;
         }
         
-        .action-btn:hover, .action-btn:active {
+        .action-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 10px 20px var(--shadow);
@@ -442,7 +415,7 @@
         }
         
         .action-btn.success:hover {
-            background: var(--success-dark);
+            background: #218838;
         }
         
         .action-btn.warning {
@@ -454,7 +427,36 @@
             background: var(--info);
         }
         
-        /* ================ CONTACTS ================ */
+        /* ================ COMMAND SUGGESTIONS ================ */
+        .command-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .command-chip {
+            padding: 12px 20px;
+            background: var(--surface);
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .command-chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* ================ CONTACTS SECTION ================ */
         .contacts-section {
             padding: 20px;
         }
@@ -542,7 +544,7 @@
             color: white;
         }
         
-        /* ================ NOTES ================ */
+        /* ================ NOTES SECTION ================ */
         .notes-section {
             padding: 20px;
         }
@@ -605,7 +607,7 @@
             gap: 8px;
         }
         
-        /* ================ REMINDERS ================ */
+        /* ================ REMINDERS SECTION ================ */
         .reminders-section {
             padding: 20px;
         }
@@ -676,7 +678,7 @@
             75% { transform: translateX(5px); }
         }
         
-        /* ================ SEARCH ================ */
+        /* ================ SEARCH SECTION ================ */
         .search-section {
             padding: 20px;
         }
@@ -716,8 +718,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 500px;
-            overflow-y: auto;
         }
         
         .search-result-item {
@@ -726,6 +726,103 @@
             border-radius: var(--radius);
             border-left: 5px solid var(--info);
             border: 1px solid var(--border);
+        }
+        
+        /* ================ BOTTOM NAVIGATION ================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            height: var(--bottom-nav-height);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            padding: 0 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: var(--radius-sm);
+            min-width: 0;
+        }
+        
+        .nav-btn i {
+            font-size: 1.3em;
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.1);
+        }
+        
+        .nav-btn-label {
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        /* ================ FLOATING BUTTONS ================ */
+        .floating-buttons {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 20px);
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 999;
+        }
+        
+        .floating-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            transition: var(--transition);
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+        }
+        
+        .floating-btn.whatsapp {
+            background: #25D366;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+        }
+        
+        .floating-btn.whatsapp:hover {
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.4);
+        }
+        
+        .floating-btn.install {
+            background: var(--warning);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+        }
+        
+        .floating-btn.install:hover {
+            box-shadow: 0 15px 35px rgba(255, 193, 7, 0.4);
         }
         
         /* ================ MODALS ================ */
@@ -739,7 +836,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
             padding: 20px;
             backdrop-filter: blur(5px);
         }
@@ -826,20 +923,16 @@
             color: white;
         }
         
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        
-        /* ================ TOAST ================ */
+        /* ================ TOAST NOTIFICATIONS ================ */
         .toast-container {
             position: fixed;
             bottom: 20px;
+            left: 20px;
             right: 20px;
             z-index: 9999;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-width: 350px;
         }
         
         .toast {
@@ -848,7 +941,7 @@
             padding: 18px 25px;
             border-radius: var(--radius);
             box-shadow: 0 10px 30px var(--shadow);
-            animation: slideInRight 0.3s ease;
+            animation: slideInUp 0.3s ease;
             border-left: 5px solid var(--primary);
             display: flex;
             align-items: center;
@@ -871,126 +964,12 @@
             border-left-color: var(--info);
         }
         
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
-        /* ================ BOTTOM NAVIGATION ================ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            height: var(--bottom-nav-height);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 999;
-            padding: 0 10px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .nav-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 12px 5px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-radius: var(--radius-sm);
-            min-width: 0;
-        }
-        
-        .nav-btn i {
-            font-size: 1.3em;
-        }
-        
-        .nav-btn.active {
-            color: var(--primary);
-            background: rgba(var(--primary-rgb), 0.1);
-        }
-        
-        .nav-btn-label {
-            font-size: 0.8em;
-            font-weight: 600;
-        }
-        
-        /* ================ FLOATING BUTTONS ================ */
-        .floating-buttons {
-            position: fixed;
-            bottom: calc(var(--bottom-nav-height) + 20px);
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 998;
-        }
-        
-        .floating-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--success);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        .floating-btn:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
-        }
-        
-        .floating-btn.whatsapp {
-            background: #25D366;
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
-        }
-        
-        .floating-btn.whatsapp:hover {
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.4);
-        }
-        
-        .floating-btn.install {
-            background: var(--warning);
-            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
-        }
-        
-        .floating-btn.install:hover {
-            box-shadow: 0 15px 35px rgba(255, 193, 7, 0.4);
-        }
-        
-        .floating-btn .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        
-        /* ================ LOADING & TYPING INDICATORS ================ */
+        /* ================ LOADING & ANIMATIONS ================ */
         .loading {
             display: inline-block;
             width: 20px;
@@ -1012,7 +991,6 @@
             padding: 15px;
             background: var(--surface);
             border-radius: var(--radius);
-            margin: 10px 0;
             border: 1px solid var(--border);
         }
         
@@ -1032,19 +1010,61 @@
             50% { transform: translateY(-10px); }
         }
         
+        /* ================ ACCESSIBILITY ================ */
+        .accessibility-controls {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            box-shadow: 5px 5px 20px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .accessibility-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            transition: var(--transition);
+        }
+        
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+        }
+        
         /* ================ RESPONSIVE DESIGN ================ */
         @media (max-width: 768px) {
-            :root {
-                --header-height: 70px;
-                --bottom-nav-height: 65px;
+            html {
+                font-size: 14px;
             }
             
             .header {
-                padding: 15px;
+                padding: 0 15px;
+                height: 60px;
             }
             
             .logo-text {
                 font-size: 1.2em;
+            }
+            
+            .header-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1em;
             }
             
             .main-content {
@@ -1076,9 +1096,16 @@
                 font-size: 2.5em;
             }
             
-            .modal {
-                padding: 20px;
-                margin: 10px;
+            .bottom-nav {
+                height: 60px;
+            }
+            
+            .nav-btn i {
+                font-size: 1.2em;
+            }
+            
+            .nav-btn-label {
+                font-size: 0.7em;
             }
             
             .floating-buttons {
@@ -1092,38 +1119,25 @@
                 font-size: 1.3em;
             }
             
-            .tab-btn {
-                min-width: 80px;
-                padding: 15px 10px;
-                font-size: 0.9em;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            :root {
-                --header-height: 60px;
+            .accessibility-controls {
+                padding: 10px;
             }
             
-            .header {
-                padding: 12px;
-            }
-            
-            .logo-text {
-                font-size: 1.1em;
-            }
-            
-            .header-btn {
+            .accessibility-btn {
                 width: 40px;
                 height: 40px;
                 font-size: 1.1em;
             }
-            
+        }
+        
+        @media (max-width: 480px) {
             .quick-actions {
                 grid-template-columns: 1fr;
             }
             
             .tab-btn {
                 min-width: 70px;
+                padding: 15px 10px;
                 font-size: 0.8em;
             }
             
@@ -1131,24 +1145,19 @@
                 font-size: 1.1em;
             }
             
-            .bottom-nav {
-                height: 60px;
+            .contacts-header {
+                flex-direction: column;
+                align-items: stretch;
             }
             
-            .nav-btn i {
-                font-size: 1.2em;
+            .contact-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
             }
             
-            .nav-btn-label {
-                font-size: 0.7em;
-            }
-            
-            .form-control {
-                padding: 12px;
-            }
-            
-            .transcript-display, .ai-response {
-                padding: 15px;
+            .contact-actions {
+                justify-content: center;
             }
         }
         
@@ -1203,38 +1212,7 @@
             border: 1px solid var(--warning);
         }
         
-        /* ================ ANIMATIONS ================ */
-        @keyframes slideInUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOutDown {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-        }
-        
-        .slide-in-up {
-            animation: slideInUp 0.3s ease;
-        }
-        
-        .slide-out-down {
-            animation: slideOutDown 0.3s ease;
-        }
-        
-        /* ================ PWA INSTALL PROMOTION ================ */
+        /* ================ PWA INSTALL BANNER ================ */
         .pwa-install-banner {
             position: fixed;
             bottom: calc(var(--bottom-nav-height) + 20px);
@@ -1270,156 +1248,6 @@
             display: flex;
             gap: 10px;
         }
-        
-        /* ================ SETTINGS PANEL ================ */
-        .settings-panel {
-            position: fixed;
-            top: var(--header-height);
-            right: -400px;
-            width: 350px;
-            height: calc(100vh - var(--header-height));
-            background: var(--bg-color);
-            border-left: 1px solid var(--border);
-            padding: 30px;
-            overflow-y: auto;
-            transition: var(--transition);
-            z-index: 999;
-            box-shadow: -10px 0 30px var(--shadow);
-        }
-        
-        .settings-panel.open {
-            right: 0;
-        }
-        
-        .settings-section {
-            margin-bottom: 30px;
-        }
-        
-        .settings-title {
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .setting-label {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .setting-description {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-        }
-        
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border);
-            transition: var(--transition);
-            border-radius: 34px;
-        }
-        
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: var(--transition);
-            border-radius: 50%;
-        }
-        
-        input:checked + .toggle-slider {
-            background-color: var(--success);
-        }
-        
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-        
-        /* ================ ACCESSIBILITY CONTROLS ================ */
-        .accessibility-controls {
-            position: fixed;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            z-index: 998;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: var(--surface);
-            padding: 15px;
-            border-radius: 0 var(--radius) var(--radius) 0;
-            box-shadow: 5px 5px 20px var(--shadow);
-            border: 1px solid var(--border);
-        }
-        
-        .accessibility-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            transition: var(--transition);
-        }
-        
-        .accessibility-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        /* ================ HIGHLIGHT FOR VOICE READING ================ */
-        .highlight-reading {
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0) 0%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                rgba(255, 255, 255, 0) 100%);
-            background-size: 200% 100%;
-            animation: reading 2s linear infinite;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-        
-        @keyframes reading {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
     </style>
 </head>
 <body class="light-mode">
@@ -1427,19 +1255,14 @@
     <div class="app-container">
         <!-- Header -->
         <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="logo-text">ALTECH AI</div>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
                 </div>
+                <div class="logo-text">ALTECH AI</div>
             </div>
             
             <div class="header-controls">
-                <button class="header-btn" id="settingsBtn" title="Settings">
-                    <i class="fas fa-cog"></i>
-                </button>
                 <button class="header-btn" id="themeToggle" title="Toggle Theme">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -1481,7 +1304,6 @@
                     <div class="voice-section">
                         <div class="voice-status">
                             <div class="status-text" id="statusText">Click microphone and speak your command</div>
-                            <div class="status-text" id="aiStatus">AI Assistant: <span class="highlight-reading">Ready</span></div>
                         </div>
                         
                         <div class="voice-orb-container">
@@ -1492,6 +1314,7 @@
                         
                         <div class="transcript-display" id="transcript">
                             <strong>Try saying:</strong><br>
+                            • "Call John"<br>
                             • "Add note meeting tomorrow at 3 PM"<br>
                             • "Remind me to call mom in 1 hour"<br>
                             • "What is artificial intelligence?"<br>
@@ -1507,7 +1330,7 @@
                                     <div class="typing-dot"></div>
                                     <div class="typing-dot"></div>
                                 </div>
-                                <span class="highlight-reading">Initializing AI Assistant... Ready to help!</span>
+                                <span>Initializing AI Assistant... Ready to help!</span>
                             </div>
                             <div class="response-controls">
                                 <button class="control-btn" onclick="speakCurrentResponse()">
@@ -1516,14 +1339,35 @@
                                 <button class="control-btn success" onclick="copyToClipboard('aiOutput')">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
-                                <button class="control-btn" onclick="clearResponse()">
+                                <button class="control-btn danger" onclick="clearResponse()">
                                     <i class="fas fa-times"></i> Clear
                                 </button>
                             </div>
                         </div>
                         
                         <div class="quick-actions" id="quickActions">
-                            <!-- Quick actions will be populated by JavaScript -->
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        
+                        <div class="command-suggestions">
+                            <div class="command-chip" onclick="testCommand('Call John')">
+                                <i class="fas fa-phone"></i> Call
+                            </div>
+                            <div class="command-chip" onclick="testCommand('Add note meeting tomorrow')">
+                                <i class="fas fa-edit"></i> Add Note
+                            </div>
+                            <div class="command-chip" onclick="testCommand('Remind me to call mom')">
+                                <i class="fas fa-bell"></i> Set Reminder
+                            </div>
+                            <div class="command-chip" onclick="testCommand('What is AI?')">
+                                <i class="fas fa-question"></i> Ask Question
+                            </div>
+                            <div class="command-chip" onclick="testCommand('Weather in London')">
+                                <i class="fas fa-cloud-sun"></i> Check Weather
+                            </div>
+                            <div class="command-chip" onclick="testCommand('Search for JavaScript')">
+                                <i class="fas fa-search"></i> Search Web
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1594,16 +1438,6 @@
                                     <i class="fas fa-calendar-alt"></i> Date & Time
                                 </label>
                                 <input type="datetime-local" id="reminderTime" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-bell"></i> Notification Type
-                                </label>
-                                <select id="reminderType" class="form-control">
-                                    <option value="notification">Browser Notification</option>
-                                    <option value="sound">Sound Alert</option>
-                                    <option value="both">Both</option>
-                                </select>
                             </div>
                             <button class="btn btn-primary w-100" onclick="addReminder()">
                                 <i class="fas fa-plus"></i> Add Reminder
@@ -1727,100 +1561,7 @@
             </div>
         </div>
         
-        <!-- Settings Panel -->
-        <div class="settings-panel" id="settingsPanel">
-            <div class="settings-section">
-                <h3 class="settings-title"><i class="fas fa-cog"></i> Settings</h3>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>AI Assistant</strong>
-                        <span class="setting-description">Enable/disable AI responses</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="aiEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>Voice Recognition</strong>
-                        <span class="setting-description">Enable voice commands</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="voiceEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>Auto-Save Notes</strong>
-                        <span class="setting-description">Automatically save notes</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoSave" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>Notifications</strong>
-                        <span class="setting-description">Enable browser notifications</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="notificationsEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>Text-to-Speech</strong>
-                        <span class="setting-description">Read responses aloud</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="ttsEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <strong>Dark Mode</strong>
-                        <span class="setting-description">Toggle dark/light theme</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <h3 class="settings-title"><i class="fas fa-database"></i> Data Management</h3>
-                <button class="btn btn-primary w-100 mb-2" onclick="exportAllData()">
-                    <i class="fas fa-download"></i> Export All Data
-                </button>
-                <button class="btn btn-secondary w-100 mb-2" onclick="importData()">
-                    <i class="fas fa-upload"></i> Import Data
-                </button>
-                <button class="btn btn-danger w-100" onclick="clearAllData()">
-                    <i class="fas fa-trash"></i> Clear All Data
-                </button>
-            </div>
-            
-            <div class="settings-section">
-                <h3 class="settings-title"><i class="fas fa-info-circle"></i> About</h3>
-                <p>ALTECH AI Assistant v2.0</p>
-                <p>Advanced AI assistant with voice control, notes, reminders, and search functionality.</p>
-                <p style="color: var(--text-secondary); font-size: 0.9em;">© 2024 ALTECH AI. All rights reserved.</p>
-            </div>
-        </div>
-        
-        <!-- Modals -->
+        <!-- Add Contact Modal -->
         <div class="modal-overlay" id="addContactModal">
             <div class="modal">
                 <div class="modal-header">
@@ -1870,154 +1611,641 @@
         <!-- Toast Container -->
         <div class="toast-container" id="toastContainer"></div>
     </div>
-    
-    <!-- Service Worker Registration -->
+
     <script>
-        // ================ SERVICE WORKER FOR PWA ================
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(registration => {
-                console.log('✅ Service Worker registered:', registration.scope);
-            }).catch(error => {
-                console.log('❌ Service Worker registration failed:', error);
-            });
-        }
-        
-        // ================ MANIFEST FOR PWA ================
-        const manifest = {
-            "name": "ALTECH AI Assistant",
-            "short_name": "ALTECH AI",
-            "description": "Advanced AI assistant with voice control and smart features",
-            "start_url": "/",
-            "display": "standalone",
-            "background_color": "#007bff",
-            "theme_color": "#007bff",
-            "icons": [
-                {
-                    "src": "icons/icon-72x72.png",
-                    "sizes": "72x72",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-96x96.png",
-                    "sizes": "96x96",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-128x128.png",
-                    "sizes": "128x128",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-144x144.png",
-                    "sizes": "144x144",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-152x152.png",
-                    "sizes": "152x152",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-192x192.png",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-384x384.png",
-                    "sizes": "384x384",
-                    "type": "image/png"
-                },
-                {
-                    "src": "icons/icon-512x512.png",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
-            ]
-        };
-        
-        // ================ APP INITIALIZATION ================
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Initializing ALTECH AI Assistant v2.0...');
-            
-            // Initialize app
-            initializeApp();
-            
-            // Request notification permission
-            requestNotificationPermission();
-            
-            // Check for PWA installation
-            checkPWAInstallable();
-            
-            // Show welcome
-            setTimeout(() => {
-                showToast('ALTECH AI Assistant ready! Try voice commands or click buttons.', 'success');
-                updateAIResponse(`
-                    <div class="success-message">
-                        <h4 style="margin-bottom: 10px;">🤖 ALTECH AI Assistant v2.0</h4>
-                        <p>Now with enhanced features:</p>
-                        <ul style="margin-left: 20px; margin-top: 10px;">
-                            <li><strong>🎯 Real Mobile Responsiveness</strong> - Works perfectly on all devices</li>
-                            <li><strong>📱 PWA Support</strong> - Install as app & work offline</li>
-                            <li><strong>🔔 Real Browser Notifications</strong> - Get reminder alerts</li>
-                            <li><strong>🎙️ Voice Notes & Reminders</strong> - Add using voice commands</li>
-                            <li><strong>🔍 Intelligent Search</strong> - Auto-redirects to web</li>
-                            <strong>♿ Full Accessibility</strong> - Voice reading & high contrast</li>
-                            <li><strong>👥 Real Contact Access</strong> - Import from device</li>
-                            <li><strong>💬 WhatsApp Support</strong> - Get help instantly</li>
-                        </ul>
-                        <p style="margin-top: 15px; font-weight: 600;">Try saying: <em>"Add note meeting tomorrow"</em> or <em>"What is AI?"</em></p>
-                    </div>
-                `);
-            }, 1000);
-        });
-        
-        // ================ CORE SYSTEM VARIABLES ================
-        let appState = {
+        // ================ APP STATE ================
+        const appState = {
             aiEnabled: true,
-            voiceEnabled: true,
             darkMode: false,
-            autoSave: true,
-            notificationsEnabled: false,
-            ttsEnabled: true,
-            fontSize: 16,
-            highContrast: false,
             currentTab: 'assistant',
             isListening: false,
             deferredPrompt: null,
             contacts: [],
             notes: [],
             reminders: [],
-            searchHistory: [],
-            voiceHistory: []
+            voiceHistory: [],
+            fontSize: 16,
+            highContrast: false,
+            ttsEnabled: true,
+            notificationsEnabled: false
         };
         
-        // ================ APP INITIALIZATION FUNCTION ================
-        function initializeApp() {
-            // Load saved state
-            loadAppState();
+        // ================ COMMAND PROCESSOR ================
+        class CommandProcessor {
+            constructor() {
+                this.commands = {
+                    // Call commands
+                    'call': this.handleCallCommand.bind(this),
+                    'phone': this.handleCallCommand.bind(this),
+                    'dial': this.handleCallCommand.bind(this),
+                    'ring': this.handleCallCommand.bind(this),
+                    
+                    // Note commands
+                    'note': this.handleNoteCommand.bind(this),
+                    'write': this.handleNoteCommand.bind(this),
+                    'remember': this.handleNoteCommand.bind(this),
+                    'record': this.handleNoteCommand.bind(this),
+                    
+                    // Reminder commands
+                    'remind': this.handleReminderCommand.bind(this),
+                    'reminder': this.handleReminderCommand.bind(this),
+                    'alarm': this.handleReminderCommand.bind(this),
+                    'alert': this.handleReminderCommand.bind(this),
+                    'notify': this.handleReminderCommand.bind(this),
+                    
+                    // Search commands
+                    'search': this.handleSearchCommand.bind(this),
+                    'find': this.handleSearchCommand.bind(this),
+                    'look up': this.handleSearchCommand.bind(this),
+                    'what is': this.handleSearchCommand.bind(this),
+                    'who is': this.handleSearchCommand.bind(this),
+                    'where is': this.handleSearchCommand.bind(this),
+                    'how to': this.handleSearchCommand.bind(this),
+                    'explain': this.handleSearchCommand.bind(this),
+                    
+                    // Weather commands
+                    'weather': this.handleWeatherCommand.bind(this),
+                    'forecast': this.handleWeatherCommand.bind(this),
+                    'temperature': this.handleWeatherCommand.bind(this),
+                    'climate': this.handleWeatherCommand.bind(this),
+                    
+                    // Time/Date commands
+                    'time': this.handleTimeCommand.bind(this),
+                    'date': this.handleDateCommand.bind(this),
+                    'day': this.handleDateCommand.bind(this),
+                    
+                    // Math commands
+                    'calculate': this.handleMathCommand.bind(this),
+                    'math': this.handleMathCommand.bind(this),
+                    'add': this.handleMathCommand.bind(this),
+                    'subtract': this.handleMathCommand.bind(this),
+                    'multiply': this.handleMathCommand.bind(this),
+                    'divide': this.handleMathCommand.bind(this),
+                    
+                    // General AI
+                    'ai': this.handleAICommand.bind(this),
+                    'ask': this.handleAICommand.bind(this),
+                    'question': this.handleAICommand.bind(this),
+                    'help': this.handleHelpCommand.bind(this)
+                };
+            }
             
-            // Initialize components
-            initializeVoiceRecognition();
-            initializeUI();
-            initializeQuickActions();
-            loadAllData();
-            setupEventListeners();
-            setupAutoSave();
-            setupReminderChecks();
+            async process(command) {
+                command = command.toLowerCase().trim();
+                console.log('Processing command:', command);
+                
+                // Check for exact matches first
+                for (const [keyword, handler] of Object.entries(this.commands)) {
+                    if (command === keyword || command.startsWith(keyword + ' ')) {
+                        return await handler(command);
+                    }
+                }
+                
+                // Check for partial matches
+                for (const [keyword, handler] of Object.entries(this.commands)) {
+                    if (command.includes(keyword)) {
+                        return await handler(command);
+                    }
+                }
+                
+                // Default AI response
+                return await this.handleAICommand(command);
+            }
             
-            // Set up accessibility
-            document.documentElement.style.fontSize = appState.fontSize + 'px';
+            async handleCallCommand(command) {
+                // Extract name from command
+                const nameMatch = command.match(/(?:call|phone|dial|ring)\s+(?:me\s+)?(?:to\s+)?(\w+(?:\s+\w+)?)/i);
+                if (nameMatch) {
+                    const name = nameMatch[1].trim();
+                    const contact = this.findContactByName(name);
+                    
+                    if (contact) {
+                        this.callContact(contact.phone);
+                        return {
+                            type: 'success',
+                            message: `Calling ${contact.name}...`,
+                            html: `<div class="success-message"><strong>📞 Calling ${contact.name}</strong><br>Phone: ${this.formatPhone(contact.phone)}<br><em>Opening phone dialer...</em></div>`
+                        };
+                    } else {
+                        return {
+                            type: 'error',
+                            message: `No contact found named "${name}"`,
+                            html: `<div class="error-message">No contact found named "${name}". Add contacts in the Contacts tab.</div>`
+                        };
+                    }
+                } else {
+                    return {
+                        type: 'info',
+                        message: 'Please specify who to call',
+                        html: `<div class="info-message">Please specify who to call. Example: "Call John" or "Phone Mom"</div>`
+                    };
+                }
+            }
             
-            console.log('✅ ALTECH AI Assistant fully initialized');
+            async handleNoteCommand(command) {
+                // Extract note text
+                let noteText = '';
+                
+                if (command.includes('note that')) {
+                    noteText = command.split('note that')[1]?.trim();
+                } else if (command.includes('write down')) {
+                    noteText = command.split('write down')[1]?.trim();
+                } else if (command.includes('remember that')) {
+                    noteText = command.split('remember that')[1]?.trim();
+                } else {
+                    const match = command.match(/(?:note|write|remember|record)\s+(.+)/i);
+                    noteText = match ? match[1].trim() : '';
+                }
+                
+                if (!noteText) {
+                    return {
+                        type: 'info',
+                        message: 'Please specify what to note',
+                        html: `<div class="info-message">Please specify what to note. Example: "Note meeting tomorrow at 3 PM"</div>`
+                    };
+                }
+                
+                // Add note
+                const note = {
+                    id: Date.now(),
+                    text: noteText,
+                    isVoice: true,
+                    createdAt: new Date().toISOString()
+                };
+                
+                appState.notes.unshift(note);
+                saveNotes();
+                updateNotesDisplay();
+                
+                return {
+                    type: 'success',
+                    message: `Note added: ${noteText.substring(0, 50)}...`,
+                    html: `<div class="success-message"><strong>📝 Note Added</strong><br>"${noteText}"</div>`
+                };
+            }
+            
+            async handleReminderCommand(command) {
+                // Extract reminder text and time
+                let reminderText = '';
+                let timeText = '';
+                
+                if (command.includes('remind me to')) {
+                    reminderText = command.split('remind me to')[1]?.trim();
+                } else if (command.includes('reminder for')) {
+                    reminderText = command.split('reminder for')[1]?.trim();
+                } else if (command.includes('set alarm for')) {
+                    reminderText = command.split('set alarm for')[1]?.trim();
+                } else {
+                    const match = command.match(/(?:remind|reminder|alarm|alert|notify)\s+(.+)/i);
+                    reminderText = match ? match[1].trim() : '';
+                }
+                
+                if (!reminderText) {
+                    return {
+                        type: 'info',
+                        message: 'Please specify what to remind',
+                        html: `<div class="info-message">Please specify what to remind. Example: "Remind me to call mom tomorrow at 3 PM"</div>`
+                    };
+                }
+                
+                // Parse time
+                const time = this.parseTimeFromCommand(command);
+                
+                // Add reminder
+                const reminder = {
+                    id: Date.now(),
+                    text: reminderText,
+                    time: time.toISOString(),
+                    active: true,
+                    createdAt: new Date().toISOString()
+                };
+                
+                appState.reminders.push(reminder);
+                saveReminders();
+                updateRemindersDisplay();
+                
+                return {
+                    type: 'success',
+                    message: `Reminder set for ${time.toLocaleString()}`,
+                    html: `<div class="success-message"><strong>⏰ Reminder Set</strong><br>${reminderText}<br>Time: ${time.toLocaleString()}</div>`
+                };
+            }
+            
+            async handleSearchCommand(command) {
+                let query = '';
+                
+                // Extract search query
+                if (command.includes('search for')) {
+                    query = command.split('search for')[1]?.trim();
+                } else if (command.includes('find')) {
+                    query = command.split('find')[1]?.trim();
+                } else if (command.includes('look up')) {
+                    query = command.split('look up')[1]?.trim();
+                } else if (command.includes('what is')) {
+                    query = command.split('what is')[1]?.trim();
+                } else if (command.includes('who is')) {
+                    query = command.split('who is')[1]?.trim();
+                } else if (command.includes('where is')) {
+                    query = command.split('where is')[1]?.trim();
+                } else if (command.includes('how to')) {
+                    query = command.split('how to')[1]?.trim();
+                } else if (command.includes('explain')) {
+                    query = command.split('explain')[1]?.trim();
+                } else {
+                    const match = command.match(/(?:search|find|look up)\s+(.+)/i);
+                    query = match ? match[1].trim() : command;
+                }
+                
+                if (!query) {
+                    return {
+                        type: 'info',
+                        message: 'Please specify what to search for',
+                        html: `<div class="info-message">Please specify what to search for. Example: "Search for artificial intelligence"</div>`
+                    };
+                }
+                
+                // Open search in new tab
+                setTimeout(() => {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                }, 500);
+                
+                // Get AI response for the query
+                let aiResponse = 'Searching for information...';
+                try {
+                    aiResponse = await getAIResponse(query);
+                } catch (error) {
+                    aiResponse = `I found information about "${query}". Opening search results in your browser.`;
+                }
+                
+                return {
+                    type: 'success',
+                    message: `Searching for: ${query}`,
+                    html: `<div class="success-message">
+                        <strong>🔍 Search Results</strong><br>
+                        <p>${aiResponse.substring(0, 200)}...</p>
+                        <div class="mt-2">
+                            <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(query)}', '_blank')">
+                                <i class="fas fa-external-link-alt"></i> Open in Google
+                            </button>
+                        </div>
+                    </div>`
+                };
+            }
+            
+            async handleWeatherCommand(command) {
+                let location = '';
+                
+                if (command.includes('weather in')) {
+                    location = command.split('weather in')[1]?.trim();
+                } else if (command.includes('forecast for')) {
+                    location = command.split('forecast for')[1]?.trim();
+                } else if (command.includes('temperature in')) {
+                    location = command.split('temperature in')[1]?.trim();
+                } else {
+                    const match = command.match(/(?:weather|forecast|temperature|climate)\s+(.+)/i);
+                    location = match ? match[1].trim() : 'your location';
+                }
+                
+                // Generate mock weather data
+                const weatherData = this.generateWeatherData(location);
+                
+                return {
+                    type: 'success',
+                    message: `Weather for ${location}: ${weatherData.temperature}°C, ${weatherData.condition}`,
+                    html: `<div class="success-message">
+                        <strong>🌤️ Weather in ${weatherData.location}</strong>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 15px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; color: var(--primary);">${weatherData.temperature}°C</div>
+                                <div style="font-size: 0.9em;">Temperature</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2em; margin-bottom: 5px;">${weatherData.condition}</div>
+                                <div style="font-size: 0.9em;">Condition</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.1em; margin-bottom: 5px;">${weatherData.humidity}%</div>
+                                <div style="font-size: 0.9em;">Humidity</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.1em; margin-bottom: 5px;">${weatherData.wind} km/h</div>
+                                <div style="font-size: 0.9em;">Wind Speed</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=weather+${encodeURIComponent(location)}', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> More Details
+                        </button>
+                    </div>`
+                };
+            }
+            
+            async handleTimeCommand() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true 
+                });
+                
+                return {
+                    type: 'success',
+                    message: `Current time: ${timeStr}`,
+                    html: `<div class="success-message">
+                        <strong>🕒 Current Time</strong>
+                        <div style="text-align: center; padding: 15px;">
+                            <div style="font-size: 2.5em; font-weight: bold; color: var(--primary);">${timeStr}</div>
+                        </div>
+                    </div>`
+                };
+            }
+            
+            async handleDateCommand() {
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                return {
+                    type: 'success',
+                    message: `Today is ${dateStr}`,
+                    html: `<div class="success-message">
+                        <strong>📅 Today's Date</strong>
+                        <div style="text-align: center; padding: 15px;">
+                            <div style="font-size: 1.5em; color: var(--primary);">${dateStr}</div>
+                        </div>
+                    </div>`
+                };
+            }
+            
+            async handleMathCommand(command) {
+                try {
+                    // Extract math expression
+                    let expression = command.replace(/calculate|math|add|subtract|multiply|divide|plus|minus|times|over/gi, '')
+                        .replace(/equals|equal to|what is|what's/i, '')
+                        .trim();
+                    
+                    // Convert words to operators
+                    expression = expression
+                        .replace(/plus/gi, '+')
+                        .replace(/minus/gi, '-')
+                        .replace(/times/gi, '*')
+                        .replace(/multiplied by/gi, '*')
+                        .replace(/divided by/gi, '/')
+                        .replace(/over/gi, '/');
+                    
+                    // Remove any non-math characters
+                    expression = expression.replace(/[^0-9+\-*/().]/g, '');
+                    
+                    if (!expression) {
+                        return {
+                            type: 'info',
+                            message: 'Please provide a math expression',
+                            html: `<div class="info-message">Please provide a math expression. Example: "Calculate 15 plus 27" or "What is 100 divided by 4?"</div>`
+                        };
+                    }
+                    
+                    // Evaluate safely
+                    const result = eval(expression);
+                    
+                    return {
+                        type: 'success',
+                        message: `Result: ${expression} = ${result}`,
+                        html: `<div class="success-message">
+                            <strong>🧮 Calculation Result</strong>
+                            <div style="text-align: center; padding: 15px;">
+                                <div style="font-size: 1.2em; margin-bottom: 10px;">${expression}</div>
+                                <div style="font-size: 2.5em; font-weight: bold; color: var(--primary);">= ${result}</div>
+                            </div>
+                        </div>`
+                    };
+                } catch (error) {
+                    return {
+                        type: 'error',
+                        message: 'Could not calculate that expression',
+                        html: `<div class="error-message">Could not calculate that expression. Please try a simpler one.</div>`
+                    };
+                }
+            }
+            
+            async handleAICommand(command) {
+                if (!appState.aiEnabled) {
+                    return {
+                        type: 'warning',
+                        message: 'AI is currently disabled',
+                        html: `<div class="warning-message">AI responses are currently disabled. Enable AI using the brain icon in the header.</div>`
+                    };
+                }
+                
+                try {
+                    const response = await getAIResponse(command);
+                    return {
+                        type: 'success',
+                        message: 'AI response generated',
+                        html: `<div class="success-message">
+                            <strong>🤖 AI Response</strong>
+                            <p>${response}</p>
+                        </div>`
+                    };
+                } catch (error) {
+                    return {
+                        type: 'error',
+                        message: 'AI service temporarily unavailable',
+                        html: `<div class="error-message">
+                            <strong>AI Service Unavailable</strong>
+                            <p>I'm having trouble connecting to the AI service. Please try again in a moment.</p>
+                            <p class="mt-2"><em>You can still use all other features like notes, reminders, and contacts.</em></p>
+                        </div>`
+                    };
+                }
+            }
+            
+            async handleHelpCommand() {
+                return {
+                    type: 'info',
+                    message: 'Here are the commands I understand',
+                    html: `<div class="info-message">
+                        <strong>📋 Available Commands</strong>
+                        <div style="margin-top: 15px;">
+                            <strong>📞 Call:</strong> "Call John", "Phone Mom", "Dial emergency"<br>
+                            <strong>📝 Notes:</strong> "Add note meeting tomorrow", "Remember to buy milk"<br>
+                            <strong>⏰ Reminders:</strong> "Remind me to call mom", "Set alarm for 3 PM"<br>
+                            <strong>🔍 Search:</strong> "Search for AI news", "What is JavaScript?"<br>
+                            <strong>🌤️ Weather:</strong> "Weather in London", "Forecast for tomorrow"<br>
+                            <strong>🕒 Time:</strong> "What time is it?", "Current time"<br>
+                            <strong>📅 Date:</strong> "What's today's date?"<br>
+                            <strong>🧮 Math:</strong> "Calculate 15 plus 27", "What is 100 divided by 4?"<br>
+                            <strong>🤖 AI:</strong> "Ask AI about space", "Question about physics"
+                        </div>
+                    </div>`
+                };
+            }
+            
+            // Utility methods
+            findContactByName(name) {
+                const searchName = name.toLowerCase();
+                return appState.contacts.find(contact => 
+                    contact.name.toLowerCase().includes(searchName)
+                );
+            }
+            
+            callContact(phone) {
+                if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    window.location.href = `tel:${phone}`;
+                } else {
+                    showToast(`Call ${this.formatPhone(phone)} from your mobile device`, 'info');
+                }
+            }
+            
+            formatPhone(phone) {
+                const cleaned = phone.replace(/\D/g, '');
+                if (cleaned.length === 10) {
+                    return `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)}-${cleaned.substring(6)}`;
+                }
+                return phone;
+            }
+            
+            parseTimeFromCommand(command) {
+                const now = new Date();
+                const time = new Date(now);
+                
+                // Handle relative times
+                if (command.includes('tomorrow')) {
+                    time.setDate(time.getDate() + 1);
+                }
+                if (command.includes('next week')) {
+                    time.setDate(time.getDate() + 7);
+                }
+                if (command.includes('in 1 hour') || command.includes('in one hour')) {
+                    time.setHours(time.getHours() + 1);
+                }
+                if (command.includes('in 30 minutes')) {
+                    time.setMinutes(time.getMinutes() + 30);
+                }
+                if (command.includes('in 15 minutes')) {
+                    time.setMinutes(time.getMinutes() + 15);
+                }
+                if (command.includes('in 5 minutes')) {
+                    time.setMinutes(time.getMinutes() + 5);
+                }
+                if (command.includes('next month')) {
+                    time.setMonth(time.getMonth() + 1);
+                }
+                
+                // Parse specific time
+                const timeMatch = command.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+                if (timeMatch) {
+                    let hours = parseInt(timeMatch[1]);
+                    const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+                    const period = timeMatch[3]?.toLowerCase();
+                    
+                    if (period === 'pm' && hours < 12) hours += 12;
+                    if (period === 'am' && hours === 12) hours = 0;
+                    
+                    time.setHours(hours, minutes, 0, 0);
+                    
+                    if (time < now) {
+                        time.setDate(time.getDate() + 1);
+                    }
+                }
+                
+                return time;
+            }
+            
+            generateWeatherData(location) {
+                const conditions = [
+                    { name: 'Sunny', icon: '☀️', desc: 'Clear skies with plenty of sunshine' },
+                    { name: 'Partly Cloudy', icon: '⛅', desc: 'Mix of sun and clouds' },
+                    { name: 'Cloudy', icon: '☁️', desc: 'Overcast with no direct sunlight' },
+                    { name: 'Rainy', icon: '🌧️', desc: 'Light to moderate rainfall expected' },
+                    { name: 'Stormy', icon: '⛈️', desc: 'Thunderstorms possible' },
+                    { name: 'Snowy', icon: '❄️', desc: 'Light snowfall expected' },
+                    { name: 'Foggy', icon: '🌫️', desc: 'Reduced visibility due to fog' }
+                ];
+                
+                const condition = conditions[Math.floor(Math.random() * conditions.length)];
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                
+                return {
+                    location: location,
+                    temperature: Math.floor(Math.random() * 35) + 10,
+                    condition: condition.name,
+                    icon: condition.icon,
+                    humidity: Math.floor(Math.random() * 70) + 30,
+                    wind: Math.floor(Math.random() * 40) + 5,
+                    description: isDaytime ? condition.desc : condition.desc + ' at night'
+                };
+            }
         }
         
-        // ================ VOICE RECOGNITION SYSTEM ================
+        // Initialize command processor
+        const commandProcessor = new CommandProcessor();
+        
+        // ================ APP INITIALIZATION ================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initializing ALTECH AI Assistant...');
+            
+            // Initialize app
+            initializeApp();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showToast('ALTECH AI Assistant ready! Try voice commands.', 'success');
+                updateAIResponse(`
+                    <div class="success-message">
+                        <h4 style="margin-bottom: 10px;">🤖 ALTECH AI Assistant v3.0</h4>
+                        <p>I now understand natural language commands including:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>📞 Call Contacts</strong> - "Call John", "Phone Mom"</li>
+                            <li><strong>📝 Voice Notes</strong> - "Add note meeting tomorrow"</li>
+                            <li><strong>⏰ Smart Reminders</strong> - "Remind me to call mom at 3 PM"</li>
+                            <li><strong>🔍 Web Search</strong> - "Search for AI news"</li>
+                            <li><strong>🌤️ Weather</strong> - "Weather in London"</li>
+                            <li><strong>🧮 Calculations</strong> - "Calculate 15 plus 27"</li>
+                            <li><strong>🤖 AI Answers</strong> - Ask me anything!</li>
+                        </ul>
+                        <p style="margin-top: 15px; font-weight: 600;">Try saying: <em>"Call John"</em> or <em>"What's the weather like?"</em></p>
+                    </div>
+                `);
+            }, 1000);
+        });
+        
+        function initializeApp() {
+            // Load saved data
+            loadAppState();
+            loadAllData();
+            
+            // Initialize UI
+            initializeUI();
+            
+            // Initialize voice recognition
+            initializeVoiceRecognition();
+            
+            // Setup auto-save
+            setupAutoSave();
+            
+            // Setup reminder checks
+            setupReminderChecks();
+            
+            // Request notification permission
+            requestNotificationPermission();
+            
+            // Check for PWA installation
+            checkPWAInstallable();
+        }
+        
+        // ================ VOICE RECOGNITION ================
         function initializeVoiceRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
-                showToast('Voice recognition not supported in your browser', 'warning');
+                showToast('Voice recognition not supported in this browser', 'warning');
                 document.getElementById('voiceOrb').style.display = 'none';
+                document.getElementById('voiceBtn').style.display = 'none';
                 return;
             }
             
@@ -2025,15 +2253,18 @@
             recognition.continuous = false;
             recognition.interimResults = true;
             recognition.lang = 'en-US';
+            recognition.maxAlternatives = 3;
             
             recognition.onstart = () => {
                 appState.isListening = true;
                 document.getElementById('voiceOrb').classList.add('listening');
                 document.getElementById('statusText').textContent = '🎤 Listening... Speak now';
                 showToast('Listening... Speak your command', 'info');
+                
+                updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div> Listening to your command...</div>');
             };
             
-            recognition.onresult = (event) => {
+            recognition.onresult = async (event) => {
                 const transcript = Array.from(event.results)
                     .map(result => result[0].transcript)
                     .join('');
@@ -2042,7 +2273,7 @@
                     `<strong>You said:</strong> ${transcript}`;
                 
                 if (event.results[0].isFinal) {
-                    handleVoiceCommand(transcript);
+                    await handleVoiceCommand(transcript);
                 }
             };
             
@@ -2059,102 +2290,66 @@
                 document.getElementById('voiceOrb').classList.remove('listening');
             };
             
-            // Store recognition object globally
+            // Store recognition object
             window.voiceRecognition = recognition;
             
-            // Set up voice orb click
+            // Set up click handlers
             document.getElementById('voiceOrb').addEventListener('click', () => {
-                if (appState.isListening) {
-                    recognition.stop();
-                } else {
-                    try {
-                        recognition.start();
-                    } catch (error) {
-                        showToast('Error starting voice recognition', 'error');
-                    }
-                }
+                toggleListening();
             });
             
-            // Set up voice button
             document.getElementById('voiceBtn').addEventListener('click', () => {
-                if (appState.isListening) {
-                    recognition.stop();
-                } else {
-                    try {
-                        recognition.start();
-                    } catch (error) {
-                        showToast('Error starting voice recognition', 'error');
-                    }
-                }
+                toggleListening();
             });
         }
         
-        // ================ VOICE COMMAND HANDLER ================
+        function toggleListening() {
+            if (!window.voiceRecognition) return;
+            
+            if (appState.isListening) {
+                window.voiceRecognition.stop();
+            } else {
+                try {
+                    window.voiceRecognition.start();
+                } catch (error) {
+                    showToast('Error starting voice recognition', 'error');
+                }
+            }
+        }
+        
         async function handleVoiceCommand(command) {
-            console.log('Voice command:', command);
-            
-            // Add to history
-            appState.voiceHistory.push({
-                command: command,
-                timestamp: new Date().toISOString()
-            });
-            
             // Show processing
             updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div> Processing your command...</div>');
             
             // Process command
-            const response = await processVoiceCommand(command);
+            const result = await commandProcessor.process(command);
             
-            // Update response
-            updateAIResponse(response);
+            // Update UI
+            updateAIResponse(result.html);
             
-            // Speak response if TTS is enabled
+            // Speak response if TTS enabled
             if (appState.ttsEnabled) {
-                speakResponse(extractTextFromResponse(response));
+                speakResponse(result.message);
             }
+            
+            // Show toast
+            showToast(result.message, result.type);
+            
+            // Add to history
+            appState.voiceHistory.push({
+                command: command,
+                response: result.message,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Save history
+            saveVoiceHistory();
         }
         
-        async function processVoiceCommand(command) {
-            const lowerCmd = command.toLowerCase();
-            
-            // Note commands
-            if (lowerCmd.includes('note') || lowerCmd.includes('write down') || lowerCmd.includes('remember')) {
-                const noteMatch = command.match(/(?:note|write down|remember)(?: that)?\s+(.+)/i);
-                if (noteMatch) {
-                    const noteText = noteMatch[1];
-                    addNote(noteText, true);
-                    return `<div class="success-message"><strong>📝 Note Added via Voice</strong><br>"${noteText}"</div>`;
-                }
-            }
-            
-            // Reminder commands
-            if (lowerCmd.includes('remind') || lowerCmd.includes('reminder') || lowerCmd.includes('alarm')) {
-                return handleVoiceReminder(command);
-            }
-            
-            // Search commands
-            if (lowerCmd.includes('search') || lowerCmd.includes('what is') || lowerCmd.includes('how to') || 
-                lowerCmd.includes('who is') || lowerCmd.includes('where is')) {
-                return await handleVoiceSearch(command);
-            }
-            
-            // Weather commands
-            if (lowerCmd.includes('weather')) {
-                return handleVoiceWeather(command);
-            }
-            
-            // Time commands
-            if (lowerCmd.includes('time') || lowerCmd.includes('what time')) {
-                return handleTimeCommand();
-            }
-            
-            // Contact commands
-            if (lowerCmd.includes('contact') || lowerCmd.includes('call') || lowerCmd.includes('message')) {
-                return handleVoiceContact(command);
-            }
-            
-            // AI Question
-            return await handleAIQuestion(command);
+        function testCommand(command) {
+            document.getElementById('transcript').innerHTML = 
+                `<strong>You said:</strong> ${command}`;
+            handleVoiceCommand(command);
         }
         
         // ================ UI INITIALIZATION ================
@@ -2169,19 +2364,14 @@
             
             // Theme toggle
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-            document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
             
             // AI toggle
             document.getElementById('aiToggle').addEventListener('click', () => {
                 appState.aiEnabled = !appState.aiEnabled;
                 document.getElementById('aiToggle').classList.toggle('active', appState.aiEnabled);
-                document.getElementById('aiEnabled').checked = appState.aiEnabled;
                 showToast(`AI ${appState.aiEnabled ? 'enabled' : 'disabled'}`, appState.aiEnabled ? 'success' : 'warning');
                 saveAppState();
             });
-            
-            // Settings toggle
-            document.getElementById('settingsBtn').addEventListener('click', toggleSettingsPanel);
             
             // WhatsApp button
             document.getElementById('whatsappBtn').addEventListener('click', () => {
@@ -2191,49 +2381,30 @@
             // Install button
             document.getElementById('installBtn').addEventListener('click', showInstallPrompt);
             
-            // Settings toggles
-            document.getElementById('voiceEnabled').addEventListener('change', (e) => {
-                appState.voiceEnabled = e.target.checked;
-                saveAppState();
-            });
+            // Quick actions
+            initializeQuickActions();
             
-            document.getElementById('autoSave').addEventListener('change', (e) => {
-                appState.autoSave = e.target.checked;
-                saveAppState();
-            });
-            
-            document.getElementById('notificationsEnabled').addEventListener('change', (e) => {
-                appState.notificationsEnabled = e.target.checked;
-                if (e.target.checked) {
-                    requestNotificationPermission();
-                }
-                saveAppState();
-            });
-            
-            document.getElementById('ttsEnabled').addEventListener('change', (e) => {
-                appState.ttsEnabled = e.target.checked;
-                saveAppState();
-            });
-            
-            // Initialize dark mode
-            updateThemeUI();
+            // Set default reminder time
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
         }
         
         function initializeQuickActions() {
             const quickActions = [
-                { icon: 'fa-user-plus', text: 'Add Contact', action: 'showAddContactModal()', color: 'primary' },
-                { icon: 'fa-edit', text: 'Add Note', action: 'focusNotes()', color: 'success' },
+                { icon: 'fa-phone', text: 'Call Contact', action: 'showCallDialog()', color: 'success' },
+                { icon: 'fa-edit', text: 'Add Note', action: 'focusNotes()', color: 'primary' },
                 { icon: 'fa-bell', text: 'Set Reminder', action: 'focusReminders()', color: 'warning' },
                 { icon: 'fa-search', text: 'Search Web', action: 'focusSearch()', color: 'info' },
-                { icon: 'fa-cloud-sun', text: 'Check Weather', action: 'checkWeather()', color: 'primary' },
-                { icon: 'fa-question-circle', text: 'Ask AI', action: 'askAIQuestion()', color: 'success' },
-                { icon: 'fa-phone', text: 'Make Call', action: 'showCallDialog()', color: 'info' },
+                { icon: 'fa-cloud-sun', text: 'Check Weather', action: 'showWeatherDialog()', color: 'primary' },
+                { icon: 'fa-question-circle', text: 'Ask AI', action: 'showAIDialog()', color: 'success' },
+                { icon: 'fa-calculator', text: 'Calculator', action: 'showCalculator()', color: 'info' },
                 { icon: 'fa-music', text: 'Play Music', action: 'playMusic()', color: 'warning' }
             ];
             
             const container = document.getElementById('quickActions');
             container.innerHTML = quickActions.map(action => `
-                <button class="action-btn ${action.color ? action.color : ''}" onclick="${action.action}">
+                <button class="action-btn ${action.color}" onclick="${action.action}">
                     <i class="fas ${action.icon}"></i>
                     <span>${action.text}</span>
                 </button>
@@ -2261,22 +2432,11 @@
         // ================ THEME MANAGEMENT ================
         function toggleTheme() {
             appState.darkMode = !appState.darkMode;
-            updateThemeUI();
-            saveAppState();
-            showToast(`Switched to ${appState.darkMode ? 'dark' : 'light'} mode`, 'info');
-        }
-        
-        function updateThemeUI() {
             document.body.classList.toggle('dark-mode', appState.darkMode);
             document.getElementById('themeToggle').innerHTML = 
                 `<i class="fas fa-${appState.darkMode ? 'sun' : 'moon'}"></i>`;
-            document.getElementById('darkModeToggle').checked = appState.darkMode;
-        }
-        
-        // ================ SETTINGS PANEL ================
-        function toggleSettingsPanel() {
-            const panel = document.getElementById('settingsPanel');
-            panel.classList.toggle('open');
+            saveAppState();
+            showToast(`Switched to ${appState.darkMode ? 'dark' : 'light'} mode`, 'info');
         }
         
         // ================ CONTACTS MANAGEMENT ================
@@ -2315,8 +2475,7 @@
             
             closeModal('addContactModal');
             
-            showToast(`Contact "${name}" added successfully`, 'success');
-            updateAIResponse(`<div class='success-message'><strong>✅ Contact Added</strong><br>Name: ${name}<br>Phone: ${formatPhone(phone)}</div>`);
+            showToast(`Contact "${name}" added`, 'success');
             
             // Clear form
             document.getElementById('contactName').value = '';
@@ -2352,15 +2511,15 @@
                     
                     saveContacts();
                     updateContactsDisplay();
-                    showToast(`Imported ${contacts.length} contacts from your device`, 'success');
+                    showToast(`Imported ${contacts.length} contacts`, 'success');
                     
                 } catch (error) {
                     console.error('Contact import error:', error);
-                    showToast('Could not access contacts. Using sample data instead.', 'warning');
+                    showToast('Could not access contacts. Using sample data.', 'warning');
                     importSampleContacts();
                 }
             } else {
-                showToast('Contact API not supported in this browser', 'warning');
+                showToast('Contact API not supported', 'warning');
                 importSampleContacts();
             }
         }
@@ -2432,8 +2591,7 @@
             if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 window.location.href = `tel:${phone}`;
             } else {
-                showToast(`Call ${phone} from your mobile device`, 'info');
-                updateAIResponse(`<div class='info-message'>📞 Ready to call: ${formatPhone(phone)}<br><small>On a mobile device, this would open the dialer.</small></div>`);
+                showToast(`Call ${formatPhone(phone)} from your mobile device`, 'info');
             }
         }
         
@@ -2441,7 +2599,7 @@
             if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 window.location.href = `sms:${phone}`;
             } else {
-                showToast(`Message ${phone} from your mobile device`, 'info');
+                showToast(`Message ${formatPhone(phone)} from your mobile device`, 'info');
             }
         }
         
@@ -2455,24 +2613,14 @@
             }
         }
         
-        // ================ NOTES MANAGEMENT ================
-        function addNote(text, isVoice = false) {
-            const note = {
-                id: Date.now(),
-                text: text,
-                isVoice: isVoice,
-                createdAt: new Date().toISOString()
-            };
-            
-            appState.notes.unshift(note);
-            saveNotes();
-            updateNotesDisplay();
-            
-            if (isVoice) {
-                showToast('Note added via voice command', 'success');
+        function showCallDialog() {
+            const name = prompt("Who would you like to call?", "");
+            if (name) {
+                testCommand(`Call ${name}`);
             }
         }
         
+        // ================ NOTES MANAGEMENT ================
         function saveNote() {
             const textarea = document.getElementById('notesTextarea');
             const text = textarea.value.trim();
@@ -2482,20 +2630,46 @@
                 return;
             }
             
-            addNote(text, false);
+            const note = {
+                id: Date.now(),
+                text: text,
+                isVoice: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            appState.notes.unshift(note);
+            saveNotes();
+            updateNotesDisplay();
+            
             textarea.value = '';
             showToast('Note saved', 'success');
         }
         
         function addVoiceNote() {
             if (window.voiceRecognition) {
-                showToast('Speak your note after the beep', 'info');
+                showToast('Speak your note', 'info');
                 window.voiceRecognition.start();
                 
+                const originalOnResult = window.voiceRecognition.onresult;
                 window.voiceRecognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
                     if (event.results[0].isFinal) {
-                        addNote(transcript, true);
+                        const note = {
+                            id: Date.now(),
+                            text: transcript,
+                            isVoice: true,
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        appState.notes.unshift(note);
+                        saveNotes();
+                        updateNotesDisplay();
+                        
+                        showToast('Voice note added', 'success');
+                        window.voiceRecognition.onresult = originalOnResult;
                         window.voiceRecognition.stop();
                     }
                 };
@@ -2567,7 +2741,6 @@
         function addReminder() {
             const text = document.getElementById('reminderText').value.trim();
             const timeStr = document.getElementById('reminderTime').value;
-            const type = document.getElementById('reminderType').value;
             
             if (!text || !timeStr) {
                 showToast('Please enter reminder text and time', 'error');
@@ -2584,7 +2757,6 @@
                 id: Date.now(),
                 text: text,
                 time: time.toISOString(),
-                type: type,
                 active: true,
                 createdAt: new Date().toISOString()
             };
@@ -2600,32 +2772,6 @@
             document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
             
             showToast('Reminder set!', 'success');
-            updateAIResponse(`<div class='success-message'><strong>⏰ Reminder Set</strong><br>${text}<br>Time: ${time.toLocaleString()}</div>`);
-        }
-        
-        function handleVoiceReminder(command) {
-            const textMatch = command.match(/(?:remind me to|reminder for|set alarm for)\s+(.+)/i);
-            if (!textMatch) {
-                return `<div class='error-message'>Please specify what to remind you about. Example: "Remind me to call mom at 3 PM"</div>`;
-            }
-            
-            const text = textMatch[1];
-            const time = parseTimeFromCommand(command);
-            
-            const reminder = {
-                id: Date.now(),
-                text: text,
-                time: time.toISOString(),
-                type: 'both',
-                active: true,
-                createdAt: new Date().toISOString()
-            };
-            
-            appState.reminders.push(reminder);
-            saveReminders();
-            updateRemindersDisplay();
-            
-            return `<div class='success-message'><strong>⏰ Voice Reminder Set</strong><br>${text}<br>Time: ${time.toLocaleString()}</div>`;
         }
         
         function updateRemindersDisplay() {
@@ -2684,7 +2830,7 @@
         function snoozeReminder(id) {
             const reminder = appState.reminders.find(r => r.id === id);
             if (reminder) {
-                const newTime = new Date(new Date(reminder.time).getTime() + 30 * 60000); // Add 30 minutes
+                const newTime = new Date(new Date(reminder.time).getTime() + 30 * 60000);
                 reminder.time = newTime.toISOString();
                 saveReminders();
                 updateRemindersDisplay();
@@ -2711,20 +2857,11 @@
         }
         
         async function handleSearch(query) {
-            // Add to history
-            appState.searchHistory.push({
-                query: query,
-                timestamp: new Date().toISOString()
-            });
-            
-            // Show loading
             updateSearchResults(`<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div> Searching for "${query}"...</div>`);
             
             try {
-                // Try AI response first
                 const aiResponse = await getAIResponse(query);
                 
-                // Update results
                 updateSearchResults(`
                     <div class="search-result-item">
                         <h4><i class="fas fa-robot"></i> AI Answer</h4>
@@ -2733,23 +2870,17 @@
                             <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(query)}', '_blank')">
                                 <i class="fas fa-external-link-alt"></i> More on Google
                             </button>
-                            <button class="btn btn-info" onclick="window.open('https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}', '_blank')">
-                                <i class="fab fa-wikipedia-w"></i> Wikipedia
-                            </button>
                         </div>
                     </div>
                 `);
                 
-                // Also update AI response in assistant tab
                 updateAIResponse(`<div class='success-message'><strong>🔍 Search Results</strong><br>${aiResponse.substring(0, 200)}...</div>`);
                 
-                // Speak if enabled
                 if (appState.ttsEnabled) {
                     speakResponse(aiResponse.substring(0, 100));
                 }
                 
             } catch (error) {
-                // Fallback to direct search
                 updateSearchResults(`
                     <div class="search-result-item">
                         <h4><i class="fas fa-search"></i> Search Results for: "${query}"</h4>
@@ -2762,16 +2893,10 @@
                     </div>
                 `);
                 
-                // Auto-open search in new tab
                 setTimeout(() => {
                     window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
                 }, 1000);
             }
-        }
-        
-        async function handleVoiceSearch(command) {
-            const query = command.replace(/search for|what is|how to|who is|where is/i, '').trim();
-            return await handleSearch(query);
         }
         
         function searchWithProvider(provider) {
@@ -2798,7 +2923,7 @@
             }
             
             window.open(url, '_blank');
-            showToast(`Opening ${provider} search...`, 'info');
+            showToast(`Opening ${provider}...`, 'info');
         }
         
         function updateSearchResults(content) {
@@ -2812,123 +2937,30 @@
             }, 100);
         }
         
-        // ================ WEATHER FUNCTIONALITY ================
-        function checkWeather() {
-            const location = prompt("Enter location for weather:", "Nairobi");
-            if (location) {
-                handleWeather(location);
-            }
-        }
-        
-        function handleWeather(location) {
-            // Generate mock weather data
-            const weatherData = {
-                location: location,
-                temperature: Math.floor(Math.random() * 35) + 10,
-                condition: ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy'][Math.floor(Math.random() * 5)],
-                humidity: Math.floor(Math.random() * 70) + 30,
-                wind: Math.floor(Math.random() * 40) + 5,
-                description: 'Typical weather for this location'
-            };
-            
-            const response = `
-                <div class="search-result-item">
-                    <h4><i class="fas fa-cloud-sun"></i> Weather in ${weatherData.location}</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 15px 0;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 2em; font-weight: bold; color: var(--primary);">${weatherData.temperature}°C</div>
-                            <div style="font-size: 0.9em;">Temperature</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.2em; margin-bottom: 5px;">${weatherData.condition}</div>
-                            <div style="font-size: 0.9em;">Condition</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.1em; margin-bottom: 5px;">${weatherData.humidity}%</div>
-                            <div style="font-size: 0.9em;">Humidity</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.1em; margin-bottom: 5px;">${weatherData.wind} km/h</div>
-                            <div style="font-size: 0.9em;">Wind Speed</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=weather+${encodeURIComponent(location)}', '_blank')">
-                        <i class="fas fa-external-link-alt"></i> More Details
-                    </button>
-                </div>
-            `;
-            
-            updateSearchResults(response);
-            updateAIResponse(`<div class='info-message'>🌤️ Weather in ${location}: ${weatherData.temperature}°C, ${weatherData.condition}</div>`);
-            
-            if (appState.ttsEnabled) {
-                speakResponse(`Weather in ${location}: ${weatherData.temperature} degrees, ${weatherData.condition.toLowerCase()}`);
-            }
-        }
-        
-        function handleVoiceWeather(command) {
-            const locationMatch = command.match(/weather in (.+)/i);
-            const location = locationMatch ? locationMatch[1] : 'your location';
-            return handleWeather(location);
-        }
-        
-        // ================ TIME FUNCTIONALITY ================
-        function handleTimeCommand() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true 
-            });
-            const dateStr = now.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            const response = `<div class="info-message">
-                <h4>🕒 Current Time</h4>
-                <div style="text-align: center; padding: 15px;">
-                    <div style="font-size: 2em; font-weight: bold; color: var(--primary); margin-bottom: 10px;">${timeStr}</div>
-                    <div style="font-size: 1.1em; color: var(--text-secondary);">${dateStr}</div>
-                </div>
-            </div>`;
-            
-            updateAIResponse(response);
-            
-            if (appState.ttsEnabled) {
-                speakResponse(`The time is ${timeStr} on ${dateStr}`);
-            }
-            
-            return response;
-        }
-        
         // ================ AI RESPONSE SYSTEM ================
         async function getAIResponse(query) {
             if (!appState.aiEnabled) {
-                return "AI responses are currently disabled. Enable AI in settings.";
+                return "AI responses are currently disabled. Enable AI using the brain icon in the header.";
             }
             
             try {
-                // Try multiple free AI endpoints
+                // Try multiple AI endpoints
                 const endpoints = [
                     {
-                        url: 'https://api.openai.com/v1/chat/completions',
+                        url: 'https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-70b-chat-hf',
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer free-trial-key' // In production, use real key
+                            'Authorization': 'Bearer dc2bc3e2cdd2c6ccad9f5df96d0df850c4e284b7'
                         },
                         body: {
-                            model: "gpt-3.5-turbo",
-                            messages: [{ role: "user", content: query }],
-                            max_tokens: 200,
-                            temperature: 0.7
+                            input: `Please provide a clear, concise answer to: "${query}"`,
+                            max_new_tokens: 200
                         }
                     },
                     {
                         url: 'https://free.churchless.tech/v1/chat/completions',
+                        method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: {
                             model: "gpt-3.5-turbo",
@@ -2942,15 +2974,22 @@
                 for (const endpoint of endpoints) {
                     try {
                         const response = await fetch(endpoint.url, {
-                            method: 'POST',
+                            method: endpoint.method,
                             headers: endpoint.headers,
                             body: JSON.stringify(endpoint.body)
                         });
                         
                         if (response.ok) {
                             const data = await response.json();
+                            
                             if (data.choices?.[0]?.message?.content) {
                                 return data.choices[0].message.content.trim();
+                            }
+                            if (data.results?.[0]?.generated_text) {
+                                return data.results[0].generated_text.trim();
+                            }
+                            if (data.generated_text) {
+                                return data.generated_text.trim();
                             }
                         }
                     } catch (error) {
@@ -3007,17 +3046,24 @@
             return `I understand you're asking about "${query}". This is something I can help you research. Would you like me to search the web for more detailed information?`;
         }
         
-        async function handleAIQuestion(question) {
-            const response = await getAIResponse(question);
-            return `<div class="success-message"><strong>🤖 AI Response</strong><br>${response}</div>`;
-        }
-        
-        function askAIQuestion() {
+        function showAIDialog() {
             const question = prompt("What would you like to ask the AI?", "");
             if (question) {
-                handleAIQuestion(question).then(response => {
-                    updateAIResponse(response);
-                });
+                testCommand(question);
+            }
+        }
+        
+        function showWeatherDialog() {
+            const location = prompt("Enter location for weather:", "Nairobi");
+            if (location) {
+                testCommand(`Weather in ${location}`);
+            }
+        }
+        
+        function showCalculator() {
+            const expression = prompt("Enter math expression:", "15 + 27");
+            if (expression) {
+                testCommand(`Calculate ${expression}`);
             }
         }
         
@@ -3026,7 +3072,6 @@
             if (!appState.ttsEnabled || !('speechSynthesis' in window)) return;
             
             try {
-                // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
                 
                 const utterance = new SpeechSynthesisUtterance(text);
@@ -3034,10 +3079,8 @@
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
                 
-                // Get available voices
                 const voices = window.speechSynthesis.getVoices();
                 if (voices.length > 0) {
-                    // Prefer English voices
                     const englishVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
                     utterance.voice = englishVoice;
                 }
@@ -3051,33 +3094,23 @@
         
         function speakCurrentResponse() {
             const responseElement = document.getElementById('aiOutput');
-            const text = extractTextFromResponse(responseElement.innerHTML);
+            const text = responseElement.textContent || responseElement.innerText;
             speakResponse(text);
-        }
-        
-        function extractTextFromResponse(html) {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            return temp.textContent || temp.innerText || '';
         }
         
         // ================ PWA INSTALLATION ================
         function checkPWAInstallable() {
-            // Check if PWA is already installed
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 document.getElementById('installBtn').style.display = 'none';
                 return;
             }
             
-            // Listen for beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 appState.deferredPrompt = e;
                 
-                // Show install button
                 document.getElementById('installBtn').style.display = 'flex';
                 
-                // Show install banner after 5 seconds
                 setTimeout(() => {
                     if (!localStorage.getItem('installBannerDismissed')) {
                         document.getElementById('installBanner').style.display = 'block';
@@ -3085,7 +3118,6 @@
                 }, 5000);
             });
             
-            // Check if app is already installed
             window.addEventListener('appinstalled', () => {
                 document.getElementById('installBtn').style.display = 'none';
                 document.getElementById('installBanner').style.display = 'none';
@@ -3103,7 +3135,7 @@
                     appState.deferredPrompt = null;
                 });
             } else {
-                showToast('Installation not available in this browser', 'warning');
+                showToast('Installation not available', 'warning');
             }
         }
         
@@ -3119,10 +3151,7 @@
         
         // ================ NOTIFICATION SYSTEM ================
         function requestNotificationPermission() {
-            if (!('Notification' in window)) {
-                console.log('This browser does not support notifications');
-                return;
-            }
+            if (!('Notification' in window)) return;
             
             if (Notification.permission === 'granted') {
                 appState.notificationsEnabled = true;
@@ -3134,11 +3163,11 @@
             }
         }
         
-        function showNotification(title, options) {
+        function showNotification(title, body) {
             if (!appState.notificationsEnabled || !('Notification' in window)) return;
             
             if (Notification.permission === 'granted') {
-                new Notification(title, options);
+                new Notification(title, { body, icon: '/icon-192x192.png' });
             }
         }
         
@@ -3173,54 +3202,13 @@
             return phone;
         }
         
-        function parseTimeFromCommand(command) {
-            const now = new Date();
-            const time = new Date(now);
-            
-            if (command.includes('tomorrow')) {
-                time.setDate(time.getDate() + 1);
-            }
-            if (command.includes('next week')) {
-                time.setDate(time.getDate() + 7);
-            }
-            if (command.includes('in 1 hour') || command.includes('in one hour')) {
-                time.setHours(time.getHours() + 1);
-            }
-            if (command.includes('in 30 minutes')) {
-                time.setMinutes(time.getMinutes() + 30);
-            }
-            
-            // Try to parse specific time
-            const timeMatch = command.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
-            if (timeMatch) {
-                let hours = parseInt(timeMatch[1]);
-                const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-                const period = timeMatch[3]?.toLowerCase();
-                
-                if (period === 'pm' && hours < 12) hours += 12;
-                if (period === 'am' && hours === 12) hours = 0;
-                
-                time.setHours(hours, minutes, 0, 0);
-                
-                if (time < now) {
-                    time.setDate(time.getDate() + 1);
-                }
-            } else {
-                // Default: 1 hour from now
-                time.setHours(time.getHours() + 1);
-            }
-            
-            return time;
-        }
-        
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
-            const text = extractTextFromResponse(element.innerHTML);
+            const text = element.textContent || element.innerText;
             
             navigator.clipboard.writeText(text).then(() => {
                 showToast('Copied to clipboard', 'success');
             }).catch(() => {
-                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
                 document.body.appendChild(textArea);
@@ -3250,7 +3238,6 @@
             
             container.appendChild(toast);
             
-            // Remove toast after 3 seconds
             setTimeout(() => {
                 toast.remove();
             }, 3000);
@@ -3274,7 +3261,8 @@
         function loadAppState() {
             const saved = localStorage.getItem('altech_app_state');
             if (saved) {
-                appState = { ...appState, ...JSON.parse(saved) };
+                const savedState = JSON.parse(saved);
+                Object.assign(appState, savedState);
             }
         }
         
@@ -3311,93 +3299,36 @@
             }
         }
         
+        function saveVoiceHistory() {
+            localStorage.setItem('altech_voice_history', JSON.stringify(appState.voiceHistory));
+        }
+        
+        function loadVoiceHistory() {
+            const saved = localStorage.getItem('altech_voice_history');
+            if (saved) {
+                appState.voiceHistory = JSON.parse(saved);
+            }
+        }
+        
         function loadAllData() {
             loadContacts();
             loadNotes();
             loadReminders();
+            loadVoiceHistory();
             updateContactsDisplay();
             updateNotesDisplay();
             updateRemindersDisplay();
         }
         
-        function exportAllData() {
-            const data = {
-                appState: appState,
-                contacts: appState.contacts,
-                notes: appState.notes,
-                reminders: appState.reminders,
-                exportedAt: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `altech-backup-${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            showToast('All data exported', 'success');
-        }
-        
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        
-                        if (data.contacts) appState.contacts = data.contacts;
-                        if (data.notes) appState.notes = data.notes;
-                        if (data.reminders) appState.reminders = data.reminders;
-                        
-                        saveContacts();
-                        saveNotes();
-                        saveReminders();
-                        loadAllData();
-                        
-                        showToast('Data imported successfully', 'success');
-                    } catch (error) {
-                        showToast('Invalid backup file', 'error');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-        
-        function clearAllData() {
-            if (confirm('Are you sure? This will delete all your data.')) {
-                localStorage.clear();
-                appState = {
-                    ...appState,
-                    contacts: [],
-                    notes: [],
-                    reminders: [],
-                    searchHistory: [],
-                    voiceHistory: []
-                };
-                loadAllData();
-                showToast('All data cleared', 'success');
-            }
-        }
-        
         // ================ AUTO-SAVE AND BACKGROUND TASKS ================
         function setupAutoSave() {
             setInterval(() => {
-                if (appState.autoSave) {
-                    saveContacts();
-                    saveNotes();
-                    saveReminders();
-                    saveAppState();
-                }
-            }, 30000); // Every 30 seconds
+                saveContacts();
+                saveNotes();
+                saveReminders();
+                saveVoiceHistory();
+                saveAppState();
+            }, 30000);
         }
         
         function setupReminderChecks() {
@@ -3409,111 +3340,61 @@
                         const time = new Date(reminder.time);
                         const timeDiff = time - now;
                         
-                        // Check if reminder is due (within 1 minute)
                         if (timeDiff > 0 && timeDiff < 60000) {
-                            // Show notification
-                            if (appState.notificationsEnabled) {
-                                showNotification('⏰ ALTECH AI Reminder', {
-                                    body: reminder.text,
-                                    icon: 'icons/icon-192x192.png',
-                                    badge: 'icons/icon-72x72.png'
-                                });
-                            }
-                            
-                            // Play sound if enabled
-                            if (reminder.type === 'sound' || reminder.type === 'both') {
-                                playNotificationSound();
-                            }
-                            
-                            // Mark as inactive
+                            showNotification('⏰ ALTECH AI Reminder', reminder.text);
+                            speakResponse(`Reminder: ${reminder.text}`);
                             reminder.active = false;
                             saveReminders();
                             updateRemindersDisplay();
-                            
-                            // Show toast
                             showToast(`Reminder: ${reminder.text}`, 'warning');
                         }
                     }
                 });
-            }, 30000); // Check every 30 seconds
+            }, 30000);
         }
         
-        function playNotificationSound() {
-            const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
-            audio.play().catch(e => console.log('Audio play failed:', e));
-        }
-        
-        // ================ EVENT LISTENERS ================
-        function setupEventListeners() {
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                // Ctrl/Cmd + / to focus search
-                if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-                    e.preventDefault();
-                    focusSearch();
-                }
-                
-                // Ctrl/Cmd + N for new note
-                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-                    e.preventDefault();
-                    focusNotes();
-                }
-                
-                // Ctrl/Cmd + R for reminders
-                if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-                    e.preventDefault();
-                    focusReminders();
-                }
-                
-                // Escape to close modals and settings
-                if (e.key === 'Escape') {
-                    closeModal('addContactModal');
-                    document.getElementById('settingsPanel').classList.remove('open');
-                }
-                
-                // Space to start/stop voice when not in input
-                if (e.key === ' ' && !e.target.matches('input, textarea')) {
-                    e.preventDefault();
-                    if (window.voiceRecognition) {
-                        if (appState.isListening) {
-                            window.voiceRecognition.stop();
-                        } else {
-                            window.voiceRecognition.start();
-                        }
-                    }
-                }
-            });
+        // ================ KEYBOARD SHORTCUTS ================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + / to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                focusSearch();
+            }
             
-            // Handle offline/online status
-            window.addEventListener('online', () => {
-                showToast('You are back online', 'success');
-            });
+            // Ctrl/Cmd + N for new note
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                focusNotes();
+            }
             
-            window.addEventListener('offline', () => {
-                showToast('You are offline. Some features may not work.', 'warning');
-            });
+            // Ctrl/Cmd + R for reminders
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                focusReminders();
+            }
             
-            // Handle page visibility
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    console.log('App hidden');
-                } else {
-                    console.log('App visible');
-                    // Check reminders when app becomes visible
-                    setupReminderChecks();
-                }
-            });
-        }
-        
-        // ================ INITIAL SETUP ================
-        // Set default reminder time to 30 minutes from now
-        window.addEventListener('load', () => {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 30);
-            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                closeModal('addContactModal');
+            }
+            
+            // Space to start/stop listening when not in input
+            if (e.key === ' ' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                toggleListening();
+            }
         });
         
-        console.log('🚀 ALTECH AI Assistant v2.0 loaded successfully!');
+        // ================ SERVICE WORKER REGISTRATION ================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => {
+                console.log('Service Worker registered');
+            }).catch(error => {
+                console.log('Service Worker registration failed:', error);
+            });
+        }
+        
+        console.log('✅ ALTECH AI Assistant v3.0 fully loaded and ready!');
     </script>
 </body>
 </html>
