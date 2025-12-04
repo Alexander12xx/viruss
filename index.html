@@ -13,6 +13,7 @@
         :root {
             --primary: #007bff;
             --primary-dark: #0056b3;
+            --primary-light: rgba(0, 123, 255, 0.1);
             --secondary: #6c757d;
             --success: #28a745;
             --warning: #ffc107;
@@ -23,19 +24,25 @@
             --surface: #ffffff;
             --background: #f4f7f9;
             --text: #2c3e50;
+            --text-secondary: #6c757d;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --radius: 12px;
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --radius-sm: 8px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-mode {
             --primary: #6200ea;
             --primary-dark: #3700b3;
+            --primary-light: rgba(98, 0, 234, 0.1);
             --secondary: #9e9e9e;
             --surface: #1e1e1e;
             --background: #121212;
             --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
         }
 
         /* --- BASE STYLES --- */
@@ -46,7 +53,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Oxygen, Ubuntu, sans-serif;
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
@@ -55,16 +62,17 @@
             transition: var(--transition);
         }
 
-        /* --- RESPONSIVE CONTAINER --- */
+        /* --- APP CONTAINER --- */
         .app-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
         }
 
-        /* --- HEADER / VOICE AREA --- */
+        /* --- HEADER --- */
         .header {
             padding: 20px;
             background: var(--surface);
@@ -95,7 +103,13 @@
             font-size: 1.8rem;
         }
 
-        .theme-toggle {
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle, .ai-toggle {
             background: var(--primary);
             color: white;
             border: none;
@@ -109,9 +123,42 @@
             transition: var(--transition);
         }
 
-        .theme-toggle:hover {
+        .theme-toggle:hover, .ai-toggle:hover {
             background: var(--primary-dark);
-            transform: rotate(15deg);
+            transform: scale(1.05);
+        }
+
+        .ai-toggle.active {
+            background: var(--success);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
         }
 
         /* --- VOICE INTERFACE --- */
@@ -122,23 +169,38 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, var(--background) 0%, rgba(0,123,255,0.05) 100%);
+            background: linear-gradient(135deg, var(--background) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.3;
         }
 
         .voice-orb {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 123, 255, 0.3);
             transition: var(--transition);
             margin-bottom: 30px;
             position: relative;
-            overflow: hidden;
+            z-index: 1;
+            border: 4px solid rgba(255, 255, 255, 0.2);
         }
 
         .voice-orb::before {
@@ -149,8 +211,9 @@
             right: -10px;
             bottom: -10px;
             background: conic-gradient(transparent, var(--primary), transparent 30%);
-            animation: rotate 3s linear infinite;
+            animation: rotate 4s linear infinite;
             border-radius: 50%;
+            z-index: -1;
         }
 
         @keyframes rotate {
@@ -159,55 +222,60 @@
 
         .voice-orb.listening {
             animation: pulse 1.5s infinite alternate;
-            box-shadow: 0 0 40px rgba(0, 123, 255, 0.5);
+            box-shadow: 0 0 60px rgba(0, 123, 255, 0.6);
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+            0% { transform: scale(1); box-shadow: 0 20px 40px rgba(0, 123, 255, 0.3); }
+            100% { transform: scale(1.08); box-shadow: 0 30px 60px rgba(0, 123, 255, 0.5); }
         }
 
         .voice-orb i {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: white;
-            z-index: 1;
         }
 
         .voice-status {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
         }
 
         #status {
             font-size: 1rem;
             color: var(--secondary);
             margin-bottom: 8px;
+            font-weight: 500;
         }
 
         #transcript {
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-size: 1.3rem;
+            font-weight: 600;
             color: var(--text);
-            min-height: 28px;
-            padding: 10px 20px;
+            min-height: 40px;
+            padding: 15px 25px;
             background: var(--surface);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            margin: 10px 0;
-            max-width: 600px;
+            margin: 15px auto;
+            max-width: 700px;
             width: 100%;
+            border-left: 4px solid var(--primary);
         }
 
         /* --- AI RESPONSE AREA --- */
         .ai-response {
             background: var(--surface);
-            padding: 20px;
+            padding: 25px;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin: 20px;
-            max-width: 600px;
+            box-shadow: var(--shadow-lg);
+            margin: 20px auto;
+            max-width: 700px;
             width: 100%;
             border-left: 4px solid var(--primary);
+            position: relative;
+            z-index: 1;
         }
 
         .ai-response h3 {
@@ -215,24 +283,60 @@
             align-items: center;
             gap: 10px;
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
         }
 
         #aiOutput {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* --- MAIN CONTENT AREA --- */
-        .main-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            min-height: 80px;
             display: flex;
-            flex: 1;
-            overflow: hidden;
-            padding: 20px;
-            gap: 20px;
+            align-items: center;
         }
 
-        /* --- TABS NAVIGATION --- */
+        /* --- QUICK ACTIONS --- */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px auto;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .action-btn {
+            background: var(--surface);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+        }
+
+        .action-btn span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* --- TABS --- */
         .tabs-nav {
             display: flex;
             background: var(--surface);
@@ -244,7 +348,7 @@
 
         .tab-btn {
             flex: 1;
-            padding: 15px;
+            padding: 18px;
             background: none;
             border: none;
             color: var(--secondary);
@@ -255,13 +359,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
         }
 
         .tab-btn.active {
             color: var(--primary);
-            background: rgba(0, 123, 255, 0.1);
-            border-bottom: 3px solid var(--primary);
+            background: var(--primary-light);
+            border-bottom-color: var(--primary);
         }
 
         /* --- TAB CONTENT --- */
@@ -290,160 +395,148 @@
             background: var(--surface);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 20px;
             transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .card h2 {
             color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        /* --- BUTTONS --- */
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-        }
-
-        .btn-success {
-            background: var(--success);
-        }
-
-        .btn-group {
+        /* --- CONTACTS LIST --- */
+        .contacts-list {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* --- LISTS --- */
-        .list-item {
+        .contact-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 15px;
-            margin: 10px 0;
-            background: rgba(0,0,0,0.02);
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
             transition: var(--transition);
+            cursor: pointer;
         }
 
-        .list-item:hover {
-            background: rgba(0,0,0,0.05);
+        .contact-item:hover {
+            background: var(--primary);
+            color: white;
         }
 
-        .list-content {
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .contact-info {
             flex: 1;
         }
 
-        .list-title {
+        .contact-name {
             font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .list-subtitle {
-            font-size: 0.85rem;
-            color: var(--secondary);
+        .contact-phone {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            transition: var(--transition);
+        /* --- REMINDERS --- */
+        .reminders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .delete-btn:hover {
+        .reminder-item {
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .reminder-item.due {
+            border-left-color: var(--danger);
             background: rgba(220, 53, 69, 0.1);
         }
 
-        /* --- FORM ELEMENTS --- */
-        input, textarea, select {
+        .reminder-text {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .reminder-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- NOTES --- */
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .note-item {
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            position: relative;
+        }
+
+        .note-content {
+            margin-bottom: 10px;
+        }
+
+        .note-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- AI PROVIDER SELECTOR --- */
+        .ai-provider-selector {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .provider-select {
             width: 100%;
             padding: 12px;
-            margin: 8px 0;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px;
-            background: var(--surface);
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--primary);
+            background: var(--background);
             color: var(--text);
             font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        /* --- MODAL --- */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: var(--surface);
-            padding: 30px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            width: 90%;
-            max-width: 500px;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-top: 10px;
         }
 
         /* --- COMMAND SUGGESTIONS --- */
@@ -455,72 +548,84 @@
         }
 
         .command-chip {
-            background: rgba(0,123,255,0.1);
+            background: var(--primary-light);
             color: var(--primary);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            border-radius: 50px;
             font-size: 0.9rem;
             cursor: pointer;
             transition: var(--transition);
-            border: 1px solid rgba(0,123,255,0.2);
+            border: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .command-chip:hover {
-            background: rgba(0,123,255,0.2);
+            background: var(--primary);
+            color: white;
             transform: translateY(-2px);
         }
 
-        /* --- RESPONSIVE DESIGN --- */
-        @media (max-width: 768px) {
-            .app-title {
-                font-size: 1.3rem;
-            }
-            
-            .voice-orb {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .main-content {
-                flex-direction: column;
-                padding: 10px;
-            }
-            
-            .tab-content {
-                padding-right: 0;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
+        /* --- WHATSAPP FLOATING BUTTON --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
         }
 
-        @media (max-width: 480px) {
-            .header-content {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .voice-orb {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .tab-btn {
-                padding: 12px 8px;
-                font-size: 0.85rem;
-            }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* --- UTILITY CLASSES --- */
+        .whatsapp-float:hover {
+            background: #128C7E;
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-float i {
+            font-size: 1.8rem;
+        }
+
+        .whatsapp-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 25px;
+            width: 320px;
+            z-index: 1001;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- LOADING ANIMATIONS --- */
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border: 3px solid rgba(0,123,255,0.2);
             border-radius: 50%;
             border-top-color: var(--primary);
@@ -531,6 +636,84 @@
             to { transform: rotate(360deg); }
         }
 
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typing 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .voice-orb {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-btn {
+                padding: 15px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .voice-orb {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .voice-orb i {
+                font-size: 2.5rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        /* --- UTILITY CLASSES --- */
         .hidden {
             display: none !important;
         }
@@ -547,27 +730,41 @@
             margin-bottom: 20px;
         }
 
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .pulse-success {
+            animation: pulseSuccess 2s infinite;
         }
 
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.05);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+        @keyframes pulseSuccess {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
         }
     </style>
 </head>
 <body class="dark-mode">
+    <!-- WhatsApp Floating Button -->
+    <div class="whatsapp-float" onclick="toggleWhatsAppModal()">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <div class="whatsapp-modal" id="whatsappModal">
+        <h3><i class="fab fa-whatsapp"></i> Get Help</h3>
+        <p style="margin: 15px 0; color: var(--text-secondary);">Need assistance with the AI Assistant?</p>
+        <button class="action-btn" onclick="openWhatsApp('help')" style="width: 100%; margin: 10px 0;">
+            <i class="fas fa-question-circle"></i> Technical Support
+        </button>
+        <button class="action-btn" onclick="openWhatsApp('feedback')" style="width: 100%; margin: 10px 0;">
+            <i class="fas fa-comment-alt"></i> Send Feedback
+        </button>
+        <button class="action-btn" onclick="openWhatsApp('feature')" style="width: 100%; margin: 10px 0;">
+            <i class="fas fa-lightbulb"></i> Request Feature
+        </button>
+        <button class="action-btn" onclick="toggleWhatsAppModal()" 
+                style="width: 100%; margin-top: 15px; background: var(--secondary);">
+            <i class="fas fa-times"></i> Close
+        </button>
+    </div>
+
     <div class="app-container">
         <!-- HEADER -->
         <div class="header">
@@ -576,45 +773,74 @@
                     <i class="fas fa-robot"></i>
                     <span>ALTECH AI Assistant</span>
                 </div>
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- VOICE INTERFACE -->
-        <div class="voice-section">
-            <div class="voice-orb" onclick="toggleListening()">
-                <i class="fas fa-microphone"></i>
-            </div>
-            
-            <div class="voice-status">
-                <div id="status">Ready to listen</div>
-                <div id="transcript">Tap the orb and speak a command...</div>
-            </div>
-
-            <!-- AI Response Area -->
-            <div class="ai-response">
-                <h3><i class="fas fa-brain"></i> AI Response</h3>
-                <div id="aiOutput">I can help you with calls, messages, notes, reminders, and web search. Try saying "Call Nancy" or "Search for weather".</div>
-            </div>
-
-            <!-- Quick Command Suggestions -->
-            <div class="command-suggestions">
-                <div class="command-chip" onclick="speakCommand('Call Nancy')">Call Nancy</div>
-                <div class="command-chip" onclick="speakCommand('Add note project ends Tuesday')">Add Note</div>
-                <div class="command-chip" onclick="speakCommand('Remind me to buy milk tomorrow')">Set Reminder</div>
-                <div class="command-chip" onclick="speakCommand('Search for latest news')">Web Search</div>
-                <div class="command-chip" onclick="speakCommand('What time is it')">Current Time</div>
+                
+                <div class="header-controls">
+                    <button class="ai-toggle active" id="aiToggleBtn" onclick="toggleAIMode()">
+                        <i class="fas fa-brain"></i>
+                    </button>
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
-            <div style="flex: 1;">
-                <!-- Tabs Navigation -->
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+                <div class="ai-provider-selector">
+                    <h3><i class="fas fa-cogs"></i> AI Settings</h3>
+                    <select id="aiProvider" class="provider-select" onchange="changeAIProvider(this.value)">
+                        <option value="smart">🤖 Smart Mode</option>
+                        <option value="chatgpt">💬 ChatGPT</option>
+                        <option value="llama">🦙 Llama 2</option>
+                        <option value="gemini">🔷 Gemini</option>
+                        <option value="local">💡 Local Only</option>
+                    </select>
+                    <div id="aiStatus" style="margin-top: 10px; font-size: 0.9rem; color: var(--success);">
+                        <i class="fas fa-check-circle"></i> AI Ready
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-history"></i> Recent Commands</h2>
+                    <div id="commandHistory">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-bolt"></i> Quick Stats</h2>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Contacts:</span>
+                            <span id="contactCount">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Reminders:</span>
+                            <span id="reminderCount">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Notes:</span>
+                            <span id="noteCount">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>AI Responses:</span>
+                            <span id="aiResponseCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN AREA -->
+            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <!-- TABS -->
                 <div class="tabs-nav">
-                    <button class="tab-btn active" onclick="openTab('contacts')">
+                    <button class="tab-btn active" onclick="openTab('assistant')">
+                        <i class="fas fa-robot"></i> Assistant
+                    </button>
+                    <button class="tab-btn" onclick="openTab('contacts')">
                         <i class="fas fa-address-book"></i> Contacts
                     </button>
                     <button class="tab-btn" onclick="openTab('reminders')">
@@ -623,132 +849,175 @@
                     <button class="tab-btn" onclick="openTab('notes')">
                         <i class="fas fa-sticky-note"></i> Notes
                     </button>
-                    <button class="tab-btn" onclick="openTab('help')">
-                        <i class="fas fa-question-circle"></i> Help
+                    <button class="tab-btn" onclick="openTab('settings')">
+                        <i class="fas fa-cog"></i> Settings
                     </button>
                 </div>
 
-                <!-- Tab Content -->
+                <!-- TAB CONTENT -->
                 <div class="tab-content">
-                    <!-- Contacts Tab -->
-                    <div id="contacts" class="tab-pane active">
+                    <!-- ASSISTANT TAB -->
+                    <div id="assistant" class="tab-pane active">
+                        <div class="voice-section">
+                            <div class="voice-orb" onclick="toggleListening()">
+                                <i class="fas fa-microphone"></i>
+                            </div>
+                            
+                            <div class="voice-status">
+                                <div id="status">Ready to listen</div>
+                                <div id="transcript">Tap the orb and speak a command...</div>
+                            </div>
+
+                            <div class="ai-response">
+                                <h3><i class="fas fa-brain"></i> AI Assistant</h3>
+                                <div id="aiOutput">
+                                    <div class="typing-indicator">
+                                        <div class="typing-dot"></div>
+                                        <div class="typing-dot"></div>
+                                        <div class="typing-dot"></div>
+                                    </div>
+                                    Initializing...
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="quick-actions">
+                                <button class="action-btn" onclick="quickAction('call_last')">
+                                    <i class="fas fa-phone"></i>
+                                    <span>Call Last</span>
+                                </button>
+                                <button class="action-btn" onclick="quickAction('add_note')">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <span>Quick Note</span>
+                                </button>
+                                <button class="action-btn" onclick="quickAction('weather')">
+                                    <i class="fas fa-cloud-sun"></i>
+                                    <span>Weather</span>
+                                </button>
+                                <button class="action-btn" onclick="quickAction('search')">
+                                    <i class="fas fa-search"></i>
+                                    <span>Web Search</span>
+                                </button>
+                                <button class="action-btn" onclick="quickAction('joke')">
+                                    <i class="fas fa-laugh"></i>
+                                    <span>Tell Joke</span>
+                                </button>
+                                <button class="action-btn" onclick="quickAction('time')">
+                                    <i class="fas fa-clock"></i>
+                                    <span>What Time?</span>
+                                </button>
+                            </div>
+
+                            <!-- Command Suggestions -->
+                            <div class="command-suggestions">
+                                <div class="command-chip" onclick="speakCommand('Call Nancy')">
+                                    <i class="fas fa-phone"></i> Call Nancy
+                                </div>
+                                <div class="command-chip" onclick="speakCommand('Add note project ends Tuesday')">
+                                    <i class="fas fa-edit"></i> Add Note
+                                </div>
+                                <div class="command-chip" onclick="speakCommand('Remind me to call mom tomorrow')">
+                                    <i class="fas fa-bell"></i> Set Reminder
+                                </div>
+                                <div class="command-chip" onclick="speakCommand('Search for latest news')">
+                                    <i class="fas fa-search"></i> Search Web
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTACTS TAB -->
+                    <div id="contacts" class="tab-pane">
                         <div class="card">
                             <h2><i class="fas fa-users"></i> Contact Management</h2>
-                            <p>Contacts are stored locally and accessed by voice only for privacy.</p>
-                            
-                            <div class="btn-group">
-                                <button class="btn" onclick="trySyncContacts()">
-                                    <i class="fas fa-sync"></i> Sync Device Contacts
+                            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                                <button class="action-btn" onclick="trySyncContacts()" style="flex: 1;">
+                                    <i class="fas fa-sync"></i> Sync Contacts
                                 </button>
-                                <button class="btn btn-secondary" onclick="showContactModal()">
+                                <button class="action-btn" onclick="showAddContactModal()" style="flex: 1;">
                                     <i class="fas fa-plus"></i> Add Contact
                                 </button>
                             </div>
-
-                            <div style="margin-top: 20px;">
-                                <h3>Available Commands:</h3>
-                                <ul style="padding-left: 20px; margin-top: 10px;">
-                                    <li>"Call [Name]" - Make a phone call</li>
-                                    <li>"Message [Name]" - Send SMS</li>
-                                    <li>"WhatsApp [Name]" - Open WhatsApp</li>
-                                </ul>
+                            
+                            <div id="contactsList" class="contacts-list">
+                                <!-- Contacts will appear here -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Reminders Tab -->
+                    <!-- REMINDERS TAB -->
                     <div id="reminders" class="tab-pane">
                         <div class="card">
                             <h2><i class="fas fa-clock"></i> Active Reminders</h2>
-                            <div id="remindersList">
-                                <p style="color: var(--secondary);">No reminders scheduled.</p>
-                            </div>
-                            
-                            <button class="btn btn-success" onclick="requestNotificationPermission()">
-                                <i class="fas fa-bell"></i> Enable Notifications
+                            <button class="action-btn" onclick="showAddReminderModal()" style="margin-bottom: 20px;">
+                                <i class="fas fa-plus"></i> Add New Reminder
                             </button>
-                        </div>
-
-                        <div class="card">
-                            <h2><i class="fas fa-lightbulb"></i> Voice Examples</h2>
-                            <ul style="padding-left: 20px;">
-                                <li>"Remind me to call mom tomorrow at 3 PM"</li>
-                                <li>"Set reminder for project deadline on Friday"</li>
-                                <li>"Remind me about meeting in 1 hour"</li>
-                            </ul>
+                            
+                            <div id="remindersList" class="reminders-list">
+                                <!-- Reminders will appear here -->
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Notes Tab -->
+                    <!-- NOTES TAB -->
                     <div id="notes" class="tab-pane">
                         <div class="card">
                             <h2><i class="fas fa-edit"></i> Quick Notes</h2>
-                            <textarea id="quickNotes" placeholder="Your notes are saved automatically..."></textarea>
-                            <button class="btn" onclick="clearNotes()">
-                                <i class="fas fa-trash"></i> Clear Notes
-                            </button>
+                            <textarea id="quickNotes" rows="10" placeholder="Type your notes here or use voice commands..."></textarea>
+                            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                                <button class="action-btn" onclick="saveNotes()">
+                                    <i class="fas fa-save"></i> Save Notes
+                                </button>
+                                <button class="action-btn" onclick="clearNotes()" style="background: var(--danger);">
+                                    <i class="fas fa-trash"></i> Clear All
+                                </button>
+                            </div>
                         </div>
 
                         <div class="card">
-                            <h2><i class="fas fa-microphone-alt"></i> Voice Notes</h2>
-                            <p>Try these voice commands:</p>
-                            <ul style="padding-left: 20px;">
-                                <li>"Add note that project ends Tuesday"</li>
-                                <li>"Note: Meeting rescheduled to Friday"</li>
-                                <li>"Remember to buy groceries tomorrow"</li>
-                            </ul>
+                            <h2><i class="fas fa-history"></i> Recent Notes</h2>
+                            <div id="notesHistory" class="notes-container">
+                                <!-- Note history will appear here -->
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Help Tab -->
-                    <div id="help" class="tab-pane">
+                    <!-- SETTINGS TAB -->
+                    <div id="settings" class="tab-pane">
                         <div class="card">
-                            <h2><i class="fas fa-graduation-cap"></i> Voice Command Guide</h2>
-                            
-                            <h3 style="margin-top: 20px;">📞 Calling & Messaging</h3>
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">Call a Contact</div>
-                                    <div class="list-subtitle">"Call Nancy" or "Dial Mike"</div>
+                            <h2><i class="fas fa-user-cog"></i> Preferences</h2>
+                            <div style="margin-top: 20px;">
+                                <div style="margin-bottom: 15px;">
+                                    <label style="display: block; margin-bottom: 8px;">Voice Speed</label>
+                                    <input type="range" id="voiceSpeed" min="0.5" max="2" step="0.1" value="1" 
+                                           oninput="updateVoiceSpeed(this.value)" style="width: 100%;">
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span>Slow</span>
+                                        <span id="speedValue">Normal</span>
+                                        <span>Fast</span>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">Send Message</div>
-                                    <div class="list-subtitle">"Message John" or "Text Sarah"</div>
+                                
+                                <div style="margin-bottom: 15px;">
+                                    <label style="display: flex; align-items: center; gap: 10px;">
+                                        <input type="checkbox" id="autoSave" checked>
+                                        Auto-save notes
+                                    </label>
                                 </div>
+                                
+                                <button class="action-btn" onclick="clearAllData()" style="background: var(--danger); width: 100%; margin-top: 20px;">
+                                    <i class="fas fa-trash-alt"></i> Clear All Data
+                                </button>
                             </div>
+                        </div>
 
-                            <h3 style="margin-top: 20px;">📝 Notes & Reminders</h3>
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">Add Note</div>
-                                    <div class="list-subtitle">"Add note project deadline Friday" or "Note: Buy milk"</div>
-                                </div>
-                            </div>
-                            
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">Set Reminder</div>
-                                    <div class="list-subtitle">"Remind me to call mom tomorrow" or "Set reminder for meeting at 3 PM"</div>
-                                </div>
-                            </div>
-
-                            <h3 style="margin-top: 20px;">🌐 Web Search</h3>
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">Search Web</div>
-                                    <div class="list-subtitle">"Search for weather today" or "Google latest news"</div>
-                                </div>
-                            </div>
-                            
-                            <div class="list-item">
-                                <div class="list-content">
-                                    <div class="list-title">General Information</div>
-                                    <div class="list-subtitle">"What time is it?" or "What's the date?"</div>
-                                </div>
-                            </div>
+                        <div class="card">
+                            <h2><i class="fas fa-info-circle"></i> About</h2>
+                            <p style="margin-top: 15px;">ALTECH AI Assistant v2.0</p>
+                            <p>Powered by advanced AI with voice recognition</p>
+                            <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
+                                All data is stored locally on your device for privacy.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -756,33 +1025,37 @@
         </div>
     </div>
 
-    <!-- CONTACT MODAL -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: var(--primary); margin-bottom: 20px;">
-                <i class="fas fa-user-plus"></i> Add New Contact
-            </h2>
-            
-            <input type="text" id="newName" placeholder="Full Name (e.g. John Smith)" />
-            <input type="tel" id="newPhone" placeholder="Phone Number (e.g. 0712345678)" />
-            
-            <div class="btn-group" style="margin-top: 20px;">
-                <button class="btn" onclick="saveNewContact()">
-                    <i class="fas fa-save"></i> Save to App
-                </button>
-                <button class="btn btn-secondary" onclick="downloadVCard()">
-                    <i class="fas fa-download"></i> Export as VCF
-                </button>
-                <button class="btn" style="background: var(--danger);" onclick="closeContactModal()">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-            </div>
+    <!-- MODALS -->
+    <div id="addContactModal" class="whatsapp-modal" style="width: 400px;">
+        <h3><i class="fas fa-user-plus"></i> Add Contact</h3>
+        <input type="text" id="newContactName" placeholder="Contact Name" style="width: 100%; margin: 15px 0;">
+        <input type="tel" id="newContactPhone" placeholder="Phone Number" style="width: 100%; margin-bottom: 20px;">
+        <div style="display: flex; gap: 15px;">
+            <button class="action-btn" onclick="addNewContact()" style="flex: 1;">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button class="action-btn" onclick="closeModal('addContactModal')" style="flex: 1; background: var(--secondary);">
+                <i class="fas fa-times"></i> Cancel
+            </button>
         </div>
     </div>
 
-    <!-- IMPROVED AI COMMAND HANDLER -->
+    <div id="addReminderModal" class="whatsapp-modal" style="width: 400px;">
+        <h3><i class="fas fa-bell"></i> Add Reminder</h3>
+        <input type="text" id="newReminderText" placeholder="What to remind?" style="width: 100%; margin: 15px 0;">
+        <input type="datetime-local" id="newReminderTime" style="width: 100%; margin-bottom: 20px;">
+        <div style="display: flex; gap: 15px;">
+            <button class="action-btn" onclick="addNewReminder()" style="flex: 1;">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button class="action-btn" onclick="closeModal('addReminderModal')" style="flex: 1; background: var(--secondary);">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </div>
+
     <script>
-        // ====== INITIALIZATION ======
+        // ================ CORE VARIABLES ================
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
@@ -795,36 +1068,69 @@
         const transcriptEl = document.getElementById('transcript');
         const aiOutputEl = document.getElementById('aiOutput');
         const quickNotesEl = document.getElementById('quickNotes');
-        const contactModal = document.getElementById('contactModal');
+        const aiToggleBtn = document.getElementById('aiToggleBtn');
+        const aiProviderSelect = document.getElementById('aiProvider');
+        const aiStatusEl = document.getElementById('aiStatus');
 
         // Data Storage
-        let myContacts = JSON.parse(localStorage.getItem('jarvis_contacts') || '[]');
-        let reminders = JSON.parse(localStorage.getItem('jarvis_reminders') || '[]');
+        let myContacts = JSON.parse(localStorage.getItem('altech_contacts') || '[]');
+        let reminders = JSON.parse(localStorage.getItem('altech_reminders') || '[]');
+        let conversationHistory = JSON.parse(localStorage.getItem('altech_history') || '[]');
+        let notesHistory = JSON.parse(localStorage.getItem('altech_notes_history') || '[]');
         let isListening = false;
+        let aiEnabled = true;
+        let currentAIProvider = 'smart';
+        let voiceSpeed = parseFloat(localStorage.getItem('voiceSpeed') || '1');
+        let aiResponseCount = parseInt(localStorage.getItem('aiResponseCount') || '0');
 
-        // Initialize on load
+        // Conversation Context
+        let conversationContext = {
+            lastTopic: '',
+            lastContact: null,
+            lastAction: '',
+            userPreferences: JSON.parse(localStorage.getItem('user_prefs') || '{}')
+        };
+
+        // ================ INITIALIZATION ================
         document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        async function initApp() {
             loadTheme();
             loadNotes();
+            loadStats();
+            renderContacts();
             renderReminders();
+            renderNotesHistory();
+            renderCommandHistory();
+            setupVoiceRecognition();
+            updateVoiceSpeed(voiceSpeed);
             checkAndSetReminderInterval();
             
             // Auto-load sample contact if none exist
             if (myContacts.length === 0) {
                 myContacts.push({ name: "Nancy", phone: "0794564340" });
-                localStorage.setItem('jarvis_contacts', JSON.stringify(myContacts));
+                myContacts.push({ name: "Alex", phone: "0712345678" });
+                saveContacts();
+                renderContacts();
             }
             
             // Setup notes auto-save
-            quickNotesEl.addEventListener('input', saveNotes);
+            quickNotesEl.addEventListener('input', () => {
+                if (document.getElementById('autoSave')?.checked) {
+                    saveNotes();
+                }
+            });
             
             // Initial greeting
             setTimeout(() => {
-                updateAIResponse("Hello! I'm your ALTECH AI Assistant. Try saying 'Call Nancy' or ask me anything!");
+                speakResponse("ALTECH AI Assistant is ready. How can I help you?");
+                updateAIResponse("Hello! I'm your ALTECH AI Assistant. Try saying 'Call Nancy' or 'What time is it?'");
             }, 1000);
-        });
+        }
 
-        // ====== THEME MANAGEMENT ======
+        // ================ THEME MANAGEMENT ================
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark-mode';
             document.body.className = savedTheme;
@@ -844,7 +1150,36 @@
             icon.className = theme === 'dark-mode' ? 'fas fa-moon' : 'fas fa-sun';
         }
 
-        // ====== VOICE RECOGNITION ======
+        // ================ VOICE RECOGNITION ================
+        function setupVoiceRecognition() {
+            recognition.onstart = () => {
+                isListening = true;
+                voiceOrb.classList.add('listening');
+                statusEl.textContent = 'Listening...';
+                updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Listening...');
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                voiceOrb.classList.remove('listening');
+                statusEl.textContent = 'Processing...';
+                setTimeout(() => statusEl.textContent = 'Ready to listen', 2000);
+            };
+
+            recognition.onresult = async (event) => {
+                const command = event.results[0][0].transcript;
+                transcriptEl.textContent = `"${command}"`;
+                await handleCommand(command);
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                updateAIResponse('Error: ' + event.error);
+                voiceOrb.classList.remove('listening');
+                isListening = false;
+            };
+        }
+
         function toggleListening() {
             if (isListening) {
                 recognition.stop();
@@ -854,11 +1189,6 @@
             } else {
                 try {
                     recognition.start();
-                    voiceOrb.classList.add('listening');
-                    statusEl.textContent = 'Listening...';
-                    transcriptEl.textContent = 'Speak now...';
-                    updateAIResponse('<span class="loading"></span> Listening...');
-                    isListening = true;
                 } catch (error) {
                     console.error('Speech recognition error:', error);
                     updateAIResponse('Speech recognition not available. Please try again.');
@@ -866,254 +1196,345 @@
             }
         }
 
-        recognition.onstart = () => {
-            isListening = true;
-            voiceOrb.classList.add('listening');
-            statusEl.textContent = 'Listening...';
-        };
+        // ================ AI INTEGRATION ================
+        async function getAIResponse(userMessage) {
+            if (!aiEnabled) {
+                return "AI is disabled. Enable it to get intelligent responses.";
+            }
 
-        recognition.onend = () => {
-            isListening = false;
-            voiceOrb.classList.remove('listening');
-            statusEl.textContent = 'Processing complete';
-            setTimeout(() => statusEl.textContent = 'Ready to listen', 2000);
-        };
+            aiResponseCount++;
+            localStorage.setItem('aiResponseCount', aiResponseCount.toString());
+            updateStats();
 
-        recognition.onresult = async (event) => {
-            const command = event.results[0][0].transcript;
-            transcriptEl.textContent = `"${command}"`;
-            await handleCommand(command);
-        };
+            try {
+                let response;
+                
+                switch(currentAIProvider) {
+                    case 'smart':
+                        // Smart mode tries multiple free APIs
+                        response = await smartAIResponse(userMessage);
+                        break;
+                    case 'chatgpt':
+                        response = await chatGPTResponse(userMessage);
+                        break;
+                    case 'llama':
+                        response = await llamaResponse(userMessage);
+                        break;
+                    case 'gemini':
+                        response = await geminiResponse(userMessage);
+                        break;
+                    default:
+                        response = await localAIResponse(userMessage);
+                }
+                
+                return response || "I'm having trouble connecting to the AI. Please try again.";
+            } catch (error) {
+                console.error('AI Error:', error);
+                return await localAIResponse(userMessage);
+            }
+        }
 
-        recognition.onerror = (event) => {
-            console.error('Speech recognition error:', event.error);
-            updateAIResponse('Error: ' + event.error);
-            voiceOrb.classList.remove('listening');
-            isListening = false;
-        };
+        // Smart AI - tries multiple free endpoints
+        async function smartAIResponse(prompt) {
+            const endpoints = [
+                { name: 'ChatGPT', func: chatGPTResponse },
+                { name: 'Llama', func: llamaResponse },
+                { name: 'Gemini', func: geminiResponse }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await endpoint.func(prompt);
+                    if (response && response.length > 10) {
+                        console.log(`Using ${endpoint.name} response`);
+                        return response;
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            return localAIResponse(prompt);
+        }
 
-        // ====== IMPROVED COMMAND HANDLER ======
-        async function handleCommand(command) {
+        // Free ChatGPT API (No key needed)
+        async function chatGPTResponse(prompt) {
+            try {
+                // Using a free reverse proxy
+                const response = await fetch('https://chatgpt-api.shn.hk/v1/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: prompt }],
+                        max_tokens: 150
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.choices[0].message.content;
+                }
+            } catch (error) {
+                console.log('ChatGPT failed, trying backup...');
+            }
+            
+            // Backup endpoint
+            try {
+                const response = await fetch('https://free.churchless.tech/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: prompt }],
+                        stream: false
+                    })
+                });
+                const data = await response.json();
+                return data.choices?.[0]?.message?.content;
+            } catch {
+                return null;
+            }
+        }
+
+        // Llama 2 Free API
+        async function llamaResponse(prompt) {
+            try {
+                // Using free Llama API endpoint
+                const response = await fetch('https://api.llama-api.com/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer LL-4Y0hrXyX4Haxakg7LQz3QQTMoCQR7cFKh1DO7uAfxt2bifz5KEU8I2D65rqPpCoy',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "llama-13b-chat",
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.choices[0].message.content;
+                }
+            } catch (error) {
+                console.log('Llama API failed');
+            }
+            return null;
+        }
+
+        // Google Gemini Free API
+        async function geminiResponse(prompt) {
+            try {
+                // Using free Gemini API
+                const response = await fetch('https://gemini-proxy.vercel.app/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        prompt: prompt,
+                        model: "gemini-pro"
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.text;
+                }
+            } catch (error) {
+                console.log('Gemini failed');
+            }
+            return null;
+        }
+
+        // Local AI responses
+        function localAIResponse(command) {
+            const responses = {
+                greeting: ["Hello! How can I assist you today?", "Hi there! Ready to help.", "Hey! What can I do for you?"],
+                time: [`The current time is ${new Date().toLocaleTimeString()}`],
+                date: [`Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`],
+                weather: ["I can't check weather right now. Try saying 'search for weather in [your city]'."],
+                joke: ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!"],
+                help: ["I can help you with: Calling contacts, Setting reminders, Taking notes, Web search, Time and date, Weather information"]
+            };
+            
             const lowerCmd = command.toLowerCase();
-            updateAIResponse('<span class="loading"></span> Processing your command...');
+            
+            if (lowerCmd.includes('hello') || lowerCmd.includes('hi') || lowerCmd.includes('hey')) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            }
+            if (lowerCmd.includes('time')) {
+                return responses.time[0];
+            }
+            if (lowerCmd.includes('date')) {
+                return responses.date[0];
+            }
+            if (lowerCmd.includes('weather')) {
+                return responses.weather[0];
+            }
+            if (lowerCmd.includes('joke')) {
+                return responses.joke[Math.floor(Math.random() * responses.joke.length)];
+            }
+            if (lowerCmd.includes('help') || lowerCmd.includes('what can you do')) {
+                return responses.help[0];
+            }
+            
+            return `I heard: "${command}". Try saying: "Call [Name]", "Add note [your note]", "Remind me [task]", or "Search [query]"`;
+        }
 
-            // 1. CALL COMMAND
-            if (lowerCmd.includes('call') || lowerCmd.includes('dial')) {
-                const nameMatch = lowerCmd.match(/(?:call|dial)\s+(\w+)/);
+        function changeAIProvider(provider) {
+            currentAIProvider = provider;
+            localStorage.setItem('aiProvider', provider);
+            updateAIStatus();
+            updateAIResponse(`Switched to ${provider} mode`);
+        }
+
+        function toggleAIMode() {
+            aiEnabled = !aiEnabled;
+            aiToggleBtn.classList.toggle('active', aiEnabled);
+            aiToggleBtn.innerHTML = `<i class="fas fa-${aiEnabled ? 'brain' : 'ban'}"></i>`;
+            updateAIResponse(`AI ${aiEnabled ? 'enabled' : 'disabled'}`);
+        }
+
+        function updateAIStatus() {
+            aiStatusEl.innerHTML = aiEnabled ? 
+                `<i class="fas fa-check-circle"></i> ${currentAIProvider.toUpperCase()} Active` :
+                `<i class="fas fa-times-circle"></i> AI Disabled`;
+        }
+
+        // ================ COMMAND HANDLER ================
+        async function handleCommand(command) {
+            updateAIResponse('<div class="loading"></div> Processing...');
+            
+            // Save to history
+            addToHistory(command);
+            
+            // Check for specific commands first
+            const specificResult = await handleSpecificCommand(command);
+            if (specificResult) return;
+            
+            // If AI is enabled, use it for general queries
+            if (aiEnabled) {
+                const aiResponse = await getAIResponse(command);
+                speakResponse(aiResponse);
+                updateAIResponse(aiResponse);
+            } else {
+                const localResponse = localAIResponse(command);
+                speakResponse(localResponse);
+                updateAIResponse(localResponse);
+            }
+        }
+
+        async function handleSpecificCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            // Call contact
+            if (lowerCmd.includes('call')) {
+                const nameMatch = lowerCmd.match(/call\s+(\w+)/);
                 if (nameMatch) {
                     const name = nameMatch[1];
                     const contact = findContact(name);
                     if (contact) {
                         speakResponse(`Calling ${contact.name}...`);
                         updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
-                        // Simulated call - in real app: window.location.href = `tel:${contact.phone}`;
+                        conversationContext.lastContact = contact;
+                        // window.location.href = `tel:${contact.phone}`;
+                        return true;
                     } else {
-                        speakResponse(`Contact ${name} not found. Try adding them first.`);
-                        updateAIResponse(`Contact "${name}" not found. You can add contacts in the Contacts tab.`);
+                        updateAIResponse(`Contact "${name}" not found. Try adding them first.`);
+                        return true;
                     }
                 }
-                return;
             }
-
-            // 2. MESSAGE COMMAND
-            if (lowerCmd.includes('message') || lowerCmd.includes('text') || lowerCmd.includes('sms')) {
-                const nameMatch = lowerCmd.match(/(?:message|text|sms)\s+(\w+)/);
-                if (nameMatch) {
-                    const name = nameMatch[1];
-                    const contact = findContact(name);
-                    if (contact) {
-                        speakResponse(`Opening message for ${contact.name}...`);
-                        updateAIResponse(`💬 Preparing message to <strong>${contact.name}</strong>`);
-                        // Simulated message - in real app: window.open(`sms:${contact.phone}`, '_blank');
-                    }
-                }
-                return;
-            }
-
-            // 3. WHATSAPP COMMAND
-            if (lowerCmd.includes('whatsapp')) {
-                const nameMatch = lowerCmd.match(/whatsapp\s+(\w+)/);
-                if (nameMatch) {
-                    const name = nameMatch[1];
-                    const contact = findContact(name);
-                    if (contact) {
-                        speakResponse(`Opening WhatsApp for ${contact.name}...`);
-                        updateAIResponse(`💬 Opening WhatsApp for <strong>${contact.name}</strong>`);
-                        // window.open(`https://wa.me/${contact.phone}`, '_blank');
-                    }
-                }
-                return;
-            }
-
-            // 4. NOTE COMMAND - IMPROVED!
-            if (lowerCmd.includes('add note') || lowerCmd.includes('add a note') || 
-                lowerCmd.includes('note that') || lowerCmd.includes('remember that') ||
-                lowerCmd.includes('make a note')) {
-                
+            
+            // Add note
+            if (lowerCmd.includes('add note') || lowerCmd.includes('note that') || lowerCmd.includes('remember')) {
                 let noteContent = '';
                 
-                // Extract note content using different patterns
                 if (lowerCmd.includes('saying')) {
                     noteContent = command.split('saying')[1]?.trim();
                 } else if (lowerCmd.includes('that')) {
                     noteContent = command.split('that')[1]?.trim();
                 } else if (lowerCmd.includes('note:')) {
                     noteContent = command.split('note:')[1]?.trim();
-                } else if (lowerCmd.includes('add note')) {
-                    noteContent = command.replace('add note', '').replace('add a note', '').trim();
                 } else {
-                    noteContent = command.replace('note', '').replace('remember', '').trim();
+                    noteContent = command.replace(/add note|note|remember/gi, '').trim();
                 }
                 
                 if (noteContent) {
-                    addNote(noteContent);
+                    addNoteToHistory(noteContent);
                     speakResponse(`Note added: ${noteContent.substring(0, 50)}...`);
                     updateAIResponse(`📝 Note added: <strong>"${noteContent}"</strong>`);
-                } else {
-                    speakResponse("What would you like me to note down?");
+                    return true;
                 }
-                return;
             }
-
-            // 5. REMINDER COMMAND - IMPROVED!
-            if (lowerCmd.includes('remind') || lowerCmd.includes('reminder') || 
-                lowerCmd.includes('set reminder') || lowerCmd.includes('remember to')) {
-                
+            
+            // Set reminder
+            if (lowerCmd.includes('remind') || lowerCmd.includes('reminder')) {
                 let task = '';
                 let timeText = '';
                 
-                // Different patterns for extracting task and time
                 if (lowerCmd.includes('remind me to')) {
-                    const parts = lowerCmd.split('remind me to');
-                    if (parts[1]) {
-                        const subParts = parts[1].split(/tomorrow|today|at|on|in/);
-                        task = subParts[0]?.trim();
-                        timeText = parts[1].replace(task, '').trim();
-                    }
-                } else if (lowerCmd.includes('set reminder for')) {
-                    task = lowerCmd.split('set reminder for')[1]?.trim();
-                } else {
-                    // Try to extract using common patterns
-                    const patterns = [
-                        /remind me about (.+?) (?:at|on|tomorrow)/,
-                        /reminder for (.+?) (?:at|on)/,
-                        /remember to (.+)/
-                    ];
-                    
-                    for (const pattern of patterns) {
-                        const match = lowerCmd.match(pattern);
-                        if (match) {
-                            task = match[1];
-                            break;
-                        }
-                    }
-                    
-                    if (!task) {
-                        task = lowerCmd.replace(/remind|reminder|set/g, '').trim();
-                    }
+                    task = command.split('remind me to')[1]?.trim();
+                } else if (lowerCmd.includes('reminder for')) {
+                    task = command.split('reminder for')[1]?.trim();
                 }
                 
-                // Default time if none specified
-                if (!timeText) {
-                    timeText = 'in 1 hour';
-                }
-                
-                const time = parseTime(timeText);
-                
-                if (task && time) {
-                    addReminder(task, time);
-                    const timeStr = new Date(time).toLocaleString();
-                    speakResponse(`Reminder set: ${task} at ${timeStr}`);
+                if (task) {
+                    // Simple time parsing
+                    const time = new Date();
+                    if (lowerCmd.includes('tomorrow')) {
+                        time.setDate(time.getDate() + 1);
+                    }
+                    if (lowerCmd.includes('next week')) {
+                        time.setDate(time.getDate() + 7);
+                    }
+                    
+                    addReminder(task, time.toISOString());
+                    const timeStr = time.toLocaleString();
+                    speakResponse(`Reminder set: ${task}`);
                     updateAIResponse(`⏰ Reminder set: <strong>${task}</strong><br><small>Due: ${timeStr}</small>`);
-                    openTab('reminders');
-                } else {
-                    speakResponse("Please specify what and when to remind you.");
-                    updateAIResponse("I need more details. Try: 'Remind me to buy milk tomorrow at 3 PM'");
+                    return true;
                 }
-                return;
             }
-
-            // 6. SEARCH COMMAND - NEW!
-            if (lowerCmd.includes('search') || lowerCmd.includes('google') || 
-                lowerCmd.includes('look up') || lowerCmd.includes('find')) {
-                
+            
+            // Search web
+            if (lowerCmd.includes('search') || lowerCmd.includes('google')) {
                 let query = '';
                 if (lowerCmd.includes('search for')) {
                     query = command.split('search for')[1]?.trim();
                 } else if (lowerCmd.includes('google')) {
                     query = command.split('google')[1]?.trim();
-                } else if (lowerCmd.includes('look up')) {
-                    query = command.split('look up')[1]?.trim();
-                } else {
-                    query = command.replace(/search|find/g, '').trim();
                 }
                 
                 if (query) {
                     speakResponse(`Searching for ${query}...`);
                     updateAIResponse(`🔍 Searching: <strong>${query}</strong>`);
-                    // Open search in new tab
                     window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                    return true;
                 }
-                return;
             }
-
-            // 7. TIME & DATE
-            if (lowerCmd.includes('time') || lowerCmd.includes('current time')) {
-                const currentTime = new Date().toLocaleTimeString();
-                speakResponse(`The time is ${currentTime}`);
-                updateAIResponse(`🕒 Current time: <strong>${currentTime}</strong>`);
-                return;
+            
+            // Get weather
+            if (lowerCmd.includes('weather')) {
+                const locationMatch = lowerCmd.match(/weather\s+(?:in|at)\s+(\w+)/);
+                const location = locationMatch ? locationMatch[1] : '';
+                
+                if (location) {
+                    updateAIResponse(`🌤️ Searching weather for ${location}...`);
+                    window.open(`https://www.google.com/search?q=weather+${encodeURIComponent(location)}`, '_blank');
+                } else {
+                    updateAIResponse(`🌤️ Checking weather...`);
+                    window.open('https://www.google.com/search?q=weather', '_blank');
+                }
+                return true;
             }
-
-            if (lowerCmd.includes('date') || lowerCmd.includes('today\'s date')) {
-                const currentDate = new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                speakResponse(`Today is ${currentDate}`);
-                updateAIResponse(`📅 Today is: <strong>${currentDate}</strong>`);
-                return;
-            }
-
-            // 8. GREETINGS & SMALL TALK
-            if (lowerCmd.includes('hello') || lowerCmd.includes('hi') || lowerCmd.includes('hey')) {
-                const greetings = [
-                    "Hello! How can I assist you today?",
-                    "Hi there! What can I do for you?",
-                    "Hey! Ready to help with calls, notes, or reminders."
-                ];
-                const response = greetings[Math.floor(Math.random() * greetings.length)];
-                speakResponse(response);
-                updateAIResponse(response);
-                return;
-            }
-
-            if (lowerCmd.includes('how are you')) {
-                speakResponse("I'm doing great, thanks for asking! How can I help you today?");
-                updateAIResponse("I'm functioning optimally! Ready to assist with your tasks. 😊");
-                return;
-            }
-
-            if (lowerCmd.includes('thank you') || lowerCmd.includes('thanks')) {
-                speakResponse("You're welcome! Is there anything else I can help with?");
-                updateAIResponse("You're welcome! Happy to help. 😊");
-                return;
-            }
-
-            // 9. DEFAULT RESPONSE
-            const defaultResponses = [
-                "I heard you say: \"" + command + "\". Try saying 'Call Nancy', 'Add note', or 'Search for something'.",
-                "I'm not sure I understand. I can help with calls, messages, notes, reminders, and web searches.",
-                "Try one of these: 'Call [Name]', 'Add note [your note]', 'Remind me [task]', or 'Search [query]'."
-            ];
-            const defaultResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-            speakResponse(defaultResponse);
-            updateAIResponse(defaultResponse);
+            
+            return false;
         }
 
-        // ====== CONTACT MANAGEMENT ======
+        // ================ CONTACT MANAGEMENT ================
         function findContact(nameQuery) {
             return myContacts.find(c => 
                 c.name.toLowerCase().includes(nameQuery.toLowerCase())
@@ -1130,99 +1551,79 @@
                                 myContacts.push({ name: c.name[0], phone: c.tel[0] });
                             }
                         });
-                        localStorage.setItem('jarvis_contacts', JSON.stringify(myContacts));
+                        saveContacts();
+                        renderContacts();
                         speakResponse(`Synced ${contacts.length} contacts`);
-                        updateAIResponse(`✅ Synced ${contacts.length} contacts from device`);
+                        updateAIResponse(`✅ Synced ${contacts.length} contacts`);
                     }
                 } catch (error) {
-                    speakResponse("Contact sync cancelled or not available");
-                    updateAIResponse("⚠️ Contact sync not available. Use manual add.");
+                    updateAIResponse("⚠️ Contact sync not available");
                 }
             } else {
                 updateAIResponse("⚠️ Contact API not supported in this browser");
             }
         }
 
-        function showContactModal() {
-            contactModal.style.display = 'flex';
+        function showAddContactModal() {
+            document.getElementById('addContactModal').style.display = 'block';
         }
 
-        function closeContactModal() {
-            contactModal.style.display = 'none';
-            document.getElementById('newName').value = '';
-            document.getElementById('newPhone').value = '';
-        }
-
-        function saveNewContact() {
-            const name = document.getElementById('newName').value.trim();
-            const phone = document.getElementById('newPhone').value.trim();
+        function addNewContact() {
+            const name = document.getElementById('newContactName').value.trim();
+            const phone = document.getElementById('newContactPhone').value.trim();
             
             if (name && phone) {
                 myContacts.push({ name, phone });
-                localStorage.setItem('jarvis_contacts', JSON.stringify(myContacts));
-                speakResponse(`Contact ${name} saved`);
-                updateAIResponse(`✅ Contact <strong>${name}</strong> saved successfully`);
-                closeContactModal();
+                saveContacts();
+                renderContacts();
+                closeModal('addContactModal');
+                updateAIResponse(`✅ Added contact: ${name}`);
             } else {
-                updateAIResponse("⚠️ Please enter both name and phone number");
+                alert('Please enter both name and phone number');
             }
         }
 
-        function downloadVCard() {
-            const name = document.getElementById('newName').value.trim();
-            const phone = document.getElementById('newPhone').value.trim();
-            
-            if (!name || !phone) {
-                updateAIResponse("⚠️ Enter contact details first");
+        function saveContacts() {
+            localStorage.setItem('altech_contacts', JSON.stringify(myContacts));
+            updateStats();
+        }
+
+        function renderContacts() {
+            const list = document.getElementById('contactsList');
+            if (myContacts.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No contacts yet. Add some!</p>';
                 return;
             }
             
-            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL;TYPE=CELL:${phone}\nEND:VCARD`;
-            const blob = new Blob([vcard], { type: 'text/vcard' });
-            const url = URL.createObjectURL(blob);
+            list.innerHTML = myContacts.map(contact => `
+                <div class="contact-item" onclick="callContact('${contact.name}')">
+                    <div class="contact-avatar">${contact.name.charAt(0).toUpperCase()}</div>
+                    <div class="contact-info">
+                        <div class="contact-name">${contact.name}</div>
+                        <div class="contact-phone">${contact.phone}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ================ REMINDERS ================
+        function showAddReminderModal() {
+            const now = new Date();
+            const timeInput = document.getElementById('newReminderTime');
+            timeInput.value = now.toISOString().slice(0, 16);
+            document.getElementById('addReminderModal').style.display = 'block';
+        }
+
+        function addNewReminder() {
+            const text = document.getElementById('newReminderText').value.trim();
+            const time = document.getElementById('newReminderTime').value;
             
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${name}.vcf`;
-            a.click();
-            
-            speakResponse(`Downloading contact for ${name}`);
-        }
-
-        // ====== NOTES MANAGEMENT ======
-        function addNote(content) {
-            const notes = quickNotesEl.value;
-            const timestamp = new Date().toLocaleString();
-            quickNotesEl.value = `${notes}\n[${timestamp}] ${content}\n`;
-            saveNotes();
-        }
-
-        function saveNotes() {
-            localStorage.setItem('quickNotes', quickNotesEl.value);
-        }
-
-        function loadNotes() {
-            quickNotesEl.value = localStorage.getItem('quickNotes') || '';
-        }
-
-        function clearNotes() {
-            if (confirm('Are you sure you want to clear all notes?')) {
-                quickNotesEl.value = '';
-                saveNotes();
-                updateAIResponse("📝 All notes cleared");
+            if (text && time) {
+                addReminder(text, time);
+                closeModal('addReminderModal');
+            } else {
+                alert('Please enter reminder text and time');
             }
-        }
-
-        // ====== REMINDERS MANAGEMENT ======
-        function requestNotificationPermission() {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    speakResponse("Notification permission granted");
-                    updateAIResponse("🔔 Notifications enabled");
-                } else {
-                    updateAIResponse("⚠️ Notifications not enabled");
-                }
-            });
         }
 
         function addReminder(task, time) {
@@ -1233,112 +1634,228 @@
                 created: new Date().toISOString()
             };
             reminders.push(reminder);
-            localStorage.setItem('jarvis_reminders', JSON.stringify(reminders));
+            saveReminders();
             renderReminders();
         }
 
-        function removeReminder(id) {
-            reminders = reminders.filter(r => r.id !== id);
-            localStorage.setItem('jarvis_reminders', JSON.stringify(reminders));
-            renderReminders();
+        function saveReminders() {
+            localStorage.setItem('altech_reminders', JSON.stringify(reminders));
+            updateStats();
         }
 
         function renderReminders() {
             const list = document.getElementById('remindersList');
             if (reminders.length === 0) {
-                list.innerHTML = '<p style="color: var(--secondary);">No reminders scheduled.</p>';
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No reminders yet.</p>';
                 return;
             }
             
-            list.innerHTML = '';
-            reminders.sort((a, b) => new Date(a.time) - new Date(b.time));
-            
-            reminders.forEach(r => {
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `
-                    <div class="list-content">
-                        <div class="list-title">${r.task}</div>
-                        <div class="list-subtitle">Due: ${new Date(r.time).toLocaleString()}</div>
+            const now = new Date();
+            list.innerHTML = reminders.sort((a, b) => new Date(a.time) - new Date(b.time)).map(reminder => {
+                const time = new Date(reminder.time);
+                const isDue = time <= now;
+                
+                return `
+                    <div class="reminder-item ${isDue ? 'due' : ''}">
+                        <div class="reminder-text">${reminder.task}</div>
+                        <div class="reminder-time">
+                            <i class="fas fa-clock"></i>
+                            ${time.toLocaleString()}
+                        </div>
+                        <button onclick="deleteReminder(${reminder.id})" style="margin-top: 10px; background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
-                    <button class="delete-btn" onclick="removeReminder(${r.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
                 `;
-                list.appendChild(div);
-            });
+            }).join('');
+        }
+
+        function deleteReminder(id) {
+            reminders = reminders.filter(r => r.id !== id);
+            saveReminders();
+            renderReminders();
         }
 
         function checkAndSetReminderInterval() {
             setInterval(() => {
                 const now = new Date();
-                reminders.forEach(r => {
-                    const reminderTime = new Date(r.time);
-                    if (reminderTime <= now) {
+                reminders.forEach(reminder => {
+                    const reminderTime = new Date(reminder.time);
+                    if (reminderTime <= now && reminderTime > new Date(reminderTime.getTime() - 60000)) {
                         // Fire notification
                         if (Notification.permission === 'granted') {
                             new Notification('ALTECH Reminder', {
-                                body: r.task,
+                                body: reminder.task,
                                 icon: 'https://cdn-icons-png.flaticon.com/512/3448/3448737.png'
                             });
                         }
-                        speakResponse(`Reminder: ${r.task}`);
-                        removeReminder(r.id);
+                        speakResponse(`Reminder: ${reminder.task}`);
+                        deleteReminder(reminder.id);
                     }
                 });
             }, 60000); // Check every minute
         }
 
-        // ====== TIME PARSING IMPROVEMENT ======
-        function parseTime(text) {
-            const now = new Date();
-            const date = new Date(now);
-            text = text.toLowerCase().trim();
+        // ================ NOTES ================
+        function saveNotes() {
+            const notes = quickNotesEl.value;
+            localStorage.setItem('quickNotes', notes);
             
-            // Handle relative times
-            if (text.includes('tomorrow')) {
-                date.setDate(date.getDate() + 1);
+            // Add to history if not empty
+            if (notes.trim()) {
+                addNoteToHistory(notes.split('\n').slice(-1)[0]);
             }
-            if (text.includes('next week')) {
-                date.setDate(date.getDate() + 7);
-            }
-            if (text.includes('in 5 minutes') || text.includes('in five minutes')) {
-                date.setMinutes(date.getMinutes() + 5);
-            }
-            if (text.includes('in 1 hour') || text.includes('in one hour')) {
-                date.setHours(date.getHours() + 1);
-            }
-            
-            // Parse specific times
-            const timeMatch = text.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
-            if (timeMatch) {
-                let hours = parseInt(timeMatch[1]);
-                const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-                const ampm = timeMatch[3]?.toLowerCase();
-                
-                if (ampm === 'pm' && hours < 12) hours += 12;
-                if (ampm === 'am' && hours === 12) hours = 0;
-                
-                date.setHours(hours, minutes, 0, 0);
-            }
-            
-            // Default to 1 hour from now if no specific time
-            if (date.getTime() === now.getTime()) {
-                date.setHours(date.getHours() + 1);
-            }
-            
-            // If time is in past, move to next day
-            if (date.getTime() < now.getTime() && !text.includes('tomorrow') && !text.includes('next')) {
-                date.setDate(date.getDate() + 1);
-            }
-            
-            return date.toISOString();
         }
 
-        // ====== UTILITY FUNCTIONS ======
+        function loadNotes() {
+            quickNotesEl.value = localStorage.getItem('quickNotes') || '';
+        }
+
+        function clearNotes() {
+            if (confirm('Clear all notes?')) {
+                quickNotesEl.value = '';
+                saveNotes();
+            }
+        }
+
+        function addNoteToHistory(note) {
+            notesHistory.push({
+                text: note,
+                time: new Date().toISOString()
+            });
+            
+            if (notesHistory.length > 20) {
+                notesHistory = notesHistory.slice(-20);
+            }
+            
+            localStorage.setItem('altech_notes_history', JSON.stringify(notesHistory));
+            renderNotesHistory();
+            updateStats();
+        }
+
+        function renderNotesHistory() {
+            const container = document.getElementById('notesHistory');
+            if (notesHistory.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent notes.</p>';
+                return;
+            }
+            
+            container.innerHTML = notesHistory.slice().reverse().map(note => `
+                <div class="note-item">
+                    <div class="note-content">${note.text}</div>
+                    <div class="note-time">${new Date(note.time).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // ================ HISTORY & STATS ================
+        function addToHistory(command) {
+            conversationHistory.push({
+                command: command,
+                time: new Date().toISOString()
+            });
+            
+            if (conversationHistory.length > 10) {
+                conversationHistory = conversationHistory.slice(-10);
+            }
+            
+            localStorage.setItem('altech_history', JSON.stringify(conversationHistory));
+            renderCommandHistory();
+        }
+
+        function renderCommandHistory() {
+            const container = document.getElementById('commandHistory');
+            if (conversationHistory.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 10px;">No recent commands.</p>';
+                return;
+            }
+            
+            container.innerHTML = conversationHistory.slice().reverse().map(item => `
+                <div style="padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 0.9rem;">
+                    <div style="color: var(--text-secondary);">${new Date(item.time).toLocaleTimeString()}</div>
+                    <div>"${item.command.substring(0, 40)}${item.command.length > 40 ? '...' : ''}"</div>
+                </div>
+            `).join('');
+        }
+
+        function loadStats() {
+            document.getElementById('contactCount').textContent = myContacts.length;
+            document.getElementById('reminderCount').textContent = reminders.length;
+            document.getElementById('noteCount').textContent = notesHistory.length;
+            document.getElementById('aiResponseCount').textContent = aiResponseCount;
+        }
+
+        function updateStats() {
+            loadStats();
+        }
+
+        // ================ QUICK ACTIONS ================
+        function quickAction(action) {
+            switch(action) {
+                case 'call_last':
+                    if (conversationContext.lastContact) {
+                        speakResponse(`Calling ${conversationContext.lastContact.name}`);
+                        updateAIResponse(`📞 Calling ${conversationContext.lastContact.name}`);
+                        // window.location.href = `tel:${conversationContext.lastContact.phone}`;
+                    } else {
+                        updateAIResponse("No recent contact found");
+                    }
+                    break;
+                    
+                case 'add_note':
+                    const note = prompt("Enter quick note:");
+                    if (note) {
+                        addNoteToHistory(note);
+                        updateAIResponse(`📝 Note added: ${note.substring(0, 50)}...`);
+                    }
+                    break;
+                    
+                case 'weather':
+                    updateAIResponse("🌤️ Opening weather...");
+                    window.open('https://www.google.com/search?q=weather', '_blank');
+                    break;
+                    
+                case 'search':
+                    const query = prompt("What would you like to search for?");
+                    if (query) {
+                        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                    }
+                    break;
+                    
+                case 'joke':
+                    tellJoke();
+                    break;
+                    
+                case 'time':
+                    const time = new Date().toLocaleTimeString();
+                    speakResponse(`The time is ${time}`);
+                    updateAIResponse(`🕒 ${time}`);
+                    break;
+            }
+        }
+
+        async function tellJoke() {
+            try {
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any?type=single');
+                const data = await response.json();
+                const joke = data.joke || "Why don't scientists trust atoms? Because they make up everything!";
+                speakResponse(joke);
+                updateAIResponse(`😂 ${joke}`);
+            } catch {
+                const jokes = [
+                    "Why don't scientists trust atoms? Because they make up everything!",
+                    "What do you call a fake noodle? An impasta!"
+                ];
+                const joke = jokes[Math.floor(Math.random() * jokes.length)];
+                speakResponse(joke);
+                updateAIResponse(`😂 ${joke}`);
+            }
+        }
+
+        // ================ UTILITY FUNCTIONS ================
         function speakResponse(text) {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0;
+            utterance.rate = voiceSpeed;
             utterance.pitch = 1.0;
             window.speechSynthesis.speak(utterance);
         }
@@ -1361,6 +1878,70 @@
             transcriptEl.textContent = `"${command}"`;
             handleCommand(command);
         }
+
+        function updateVoiceSpeed(speed) {
+            voiceSpeed = parseFloat(speed);
+            localStorage.setItem('voiceSpeed', speed);
+            
+            const speedValue = document.getElementById('speedValue');
+            if (speed < 0.8) speedValue.textContent = 'Slow';
+            else if (speed > 1.2) speedValue.textContent = 'Fast';
+            else speedValue.textContent = 'Normal';
+        }
+
+        // ================ WHATSAPP INTEGRATION ================
+        function toggleWhatsAppModal() {
+            const modal = document.getElementById('whatsappModal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function openWhatsApp(type) {
+            const messages = {
+                help: "Hello, I need help with ALTECH AI Assistant.",
+                feedback: "Hello, here's my feedback about ALTECH AI Assistant: ",
+                feature: "Hello, I'd like to suggest a feature for ALTECH AI Assistant: "
+            };
+            
+            const message = encodeURIComponent(messages[type] || "Hello, I need assistance with ALTECH AI Assistant.");
+            window.open(`https://wa.me/254706389206?text=${message}`, '_blank');
+            toggleWhatsAppModal();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ================ DATA MANAGEMENT ================
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear ALL data? This cannot be undone.')) {
+                localStorage.clear();
+                myContacts = [];
+                reminders = [];
+                conversationHistory = [];
+                notesHistory = [];
+                aiResponseCount = 0;
+                
+                // Reload app
+                location.reload();
+            }
+        }
+
+        // ================ INITIAL SETUP ================
+        // Load saved preferences
+        const savedAIProvider = localStorage.getItem('aiProvider');
+        if (savedAIProvider) {
+            currentAIProvider = savedAIProvider;
+            aiProviderSelect.value = savedAIProvider;
+        }
+        
+        const savedAIMode = localStorage.getItem('aiEnabled');
+        if (savedAIMode !== null) {
+            aiEnabled = savedAIMode === 'true';
+            aiToggleBtn.classList.toggle('active', aiEnabled);
+            aiToggleBtn.innerHTML = `<i class="fas fa-${aiEnabled ? 'brain' : 'ban'}"></i>`;
+        }
+        
+        updateAIStatus();
     </script>
 </body>
 </html>
