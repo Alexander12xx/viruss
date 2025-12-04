@@ -3,305 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis Voice Assistant</title>
+    <title>ALTECH AI Assistant</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#007bff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* --- FUTURISTIC UI --- */
+        /* --- THEME VARIABLES (MODERN, PROFESSIONAL) --- */
+        :root {
+            --bg-color: #f4f7f9;
+            --surface-color: #ffffff;
+            --text-color: #2c3e50;
+            --primary-color: #007bff; /* Professional Blue */
+            --secondary-color: #6c757d;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --surface-color: #1f1f1f;
+            --text-color: #e0e0e0;
+            --primary-color: #6200ea; /* Purple/Violet */
+            --secondary-color: #9e9e9e;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- BASE STYLES --- */
         body {
             margin: 0;
             height: 100vh;
-            font-family: 'Courier New', Courier, monospace; /* Tech vibe */
-            background-color: #000;
-            color: #0f0; /* Matrix Green */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* The "Eye" of the AI */
-        .arc-reactor {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 2px solid #0f0;
-            box-shadow: 0 0 20px #0f0, inset 0 0 20px #0f0;
-            margin-top: 20vh;
-            position: relative;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .arc-reactor:active { transform: scale(0.95); }
-        .arc-reactor.listening { 
-            animation: pulse 1.5s infinite; 
-            background: rgba(0, 255, 0, 0.1);
-        }
-        
-        .core {
-            width: 80px;
-            height: 80px;
-            background: #0f0;
-            border-radius: 50%;
-            opacity: 0.2;
-            filter: blur(5px);
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px #0f0; }
-            50% { box-shadow: 0 0 50px #0f0, 0 0 20px #fff; }
-            100% { box-shadow: 0 0 20px #0f0; }
-        }
-
-        /* Text Displays */
-        #status { margin-top: 20px; font-size: 1.2rem; letter-spacing: 2px; }
-        #transcript { 
-            font-size: 0.9rem; color: #fff; margin-top: 10px; 
-            min-height: 20px; text-transform: none; 
-        }
-
-        /* Action Buttons Area */
-        .controls {
-            position: absolute;
-            bottom: 30px;
+        .container {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
             width: 100%;
-            text-align: center;
+            overflow-y: auto;
+        }
+
+        h1 { text-align: center; color: var(--primary-color); font-weight: 600; margin-bottom: 20px; }
+        
+        /* --- VOICE ORB / INPUT AREA --- */
+        .voice-input-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            padding: 20px 0;
+            background-color: var(--surface-color);
+            box-shadow: var(--shadow);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .btn {
-            background: transparent;
-            border: 1px solid #0f0;
-            color: #0f0;
-            padding: 10px 25px;
-            font-family: inherit;
-            font-size: 1rem;
+        #orb {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
             cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .btn:hover { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; }
 
-        /* Modal for Adding Contacts */
+        #orb.listening {
+            transform: scale(1.1);
+            animation: pulse-glow 1.5s infinite alternate;
+            background: linear-gradient(45deg, var(--primary-color), var(--text-color));
+        }
+
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 15px var(--primary-color), 0 0 0 0px rgba(0, 123, 255, 0.4); }
+            to { box-shadow: 0 0 25px var(--primary-color), 0 0 0 10px rgba(0, 123, 255, 0); }
+        }
+
+        #status { font-size: 0.85rem; color: var(--secondary-color); margin-top: 10px; }
+        #transcript { font-style: italic; font-size: 0.95rem; color: var(--text-color); min-height: 20px; }
+
+        /* --- TABS (NAVIGATION) --- */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--surface-color);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            padding: 5px 0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .tab-content { display: none; padding-top: 10px; }
+        .tab-content.active { display: block; }
+        
+        /* --- UTILITY COMPONENTS --- */
+        .card {
+            background-color: var(--surface-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+        }
+        
+        .btn, .action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .btn:hover, .action-btn:hover { background-color: color-mix(in srgb, var(--primary-color) 80%, black 20%); }
+
+        .list-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--secondary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .delete-btn { color: red; background: none; border: none; cursor: pointer; }
+
+        /* Modal/Form Styling */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background-color: var(--surface-color); padding: 30px; border-radius: 10px;
+            width: 90%; max-width: 350px; text-align: center;
+        }
+        input, textarea {
+            width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--secondary-color);
+            border-radius: 5px; box-sizing: border-box; background-color: var(--input-bg);
+            color: var(--text-color);
         }
         
-        .input-group { margin: 10px 0; text-align: center; }
-        input {
-            background: #111; border: 1px solid #333; color: #fff;
-            padding: 10px; font-family: inherit; width: 250px; text-align: center;
+        /* Utility Button */
+        #toggleTheme {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.5rem;
         }
-        input:focus { border-color: #0f0; outline: none; }
-
     </style>
 </head>
-<body>
+<body class="dark-mode"> <button id="toggleTheme" onclick="toggleTheme()"><i class="material-icons">brightness_4</i></button>
 
-    <div id="status">SYSTEM ONLINE</div>
+    <div class="voice-input-area">
+        <h1>ALTECH AI Assistant</h1>
+        <div id="orb" onclick="toggleListening()">
+            <i class="material-icons" style="color:white;">mic</i>
+        </div>
+        <div id="status">System Online</div>
+        <div id="transcript">Tap orb and speak a command...</div>
+    </div>
+
+    <div class="container">
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('contacts')">Contacts</button>
+            <button class="tab-button" onclick="openTab('reminders')">Reminders</button>
+            <button class="tab-button" onclick="openTab('notes')">Notes</button>
+        </div>
+
+        <div id="contacts" class="tab-content active">
+            <div class="card">
+                <h2>Contact Management</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" style="flex: 1;" onclick="trySyncContacts()">Sync Contacts</button>
+                    <button class="btn" style="flex: 1;" onclick="showContactModal()">Add Manually</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <p style="font-size: 0.9em; color: var(--secondary-color);">
+                        **Note:** Contacts are stored internally for voice access only. They are not displayed publicly here.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="reminders" class="tab-content">
+            <div class="card">
+                <h2>Reminders List</h2>
+                <div id="remindersList">
+                    <p style="color: var(--secondary-color);">No reminders scheduled.</p>
+                </div>
+                <hr style="border-color: var(--secondary-color); margin: 15px 0;">
+                <button class="btn" onclick="requestNotificationPermission()">Enable Notifications</button>
+            </div>
+        </div>
+
+        <div id="notes" class="tab-content">
+            <div class="card">
+                <h2>Quick Notes</h2>
+                <textarea id="quickNotes" rows="10" placeholder="Your notes are saved instantly and persist across sessions."></textarea>
+            </div>
+        </div>
+
+    </div>
     
-    <div class="arc-reactor" onclick="toggleListening()" id="reactor">
-        <div class="core"></div>
-    </div>
-
-    <div id="transcript">Tap circle to speak...</div>
-
-    <div class="controls">
-        <button class="btn" onclick="trySyncContacts()">SYNC CONTACTS</button>
-        <button class="btn" onclick="showAddContactModal()">+ ADD MANUAL</button>
-    </div>
-
-    <div id="modal">
-        <h2 style="color:white;">NEW ENTRY</h2>
-        <div class="input-group">
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--primary-color);">New Contact Entry</h2>
             <input type="text" id="newName" placeholder="Name (e.g. Mike)">
+            <input type="tel" id="newPhone" placeholder="Phone (e.g. 0712345678)">
+            <button class="btn" onclick="saveNewContact()">SAVE TO APP MEMORY</button>
+            <button class="btn action-btn" style="margin-top: 10px;" onclick="downloadVCard()">SAVE AS .VCF TO PHONE</button>
+            <button class="btn" style="margin-top: 20px; background-color: var(--secondary-color);" onclick="closeContactModal()">CLOSE</button>
         </div>
-        <div class="input-group">
-            <input type="tel" id="newPhone" placeholder="Phone (e.g. 0712...)">
-        </div>
-        <br>
-        <button class="btn" onclick="saveNewContact()">SAVE TO APP</button>
-        <br><br>
-        <button class="btn" onclick="downloadVCard()">📲 SAVE TO DEVICE</button>
-        <br><br>
-        <button class="btn" style="border-color:#555; color:#777;" onclick="closeModal()">CANCEL</button>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const reactor = document.getElementById('reactor');
-        const statusDisplay = document.getElementById('status');
-        const transcriptDisplay = document.getElementById('transcript');
-        const modal = document.getElementById('modal');
-
-        // Load saved contacts or empty array
+        // --- CONSTANTS AND STATE ---
+        const ORB = document.getElementById('orb');
+        const STATUS = document.getElementById('status');
+        const TRANSCRIPT = document.getElementById('transcript');
+        const CONTACT_MODAL = document.getElementById('contactModal');
+        const NOTES_TEXTAREA = document.getElementById('quickNotes');
+        const THEME_TOGGLE = document.getElementById('toggleTheme');
+        const ASSISTANT_NAME = "Altech AI Assistant";
+        
+        // --- DATA STORAGE ---
         let myContacts = JSON.parse(localStorage.getItem('jarvis_contacts') || '[]');
+        let reminders = JSON.parse(localStorage.getItem('jarvis_reminders') || '[]');
 
-        // Setup Speech Recognition
+        // --- SPEECH SETUP ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
         recognition.lang = 'en-US'; 
         recognition.interimResults = false;
-
-        // --- SPEECH LOGIC ---
         
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadNotes();
+            renderReminders();
+            checkAndSetReminderInterval();
+
+            NOTES_TEXTAREA.addEventListener('input', saveNotes);
+        });
+
+        // --- UI UTILITIES ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab-button[onclick="openTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- THEME & LOCAL STORAGE ---
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark-mode';
+            document.body.className = savedTheme;
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.className;
+            const newTheme = currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';
+            document.body.className = newTheme;
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            THEME_TOGGLE.querySelector('i').textContent = theme === 'dark-mode' ? 'light_mode' : 'brightness_4';
+        }
+
+        function saveToStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+        
+        // --- VOICE INPUT / RECOGNITION ---
         function toggleListening() {
             try {
                 recognition.start();
-                reactor.classList.add('listening');
-                statusDisplay.textContent = "LISTENING...";
+                ORB.classList.add('listening');
+                STATUS.textContent = "Listening...";
+                speak("I am listening.");
             } catch (e) {
-                // If already started, stop it
-                recognition.stop();
+                // Ignore error if recognition is already in progress
+                console.warn(e);
             }
         }
 
         recognition.onend = () => {
-            reactor.classList.remove('listening');
-            statusDisplay.textContent = "PROCESSING";
-            setTimeout(() => statusDisplay.textContent = "SYSTEM ONLINE", 2000);
+            ORB.classList.remove('listening');
+            STATUS.textContent = "Processing...";
+            setTimeout(() => STATUS.textContent = "System Online", 1500);
         };
 
         recognition.onresult = (event) => {
             const command = event.results[0][0].transcript.toLowerCase();
-            transcriptDisplay.textContent = `"${command}"`;
+            TRANSCRIPT.textContent = `"${command}"`;
             handleCommand(command);
         };
 
         function speak(text) {
             const utterance = new SpeechSynthesisUtterance(text);
-            // Try to pick a specific voice if available (optional)
-            const voices = window.speechSynthesis.getVoices();
-            utterance.rate = 1.1; // Slightly faster
+            utterance.rate = 1.05;
             window.speechSynthesis.speak(utterance);
         }
 
-        // --- INTELLIGENCE ---
-
+        // --- AI INTENT ENGINE (THE BRAIN) ---
         function handleCommand(cmd) {
-            // 1. CALL COMMAND
+            let parts;
+            let name;
+            let message;
+            let time;
+            let contact;
+
+            // 1. CALL COMMAND (e.g., "call Mike")
             if (cmd.includes('call') || cmd.includes('dial')) {
-                const name = cmd.replace('call', '').replace('dial', '').trim();
-                const contact = findContact(name);
+                name = cmd.replace(/call|dial/g, '').trim();
+                contact = findContact(name);
                 
                 if (contact) {
                     speak(`Calling ${contact.name}`);
                     setTimeout(() => window.location.href = `tel:${contact.phone}`, 1500);
                 } else {
-                    speak(`I couldn't find ${name}. Would you like to add them?`);
-                    // Auto open modal with name pre-filled
-                    document.getElementById('newName').value = capitalize(name);
-                    showAddContactModal();
+                    speak(`Contact ${name} not found. You can add them using the manual entry form.`);
                 }
                 return;
             }
 
-            // 2. WHATSAPP COMMAND
-            if (cmd.includes('message') || cmd.includes('text')) {
-                // Simple parser: "Message Brian saying hello"
-                const namePart = cmd.split(' ')[1]; // Very basic, assumes name is 2nd word
-                const contact = findContact(namePart);
+            // 2. WHATSAPP/SMS COMMAND (e.g., "whatsapp Mike saying I'm late" or "text Sarah Hi")
+            if (cmd.includes('whatsapp') || cmd.includes('text')) {
+                parts = cmd.split(/saying|that/); // Split on 'saying' or 'that'
+                name = parts[0].replace(/whatsapp|text/g, '').trim();
+                message = parts[1] ? parts[1].trim() : "Hello.";
+                contact = findContact(name);
 
                 if (contact) {
-                    speak(`Opening WhatsApp for ${contact.name}`);
-                    window.open(`https://wa.me/${contact.phone}`, '_blank');
+                    if (cmd.includes('whatsapp')) {
+                        speak(`Opening WhatsApp for ${contact.name}`);
+                        window.open(`https://wa.me/${contact.phone}?text=${encodeURIComponent(message)}`, '_blank');
+                    } else {
+                        speak(`Opening SMS for ${contact.name}`);
+                        // Fallback to SMS
+                        window.location.href = `sms:${contact.phone}?body=${encodeURIComponent(message)}`;
+                    }
                 } else {
-                    speak("Contact not found.");
+                    speak(`Contact ${name} not found.`);
                 }
                 return;
             }
 
-            speak("Command not recognized.");
+            // 3. REMINDER COMMAND (e.g., "remind me to buy milk tomorrow at 8 AM")
+            const remindMatch = cmd.match(/remind me to (.+) (at|on) (.+)/);
+            if (remindMatch) {
+                const task = capitalize(remindMatch[1].trim());
+                time = parseTime(remindMatch[3].trim());
+
+                if (time) {
+                    addReminder(task, time);
+                    speak(`Acknowledged. I will remind you to ${task} on ${new Date(time).toLocaleString()}.`);
+                } else {
+                    speak("I could not determine the exact date and time for that reminder.");
+                }
+                return;
+            }
+            
+            // 4. NOTES COMMAND (e.g., "add a note saying project is due Friday")
+            if (cmd.includes('add a note saying') || cmd.includes('make a note that')) {
+                parts = cmd.split(/saying|that/);
+                const noteContent = parts[1] ? parts[1].trim() : "Empty note added.";
+                
+                NOTES_TEXTAREA.value += `\n- ${capitalize(noteContent)}`;
+                saveNotes();
+                speak(`Note added to the quick notes section.`);
+                openTab('notes');
+                return;
+            }
+
+            // 5. UTILITY COMMANDS (Search, Time)
+            if (cmd.includes('search for') || cmd.includes('google')) {
+                const query = cmd.replace(/search for|google/g, '').trim();
+                speak(`Searching the web for ${query}`);
+                window.open(`https://www.google.com/search?q=${query}`, '_blank');
+                return;
+            }
+
+            if (cmd.includes('what time is it') || cmd.includes('current time')) {
+                const currentTime = new Date().toLocaleTimeString();
+                speak(`The current time is ${currentTime}`);
+                return;
+            }
+
+            // 6. OUT-OF-SCOPE RESPONSE
+            speak(`I am ${ASSISTANT_NAME}. My functions are limited to contacts, messaging, reminders, and notes. I cannot complete that task.`);
         }
 
-        function findContact(name) {
-            // Fuzzy search (checks if stored name includes the spoken name)
-            return myContacts.find(c => c.name.toLowerCase().includes(name.toLowerCase()));
+        // --- CORE FEATURES: CONTACTS ---
+        function findContact(nameQuery) {
+            // Fuzzy search
+            return myContacts.find(c => c.name.toLowerCase().includes(nameQuery.toLowerCase()));
         }
-
-        // --- CONTACT MANAGEMENT ---
 
         async function trySyncContacts() {
-            // Feature Detection
             if ('contacts' in navigator && 'ContactsManager' in window) {
                 try {
-                    const props = ['name', 'tel'];
-                    const opts = { multiple: true };
-                    const contacts = await navigator.contacts.select(props, opts);
-                    
+                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
                     if (contacts.length) {
-                        // Add to our internal list
                         contacts.forEach(c => {
-                            myContacts.push({ name: c.name[0], phone: c.tel[0] });
+                            // Ensure phone number exists before adding
+                            if (c.tel && c.tel.length > 0) {
+                                myContacts.push({ name: c.name[0], phone: c.tel[0] });
+                            }
                         });
-                        saveToStorage();
-                        speak(`Synced ${contacts.length} contacts.`);
+                        saveToStorage('jarvis_contacts', myContacts);
+                        speak(`Successfully synced ${contacts.length} contacts for voice access.`);
                     }
                 } catch (ex) {
-                    // User cancelled or error
-                    statusDisplay.textContent = "SYNC CANCELLED";
+                    speak("Contact sync cancelled. Please use the manual add option.");
                 }
             } else {
-                // Fallback for iPhone/Desktop
-                alert("Contact Picker not supported on this device. Opening manual add form.");
-                showAddContactModal();
+                alert("Contact Picker not fully supported on this device. Please use the 'Add Manually' form.");
+                showContactModal();
             }
         }
 
-        function showAddContactModal() {
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-        }
+        function showContactModal() { CONTACT_MODAL.style.display = 'flex'; }
+        function closeContactModal() { CONTACT_MODAL.style.display = 'none'; }
 
         function saveNewContact() {
             const name = document.getElementById('newName').value;
             const phone = document.getElementById('newPhone').value;
 
             if (name && phone) {
-                myContacts.push({ name: name, phone: phone });
-                saveToStorage();
+                myContacts.push({ name: capitalize(name), phone: phone });
+                saveToStorage('jarvis_contacts', myContacts);
                 speak(`${name} saved to app memory.`);
-                closeModal();
-                // Clear inputs
-                document.getElementById('newName').value = '';
-                document.getElementById('newPhone').value = '';
-            } else {
-                alert("Please enter both name and number");
-            }
+                closeContactModal();
+            } else { alert("Please enter both name and number"); }
         }
 
-        // --- NEW FEATURE: SAVE TO DEVICE (vCard) ---
         function downloadVCard() {
             const name = document.getElementById('newName').value;
             const phone = document.getElementById('newPhone').value;
 
             if(!name || !phone) { alert("Enter details first"); return; }
 
-            // Create vCard content
-            const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-TEL;TYPE=CELL:${phone}
-END:VCARD`;
-
+            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL;TYPE=CELL:${phone}\nEND:VCARD`;
             const blob = new Blob([vcard], { type: "text/vcard" });
             const url = URL.createObjectURL(blob);
             
@@ -312,15 +492,131 @@ END:VCARD`;
             
             speak("Opening contacts app to save.");
         }
+        
+        // --- CORE FEATURES: NOTES ---
+        function loadNotes() {
+            NOTES_TEXTAREA.value = localStorage.getItem('quickNotes') || '';
+        }
 
-        function saveToStorage() {
-            localStorage.setItem('jarvis_contacts', JSON.stringify(myContacts));
+        function saveNotes() {
+            localStorage.setItem('quickNotes', NOTES_TEXTAREA.value);
+        }
+
+        // --- CORE FEATURES: REMINDERS & NOTIFICATIONS ---
+        function requestNotificationPermission() {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    speak("Notification permission granted. I can now send you alerts.");
+                } else {
+                    speak("Notification permission denied. I cannot send pop-up alerts.");
+                }
+            });
+        }
+
+        function addReminder(task, time) {
+            reminders.push({ id: Date.now(), task, time });
+            saveToStorage('jarvis_reminders', reminders);
+            renderReminders();
+        }
+
+        function removeReminder(id) {
+            reminders = reminders.filter(r => r.id !== id);
+            saveToStorage('jarvis_reminders', reminders);
+            renderReminders();
+        }
+
+        function renderReminders() {
+            const list = document.getElementById('remindersList');
+            list.innerHTML = '';
+            
+            if (reminders.length === 0) {
+                list.innerHTML = '<p style="color: var(--secondary-color);">No reminders scheduled.</p>';
+                return;
+            }
+
+            reminders.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+            reminders.forEach(r => {
+                const li = document.createElement('div');
+                const timeString = new Date(r.time).toLocaleString();
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <div>
+                        <strong>${r.task}</strong>
+                        <div style="font-size: 0.8em; color: var(--secondary-color);">${timeString}</div>
+                    </div>
+                    <button class="delete-btn" onclick="removeReminder(${r.id})"><i class="material-icons" style="font-size:1.2em;">delete</i></button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function checkAndSetReminderInterval() {
+            setInterval(() => {
+                const now = Date.now();
+                reminders.forEach(r => {
+                    const reminderTime = new Date(r.time).getTime();
+                    if (reminderTime > 0 && reminderTime <= now) {
+                        // Time reached, fire notification
+                        if (Notification.permission === 'granted') {
+                            new Notification('ALTECH Reminder', {
+                                body: r.task,
+                                icon: 'https://cdn-icons-png.flaticon.com/512/4712/4712009.png' // Placeholder icon
+                            });
+                        }
+                        speak(`Reminder: ${r.task}`);
+                        removeReminder(r.id); // Remove reminder after it fires
+                    }
+                });
+            }, 60000); // Check every minute
+        }
+
+        // --- DATE PARSING UTILITY (Simple Intent-Based) ---
+        function parseTime(text) {
+            const now = new Date();
+            let date = new Date(now);
+
+            text = text.toLowerCase();
+
+            // Today/Tomorrow
+            if (text.includes('tomorrow')) {
+                date.setDate(date.getDate() + 1);
+            } else if (text.includes('next week')) {
+                date.setDate(date.getDate() + 7);
+            }
+
+            // Time parsing (e.g., '3 pm', '08:30')
+            const timeMatch = text.match(/(\d{1,2})(:(\d{2}))?\s*(am|pm)?/);
+            if (timeMatch) {
+                let hours = parseInt(timeMatch[1]);
+                let minutes = timeMatch[3] ? parseInt(timeMatch[3]) : 0;
+                const ampm = timeMatch[4];
+
+                if (ampm === 'pm' && hours < 12) {
+                    hours += 12;
+                } else if (ampm === 'am' && hours === 12) {
+                    hours = 0; // Midnight
+                }
+
+                date.setHours(hours, minutes, 0, 0);
+            } else if (text.includes('in five minutes')) {
+                date.setMinutes(date.getMinutes() + 5);
+            } else {
+                return null; // Cannot parse reliable time
+            }
+
+            // If the parsed time is in the past (and we didn't specify 'tomorrow' etc), default to tomorrow.
+            if (date.getTime() < now.getTime() && !text.includes('tomorrow') && !text.includes('next')) {
+                 date.setDate(date.getDate() + 1);
+            }
+
+            return date.toISOString();
         }
         
+        // --- GENERAL UTILITY ---
         function capitalize(s) {
             return s && s[0].toUpperCase() + s.slice(1);
         }
-
     </script>
 </body>
 </html>
