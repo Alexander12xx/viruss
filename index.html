@@ -1,135 +1,1060 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Voice Contact App</title>
+  <meta name="theme-color" content="#6200ea">
+  <meta name="description" content="AI Voice Assistant with contact management">
+  <title>Voice AI Assistant</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
+    :root {
+      --primary: #6200ea;
+      --primary-dark: #3700b3;
+      --secondary: #03dac6;
+      --dark: #121212;
+      --darker: #000000;
+      --light: #f5f5f5;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.1);
+    }
+    
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #121212, #333);
-      color: #fff;
-      transition: background 0.3s;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .container {
-      padding: 2rem;
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+    }
+    
+    body.light-mode {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      color: #333;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: rgba(0, 0, 0, 0.1);
+    }
+    
+    .app-container {
       max-width: 500px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    #output {
-      text-align: center;
-      margin: 1rem 0;
-    }
-    button {
+      margin: 0 auto;
       padding: 1rem;
-      margin: 1rem auto;
-      display: block;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      background: #6200ea;
-      color: white;
-      cursor: pointer;
+      min-height: 100vh;
+      position: relative;
     }
+    
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
+    }
+    
+    .app-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .app-title i {
+      font-size: 1.5rem;
+    }
+    
+    .theme-toggle {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(98, 0, 234, 0.3);
+      transition: all 0.3s;
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+    
+    /* AI Assistant Section */
+    .ai-assistant {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 1rem;
+    }
+    
+    .ai-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 15px rgba(98, 0, 234, 0.4);
+    }
+    
+    .ai-info h3 {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+    
+    .ai-info p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .voice-status {
+      background: rgba(3, 218, 198, 0.1);
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      border: 1px solid rgba(3, 218, 198, 0.2);
+    }
+    
+    #output {
+      font-size: 1.1rem;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    .voice-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .voice-btn {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(98, 0, 234, 0.3);
+    }
+    
+    .voice-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(98, 0, 234, 0.4);
+    }
+    
+    .voice-btn:active {
+      transform: translateY(0);
+    }
+    
+    .voice-btn.secondary {
+      background: linear-gradient(45deg, #ff4081, #f50057);
+    }
+    
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--secondary);
+    }
+    
+    .feature-card h4 {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .feature-card p {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    
+    /* Contacts Section */
+    .contacts-section {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--card-border);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .section-title {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      background: transparent;
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+      background: var(--secondary);
+      color: var(--dark);
+    }
+    
+    .contacts-container {
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .contact-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    .contact-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(45deg, #ff9800, #ff5722);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-weight: bold;
+    }
+    
+    .contact-info h4 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+    
+    .contact-info p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+    
+    /* Feedback Section */
+    .feedback-section {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--card-border);
+    }
+    
     #feedback-form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
-    input, textarea {
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
     }
-    .contact-card {
-      background: rgba(255,255,255,0.05);
-      padding: 1rem;
-      margin: 0.5rem 0;
+    
+    .form-group label {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    input, textarea {
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--light);
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+    
+    body.light-mode input,
+    body.light-mode textarea {
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(3, 218, 198, 0.2);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(45deg, #4caf50, #2e7d32);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+    
+    /* PWA Install Prompt */
+    .install-prompt {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 8px 25px rgba(98, 0, 234, 0.4);
+      z-index: 1000;
+      animation: slideUp 0.5s ease;
+    }
+    
+    @keyframes slideUp {
+      from { bottom: -100px; }
+      to { bottom: 20px; }
+    }
+    
+    .install-btn {
+      background: white;
+      color: var(--primary);
+      border: none;
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    /* Loading and Status */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--secondary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .status-message {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      animation: fadeInOut 3s ease;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; transform: translateY(10px); }
+      10%, 90% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 10px;
     }
-    .dark-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
     }
   </style>
 </head>
 <body>
-  <div class="dark-toggle">
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="app-title">
+        <i class="fas fa-robot"></i>
+        <span>Voice AI Assistant</span>
+      </div>
+      <button class="theme-toggle" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+    
+    <!-- AI Assistant Section -->
+    <div class="ai-assistant">
+      <div class="ai-header">
+        <div class="ai-avatar">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div class="ai-info">
+          <h3>AI Voice Assistant</h3>
+          <p>Ready to help with commands and contacts</p>
+        </div>
+      </div>
+      
+      <div class="voice-status">
+        <div id="output">
+          <i class="fas fa-microphone"></i> Tap the button and speak a command
+        </div>
+      </div>
+      
+      <div class="voice-controls">
+        <button class="voice-btn" onclick="startListening()" id="voiceBtn">
+          <i class="fas fa-microphone"></i> Voice Command
+        </button>
+        <button class="voice-btn secondary" onclick="toggleAIResponse()" id="aiToggle">
+          <i class="fas fa-robot"></i> AI: ON
+        </button>
+      </div>
+    </div>
+    
+    <!-- Features Grid -->
+    <div class="features-grid">
+      <div class="feature-card" onclick="handleFeature('call')">
+        <div class="feature-icon">
+          <i class="fas fa-phone-alt"></i>
+        </div>
+        <h4>Call Contact</h4>
+        <p>Say "Call [Name]"</p>
+      </div>
+      
+      <div class="feature-card" onclick="handleFeature('message')">
+        <div class="feature-icon">
+          <i class="fas fa-sms"></i>
+        </div>
+        <h4>Send Message</h4>
+        <p>Say "Message [Name]"</p>
+      </div>
+      
+      <div class="feature-card" onclick="handleFeature('note')">
+        <div class="feature-icon">
+          <i class="fas fa-sticky-note"></i>
+        </div>
+        <h4>Add Note</h4>
+        <p>Voice to text notes</p>
+      </div>
+      
+      <div class="feature-card" onclick="handleFeature('reminder')">
+        <div class="feature-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <h4>Set Reminder</h4>
+        <p>Voice reminders</p>
+      </div>
+    </div>
+    
+    <!-- Contacts Section -->
+    <div class="contacts-section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-address-book"></i>
+          <span>Device Contacts</span>
+        </div>
+        <button class="action-btn" onclick="loadDeviceContacts()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <div class="contacts-container" id="contactsContainer">
+        <div class="contact-item">
+          <div class="contact-avatar">N</div>
+          <div class="contact-info">
+            <h4>Tap "Refresh" to load contacts</h4>
+            <p>Contacts are stored locally on your device</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Feedback Section -->
+    <div class="feedback-section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-comment-dots"></i>
+          <span>Send Feedback</span>
+        </div>
+      </div>
+      
+      <form id="feedback-form">
+        <div class="form-group">
+          <label for="name"><i class="fas fa-user"></i> Your Name</label>
+          <input type="text" id="name" placeholder="Enter your name" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="message"><i class="fas fa-edit"></i> Your Feedback</label>
+          <textarea id="message" rows="3" placeholder="Enter your feedback or suggestion..." required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fab fa-whatsapp"></i> Send via WhatsApp
+        </button>
+      </form>
+    </div>
+    
+    <!-- Install Prompt -->
+    <div class="install-prompt" id="installPrompt" style="display: none;">
+      <i class="fas fa-download"></i>
+      <span>Install Voice AI Assistant for better experience</span>
+      <button class="install-btn" onclick="installPWA()">Install</button>
+    </div>
   </div>
-  <div class="container">
-    <h1>Voice Contact App</h1>
-    <p id="output">Tap below and say: "Call Nancy"</p>
-    <button onclick="startListening()">Start Voice Command</button><h2>Contacts</h2>
-<div id="contacts"></div>
 
-<h2>Feedback</h2>
-<form id="feedback-form">
-  <input type="text" id="name" placeholder="Your Name" required />
-  <input type="text" id="number" placeholder="Phone Number" required />
-  <textarea id="message" placeholder="Your Feedback" required></textarea>
-  <button type="submit">Send to WhatsApp</button>
-</form>
-
-  </div>  <script>
-    const contacts = [
-      { name: "Nancy", phone: "0794564340" },
-      { name: "Alex", phone: "0712345678" },
-      { name: "James", phone: "0700112233" },
-      { name: "Linda", phone: "0722334455" },
-      { name: "Brian", phone: "0733445566" }
-    ];
-
-    const contactContainer = document.getElementById("contacts");
-    contacts.forEach(c => {
-      const div = document.createElement("div");
-      div.className = "contact-card";
-      div.textContent = `${c.name}: ${c.phone}`;
-      contactContainer.appendChild(div);
+  <script>
+    // PWA Manifest
+    const manifest = {
+      "name": "Voice AI Assistant",
+      "short_name": "VoiceAI",
+      "description": "AI-powered voice assistant with contact management",
+      "start_url": ".",
+      "display": "standalone",
+      "background_color": "#121212",
+      "theme_color": "#6200ea",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    
+    // Initialize variables
+    let recognition = null;
+    let aiEnabled = true;
+    let deviceContacts = [];
+    let deferredPrompt = null;
+    
+    // DOM Elements
+    const output = document.getElementById('output');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const aiToggle = document.getElementById('aiToggle');
+    const contactsContainer = document.getElementById('contactsContainer');
+    const installPrompt = document.getElementById('installPrompt');
+    const feedbackForm = document.getElementById('feedback-form');
+    
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for PWA installation
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        setTimeout(() => {
+          if (!isPWAInstalled()) {
+            installPrompt.style.display = 'flex';
+          }
+        }, 3000);
+      });
+      
+      // Initialize speech recognition
+      initSpeechRecognition();
+      
+      // Check dark mode preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.body.classList.add('light-mode');
+        updateThemeIcon();
+      }
+      
+      // Load any saved contacts from localStorage
+      loadSavedContacts();
+      
+      // Initialize AI responses
+      initAI();
     });
-
-    function startListening() {
-      if (!('webkitSpeechRecognition' in window)) {
-        alert('Speech recognition not supported');
+    
+    // Speech Recognition
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        output.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Speech recognition not supported in this browser';
+        voiceBtn.disabled = true;
         return;
       }
-      const recognition = new webkitSpeechRecognition();
+      
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = 'en-US';
-      recognition.start();
+      
+      recognition.onstart = function() {
+        output.innerHTML = '<span class="loading"></span> Listening... Speak now';
+        voiceBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Listening';
+        voiceBtn.classList.add('pulse');
+      };
+      
       recognition.onresult = function(event) {
-        const command = event.results[0][0].transcript.toLowerCase();
-        document.getElementById("output").textContent = `You said: ${command}`;
-        handleCommand(command);
+        const transcript = event.results[0][0].transcript;
+        output.innerHTML = `<i class="fas fa-user"></i> You said: "${transcript}"`;
+        handleVoiceCommand(transcript);
+      };
+      
+      recognition.onerror = function(event) {
+        output.innerHTML = `<i class="fas fa-exclamation-circle"></i> Error: ${event.error}`;
+        resetVoiceButton();
+      };
+      
+      recognition.onend = function() {
+        resetVoiceButton();
       };
     }
-
-    function handleCommand(command) {
-      const matched = contacts.find(c => command.includes(`call ${c.name.toLowerCase()}`));
-      if (matched) {
-        window.location.href = `tel:${matched.phone}`;
+    
+    function startListening() {
+      if (recognition && recognition.state === 'listening') {
+        recognition.stop();
       } else {
-        document.getElementById("output").textContent += "\nNo matching contact found.";
+        recognition.start();
       }
     }
-
-    document.getElementById("feedback-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const number = document.getElementById("number").value;
-      const message = document.getElementById("message").value;
-      const encoded = encodeURIComponent(`Name: ${name}\nNumber: ${number}\nMessage: ${message}`);
-      const whatsappUrl = `https://wa.me/254706389206?text=${encoded}`;
-      window.open(whatsappUrl, '_blank');
-    });
-
-    function toggleDarkMode() {
-      const current = document.body.style.background;
-      document.body.style.background = current.includes("#121212") ? "#fafafa" : "linear-gradient(to bottom, #121212, #333)";
-      document.body.style.color = current.includes("#121212") ? "#000" : "#fff";
+    
+    function resetVoiceButton() {
+      voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice Command';
+      voiceBtn.classList.remove('pulse');
     }
-  </script></body>
+    
+    // AI Processing
+    function initAI() {
+      // Simple AI response system using free APIs
+      console.log('AI System Initialized');
+    }
+    
+    async function processWithAI(command) {
+      if (!aiEnabled) return null;
+      
+      showStatus('Processing with AI...', 'info');
+      
+      // Try to use free AI API (using a simple NLP approach for free tier)
+      const aiResponse = await getAIResponse(command);
+      return aiResponse;
+    }
+    
+    async function getAIResponse(command) {
+      // Simple rule-based AI for free implementation
+      // In a real app, you could integrate with free-tier APIs like:
+      // - Dialogflow (free tier)
+      // - Wit.ai (free)
+      // - Rasa (open source)
+      
+      const responses = {
+        greeting: ["Hello! How can I help you?", "Hi there! What can I do for you?", "Hey! Ready to assist."],
+        thanks: ["You're welcome!", "Happy to help!", "Anytime!"],
+        time: [`The current time is ${new Date().toLocaleTimeString()}`],
+        date: [`Today is ${new Date().toDateString()}`]
+      };
+      
+      const lowerCommand = command.toLowerCase();
+      
+      if (lowerCommand.includes('hello') || lowerCommand.includes('hi')) {
+        return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+      }
+      
+      if (lowerCommand.includes('thank')) {
+        return responses.thanks[Math.floor(Math.random() * responses.thanks.length)];
+      }
+      
+      if (lowerCommand.includes('time')) {
+        return responses.time[0];
+      }
+      
+      if (lowerCommand.includes('date')) {
+        return responses.date[0];
+      }
+      
+      // Default AI response
+      return `I heard you say: "${command}". You can try saying "Call [Contact Name]" or "Message [Contact Name]".`;
+    }
+    
+    // Voice Command Handler
+    async function handleVoiceCommand(command) {
+      const lowerCommand = command.toLowerCase();
+      showStatus(`Processing: "${command}"`, 'info');
+      
+      // Check for contact actions
+      const callMatch = lowerCommand.match(/call\s+(\w+)/);
+      const messageMatch = lowerCommand.match(/(?:message|text|sms)\s+(\w+)/);
+      const searchMatch = lowerCommand.match(/search\s+for\s+(.+)/);
+      
+      if (callMatch) {
+        const contactName = callMatch[1];
+        await callContact(contactName);
+      } else if (messageMatch) {
+        const contactName = messageMatch[1];
+        await messageContact(contactName);
+      } else if (searchMatch && searchMatch[1].includes('contact')) {
+        const searchTerm = searchMatch[1].replace('contact', '').trim();
+        searchContacts(searchTerm);
+      } else {
+        // Use AI for other commands
+        if (aiEnabled) {
+          const aiResponse = await processWithAI(command);
+          if (aiResponse) {
+            output.innerHTML = `<i class="fas fa-robot"></i> AI: ${aiResponse}`;
+            speakResponse(aiResponse);
+          }
+        } else {
+          output.innerHTML = `<i class="fas fa-info-circle"></i> Command not recognized. Try "Call [Name]" or "Message [Name]"`;
+        }
+      }
+    }
+    
+    // Contact Management (Device-based, no display of contacts)
+    async function loadDeviceContacts() {
+      if ('contacts' in navigator && 'ContactsManager' in window) {
+        try {
+          const props = ['name', 'tel'];
+          const opts = {multiple: true};
+          
+          const contacts = await navigator.contacts.select(props, opts);
+          deviceContacts = contacts;
+          
+          // Store locally (encrypted in a real app)
+          localStorage.setItem('voiceAI_contacts', JSON.stringify(contacts));
+          
+          updateContactsDisplay();
+          showStatus('Contacts loaded from device', 'success');
+        } catch (err) {
+          console.error('Error loading contacts:', err);
+          showStatus('Could not access contacts. Please check permissions.', 'error');
+        }
+      } else {
+        // Fallback: Load sample contacts or from localStorage
+        loadSavedContacts();
+        showStatus('Contact API not supported. Using saved contacts.', 'warning');
+      }
+    }
+    
+    function loadSavedContacts() {
+      const saved = localStorage.getItem('voiceAI_contacts');
+      if (saved) {
+        deviceContacts = JSON.parse(saved);
+        updateContactsDisplay();
+      } else {
+        // Sample contacts for demo
+        deviceContacts = [
+          { name: ['Nancy'], tel: ['0794564340'] },
+          { name: ['Alex'], tel: ['0712345678'] },
+          { name: ['James'], tel: ['0700112233'] }
+        ];
+        updateContactsDisplay();
+      }
+    }
+    
+    function updateContactsDisplay() {
+      // Don't display full contact info - just show count and first letter
+      contactsContainer.innerHTML = '';
+      
+      if (deviceContacts.length === 0) {
+        contactsContainer.innerHTML = `
+          <div class="contact-item">
+            <div class="contact-avatar">?</div>
+            <div class="contact-info">
+              <h4>No contacts loaded</h4>
+              <p>Tap "Refresh" to load from device</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Show only first letter and count for privacy
+      const contactLetters = deviceContacts.map(c => c.name[0].charAt(0).toUpperCase());
+      const uniqueLetters = [...new Set(contactLetters)];
+      
+      uniqueLetters.forEach(letter => {
+        const count = contactLetters.filter(l => l === letter).length;
+        const div = document.createElement('div');
+        div.className = 'contact-item';
+        div.innerHTML = `
+          <div class="contact-avatar">${letter}</div>
+          <div class="contact-info">
+            <h4>${count} contact${count > 1 ? 's' : ''} starting with "${letter}"</h4>
+            <p>Stored locally on your device</p>
+          </div>
+        `;
+        contactsContainer.appendChild(div);
+      });
+    }
+    
+    async function callContact(contactName) {
+      const contact = deviceContacts.find(c => 
+        c.name[0].toLowerCase().includes(contactName.toLowerCase())
+      );
+      
+      if (contact && contact.tel && contact.tel[0]) {
+        showStatus(`Calling ${contact.name[0]}...`, 'success');
+        // In a real app, you would use: window.location.href = `tel:${contact.tel[0]}`;
+        output.innerHTML = `<i class="fas fa-phone"></i> Would call ${contact.name[0]} at ${contact.tel[0]} (demo mode)`;
+        
+        // Speak confirmation
+        speakResponse(`Calling ${contact.name[0]}`);
+      } else {
+        showStatus(`Contact "${contactName}" not found`, 'error');
+        output.innerHTML = `<i class="fas fa-user-times"></i> Contact "${contactName}" not found`;
+      }
+    }
+    
+    async function messageContact(contactName) {
+      const contact = deviceContacts.find(c => 
+        c.name[0].toLowerCase().includes(contactName.toLowerCase())
+      );
+      
+      if (contact && contact.tel && contact.tel[0]) {
+        showStatus(`Preparing message to ${contact.name[0]}...`, 'success');
+        output.innerHTML = `<i class="fas fa-sms"></i> Would message ${contact.name[0]} at ${contact.tel[0]} (demo mode)`;
+        
+        // In a real app: window.open(`sms:${contact.tel[0]}`, '_blank');
+        speakResponse(`Opening message for ${contact.name[0]}`);
+      } else {
+        showStatus(`Contact "${contactName}" not found`, 'error');
+        output.innerHTML = `<i class="fas fa-user-times"></i> Contact "${contactName}" not found`;
+      }
+    }
+    
+    function searchContacts(searchTerm) {
+      const results = deviceContacts.filter(c => 
+        c.name[0].toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      if (results.length > 0) {
+        output.innerHTML = `<i class="fas fa-search"></i> Found ${results.length} contact(s) matching "${searchTerm}"`;
+        speakResponse(`Found ${results.length} contacts`);
+      } else {
+        output.innerHTML = `<i class="fas fa-search"></i> No contacts found for "${searchTerm}"`;
+      }
+    }
+    
+    // Text-to-Speech
+    function speakResponse(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        speechSynthesis.speak(utterance);
+      }
+    }
+    
+    // Feature Handlers
+    function handleFeature(feature) {
+      switch(feature) {
+        case 'call':
+          output.innerHTML = '<i class="fas fa-phone"></i> Say "Call" followed by a contact name';
+          speakResponse('Say Call followed by a contact name');
+          break;
+        case 'message':
+          output.innerHTML = '<i class="fas fa-sms"></i> Say "Message" followed by a contact name';
+          speakResponse('Say Message followed by a contact name');
+          break;
+        case 'note':
+          output.innerHTML = '<i class="fas fa-sticky-note"></i> Say "Note" followed by your note';
+          speakResponse('Say Note followed by your note');
+          break;
+        case 'reminder':
+          output.innerHTML = '<i class="fas fa-clock"></i> Say "Reminder" followed by your reminder';
+          speakResponse('Say Reminder followed by your reminder');
+          break;
+      }
+    }
+    
+    // AI Toggle
+    function toggleAIResponse() {
+      aiEnabled = !aiEnabled;
+      aiToggle.innerHTML = `<i class="fas fa-robot"></i> AI: ${aiEnabled ? 'ON' : 'OFF'}`;
+      aiToggle.style.background = aiEnabled 
+        ? 'linear-gradient(45deg, #6200ea, #3700b3)' 
+        : 'linear-gradient(45deg, #666, #333)';
+      
+      showStatus(`AI responses ${aiEnabled ? 'enabled' : 'disabled'}`, 'info');
+    }
+    
+    // Theme Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle('light-mode');
+      updateThemeIcon();
+      localStorage.setItem('voiceAI_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    }
+    
+    function updateThemeIcon() {
+      const icon = document.querySelector('.theme-toggle i');
+      if (document.body.classList.contains('light-mode')) {
+        icon.className = 'fas fa-sun';
+      } else {
+        icon.className = 'fas fa-moon';
+      }
+    }
+    
+    // Feedback Form
+    feedbackForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+      
+      const encoded = encodeURIComponent(`Voice AI Feedback\nFrom: ${name}\n\n${message}`);
+      const whatsappUrl = `https://wa.me/254706389206?text=${encoded}`;
+      
+      window.open(whatsappUrl, '_blank');
+      showStatus('Opening WhatsApp...', 'success');
+      
+      // Reset form
+      feedbackForm.reset();
+    });
+    
+    // PWA Installation
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            showStatus('App installed successfully!', 'success');
+            installPrompt.style.display = 'none';
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+    
+    function isPWAInstalled() {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             window.navigator.standalone === true;
+    }
+    
+    // Utility Functions
+    function showStatus(message, type = 'info') {
+      const status = document.createElement('div');
+      status.className = 'status-message';
+      status.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+      document.body.appendChild(status);
+      
+      setTimeout(() => {
+        if (status.parentNode) {
+          status.parentNode.removeChild(status);
+        }
+      }, 3000);
+    }
+    
+    // Add a simple note-taking feature
+    function addVoiceNote(text) {
+      const notes = JSON.parse(localStorage.getItem('voiceAI_notes') || '[]');
+      notes.push({
+        text,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('voiceAI_notes', JSON.stringify(notes));
+      showStatus('Note saved!', 'success');
+    }
+  </script>
+</body>
 </html>
