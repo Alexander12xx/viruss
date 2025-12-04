@@ -2,274 +2,325 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jarvis Voice Assistant</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f0c29">
+    <meta name="theme-color" content="#000000">
     <style>
-        /* Modern Glassmorphism UI */
+        /* --- FUTURISTIC UI --- */
         body {
             margin: 0;
             height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
+            font-family: 'Courier New', Courier, monospace; /* Tech vibe */
+            background-color: #000;
+            color: #0f0; /* Matrix Green */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        /* The "Eye" of the AI */
+        .arc-reactor {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px #0f0, inset 0 0 20px #0f0;
+            margin-top: 20vh;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        h1 { font-weight: 300; letter-spacing: 2px; margin-bottom: 0.5rem; }
-        p { color: #aaa; font-size: 0.9rem; }
-
-        /* The AI Orb Animation */
-        .orb-container {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 2rem auto;
-            cursor: pointer;
-        }
-
-        .orb {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff00cc, #333399);
-            box-shadow: 0 0 20px #ff00cc, 0 0 40px #333399;
-            animation: breathe 3s infinite ease-in-out;
-            transition: all 0.3s;
-        }
-
-        .orb.listening {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px #00d4ff, 0 0 60px #00d4ff;
-            background: linear-gradient(45deg, #00d4ff, #005bea);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-
-        /* Action Buttons */
-        .btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            padding: 10px 20px;
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-            font-size: 0.8rem;
-        }
-        .btn:hover { background: rgba(255, 255, 255, 0.2); }
-
-        #output { margin-top: 1rem; font-style: italic; min-height: 20px; }
         
-        /* Hidden elements used for logic */
-        .hidden { display: none; }
+        .arc-reactor:active { transform: scale(0.95); }
+        .arc-reactor.listening { 
+            animation: pulse 1.5s infinite; 
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .core {
+            width: 80px;
+            height: 80px;
+            background: #0f0;
+            border-radius: 50%;
+            opacity: 0.2;
+            filter: blur(5px);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px #0f0; }
+            50% { box-shadow: 0 0 50px #0f0, 0 0 20px #fff; }
+            100% { box-shadow: 0 0 20px #0f0; }
+        }
+
+        /* Text Displays */
+        #status { margin-top: 20px; font-size: 1.2rem; letter-spacing: 2px; }
+        #transcript { 
+            font-size: 0.9rem; color: #fff; margin-top: 10px; 
+            min-height: 20px; text-transform: none; 
+        }
+
+        /* Action Buttons Area */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px 25px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; }
+
+        /* Modal for Adding Contacts */
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .input-group { margin: 10px 0; text-align: center; }
+        input {
+            background: #111; border: 1px solid #333; color: #fff;
+            padding: 10px; font-family: inherit; width: 250px; text-align: center;
+        }
+        input:focus { border-color: #0f0; outline: none; }
+
     </style>
 </head>
 <body>
 
-    <div class="glass-panel">
-        <h1>A.I. ASSISTANT</h1>
-        <p>Tap the Orb to Speak</p>
+    <div id="status">SYSTEM ONLINE</div>
+    
+    <div class="arc-reactor" onclick="toggleListening()" id="reactor">
+        <div class="core"></div>
+    </div>
 
-        <div class="orb-container" onclick="toggleListening()">
-            <div id="orb" class="orb"></div>
+    <div id="transcript">Tap circle to speak...</div>
+
+    <div class="controls">
+        <button class="btn" onclick="trySyncContacts()">SYNC CONTACTS</button>
+        <button class="btn" onclick="showAddContactModal()">+ ADD MANUAL</button>
+    </div>
+
+    <div id="modal">
+        <h2 style="color:white;">NEW ENTRY</h2>
+        <div class="input-group">
+            <input type="text" id="newName" placeholder="Name (e.g. Mike)">
         </div>
-
-        <div id="output">Ready...</div>
-
-        <button class="btn" onclick="syncContacts()">📂 Sync Contacts from Phone</button>
+        <div class="input-group">
+            <input type="tel" id="newPhone" placeholder="Phone (e.g. 0712...)">
+        </div>
         <br>
-        <button class="btn" onclick="installApp()" id="installBtn" style="display:none;">⬇️ Install App</button>
+        <button class="btn" onclick="saveNewContact()">SAVE TO APP</button>
+        <br><br>
+        <button class="btn" onclick="downloadVCard()">📲 SAVE TO DEVICE</button>
+        <br><br>
+        <button class="btn" style="border-color:#555; color:#777;" onclick="closeModal()">CANCEL</button>
     </div>
 
     <script>
-        // --- 1. SETUP & VARIABLES ---
-        const orb = document.getElementById('orb');
-        const output = document.getElementById('output');
-        let savedContacts = JSON.parse(localStorage.getItem('myContacts') || '[]');
-        
-        // Check for Speech Recognition Support
+        // --- CONFIGURATION ---
+        const reactor = document.getElementById('reactor');
+        const statusDisplay = document.getElementById('status');
+        const transcriptDisplay = document.getElementById('transcript');
+        const modal = document.getElementById('modal');
+
+        // Load saved contacts or empty array
+        let myContacts = JSON.parse(localStorage.getItem('jarvis_contacts') || '[]');
+
+        // Setup Speech Recognition
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = 'en-US'; 
         recognition.interimResults = false;
 
-        // --- 2. VOICE LOGIC (THE BRAIN) ---
-        recognition.onstart = () => {
-            orb.classList.add('listening');
-            output.textContent = "Listening...";
-        };
+        // --- SPEECH LOGIC ---
+        
+        function toggleListening() {
+            try {
+                recognition.start();
+                reactor.classList.add('listening');
+                statusDisplay.textContent = "LISTENING...";
+            } catch (e) {
+                // If already started, stop it
+                recognition.stop();
+            }
+        }
 
         recognition.onend = () => {
-            orb.classList.remove('listening');
+            reactor.classList.remove('listening');
+            statusDisplay.textContent = "PROCESSING";
+            setTimeout(() => statusDisplay.textContent = "SYSTEM ONLINE", 2000);
         };
 
         recognition.onresult = (event) => {
             const command = event.results[0][0].transcript.toLowerCase();
-            output.textContent = `"${command}"`;
-            processCommand(command);
+            transcriptDisplay.textContent = `"${command}"`;
+            handleCommand(command);
         };
-
-        function toggleListening() {
-            try { recognition.start(); } catch(e) { recognition.stop(); }
-        }
 
         function speak(text) {
             const utterance = new SpeechSynthesisUtterance(text);
+            // Try to pick a specific voice if available (optional)
+            const voices = window.speechSynthesis.getVoices();
+            utterance.rate = 1.1; // Slightly faster
             window.speechSynthesis.speak(utterance);
         }
 
-        // --- 3. INTELLIGENCE & COMMANDS ---
-        function processCommand(cmd) {
-            // INTENT: CALL
+        // --- INTELLIGENCE ---
+
+        function handleCommand(cmd) {
+            // 1. CALL COMMAND
             if (cmd.includes('call') || cmd.includes('dial')) {
                 const name = cmd.replace('call', '').replace('dial', '').trim();
-                findAndCall(name);
-                return;
-            }
-
-            // INTENT: WHATSAPP
-            if (cmd.includes('whatsapp') || cmd.includes('message')) {
-                // Try to split "Message John saying hello"
-                const parts = cmd.split(/saying|that/);
-                const namePart = parts[0].replace('message', '').replace('whatsapp', '').trim();
-                const msgPart = parts[1] ? parts[1].trim() : "Hi";
+                const contact = findContact(name);
                 
-                findAndMessage(namePart, msgPart);
-                return;
-            }
-
-            // INTENT: TIME
-            if (cmd.includes('time')) {
-                const time = new Date().toLocaleTimeString();
-                speak(`It is currently ${time}`);
-                output.textContent = time;
-                return;
-            }
-
-            // INTENT: BATTERY
-            if (cmd.includes('battery')) {
-                checkBattery();
-                return;
-            }
-
-            // INTENT: SEARCH
-            if (cmd.includes('search for') || cmd.includes('google')) {
-                const query = cmd.replace('search for', '').replace('google', '').trim();
-                speak(`Searching Google for ${query}`);
-                window.open(`https://www.google.com/search?q=${query}`, '_blank');
-                return;
-            }
-
-            speak("I didn't catch that.");
-        }
-
-        // --- 4. CONTACT FUNCTIONS ---
-        async function syncContacts() {
-            // Uses the Native Contact Picker API
-            const props = ['name', 'tel'];
-            const opts = { multiple: true };
-
-            try {
-                if ('contacts' in navigator && 'ContactsManager' in window) {
-                    const contacts = await navigator.contacts.select(props, opts);
-                    if(contacts.length > 0) {
-                        // Normalize and save
-                        const newContacts = contacts.map(c => ({
-                            name: c.name[0],
-                            phone: c.tel[0]
-                        }));
-                        // Merge with existing
-                        savedContacts = [...savedContacts, ...newContacts];
-                        localStorage.setItem('myContacts', JSON.stringify(savedContacts));
-                        speak(`Successfully synced ${contacts.length} contacts.`);
-                    }
+                if (contact) {
+                    speak(`Calling ${contact.name}`);
+                    setTimeout(() => window.location.href = `tel:${contact.phone}`, 1500);
                 } else {
-                    alert('Contact Picker not supported on this device/browser. Try Chrome on Android.');
+                    speak(`I couldn't find ${name}. Would you like to add them?`);
+                    // Auto open modal with name pre-filled
+                    document.getElementById('newName').value = capitalize(name);
+                    showAddContactModal();
                 }
-            } catch (ex) {
-                console.log(ex);
-                output.textContent = "Sync cancelled.";
+                return;
+            }
+
+            // 2. WHATSAPP COMMAND
+            if (cmd.includes('message') || cmd.includes('text')) {
+                // Simple parser: "Message Brian saying hello"
+                const namePart = cmd.split(' ')[1]; // Very basic, assumes name is 2nd word
+                const contact = findContact(namePart);
+
+                if (contact) {
+                    speak(`Opening WhatsApp for ${contact.name}`);
+                    window.open(`https://wa.me/${contact.phone}`, '_blank');
+                } else {
+                    speak("Contact not found.");
+                }
+                return;
+            }
+
+            speak("Command not recognized.");
+        }
+
+        function findContact(name) {
+            // Fuzzy search (checks if stored name includes the spoken name)
+            return myContacts.find(c => c.name.toLowerCase().includes(name.toLowerCase()));
+        }
+
+        // --- CONTACT MANAGEMENT ---
+
+        async function trySyncContacts() {
+            // Feature Detection
+            if ('contacts' in navigator && 'ContactsManager' in window) {
+                try {
+                    const props = ['name', 'tel'];
+                    const opts = { multiple: true };
+                    const contacts = await navigator.contacts.select(props, opts);
+                    
+                    if (contacts.length) {
+                        // Add to our internal list
+                        contacts.forEach(c => {
+                            myContacts.push({ name: c.name[0], phone: c.tel[0] });
+                        });
+                        saveToStorage();
+                        speak(`Synced ${contacts.length} contacts.`);
+                    }
+                } catch (ex) {
+                    // User cancelled or error
+                    statusDisplay.textContent = "SYNC CANCELLED";
+                }
+            } else {
+                // Fallback for iPhone/Desktop
+                alert("Contact Picker not supported on this device. Opening manual add form.");
+                showAddContactModal();
             }
         }
 
-        function findAndCall(nameQuery) {
-            // Fuzzy search
-            const match = savedContacts.find(c => c.name.toLowerCase().includes(nameQuery));
+        function showAddContactModal() {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function saveNewContact() {
+            const name = document.getElementById('newName').value;
+            const phone = document.getElementById('newPhone').value;
+
+            if (name && phone) {
+                myContacts.push({ name: name, phone: phone });
+                saveToStorage();
+                speak(`${name} saved to app memory.`);
+                closeModal();
+                // Clear inputs
+                document.getElementById('newName').value = '';
+                document.getElementById('newPhone').value = '';
+            } else {
+                alert("Please enter both name and number");
+            }
+        }
+
+        // --- NEW FEATURE: SAVE TO DEVICE (vCard) ---
+        function downloadVCard() {
+            const name = document.getElementById('newName').value;
+            const phone = document.getElementById('newPhone').value;
+
+            if(!name || !phone) { alert("Enter details first"); return; }
+
+            // Create vCard content
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TEL;TYPE=CELL:${phone}
+END:VCARD`;
+
+            const blob = new Blob([vcard], { type: "text/vcard" });
+            const url = URL.createObjectURL(blob);
             
-            if (match) {
-                speak(`Calling ${match.name}`);
-                setTimeout(() => {
-                    window.location.href = `tel:${match.phone}`;
-                }, 1000);
-            } else {
-                speak(`I couldn't find ${nameQuery} in your synced contacts.`);
-            }
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${name}.vcf`;
+            a.click();
+            
+            speak("Opening contacts app to save.");
         }
 
-        function findAndMessage(nameQuery, msg) {
-            const match = savedContacts.find(c => c.name.toLowerCase().includes(nameQuery));
-            if (match) {
-                speak(`Opening WhatsApp for ${match.name}`);
-                // Remove spaces/symbols from phone for API
-                let cleanPhone = match.phone.replace(/\D/g,'');
-                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-            } else {
-                speak(`Contact ${nameQuery} not found.`);
-            }
+        function saveToStorage() {
+            localStorage.setItem('jarvis_contacts', JSON.stringify(myContacts));
+        }
+        
+        function capitalize(s) {
+            return s && s[0].toUpperCase() + s.slice(1);
         }
 
-        async function checkBattery() {
-            if ('getBattery' in navigator) {
-                const battery = await navigator.getBattery();
-                const level = Math.round(battery.level * 100);
-                speak(`Your battery is at ${level} percent.`);
-            } else {
-                speak("Battery status not available.");
-            }
-        }
-
-        // --- 5. PWA INSTALL LOGIC ---
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'inline-block';
-        });
-
-        async function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                document.getElementById('installBtn').style.display = 'none';
-            }
-        }
-
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
     </script>
 </body>
 </html>
