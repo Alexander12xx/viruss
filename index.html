@@ -690,6 +690,12 @@
                 width: 55px;
                 height: 55px;
             }
+            
+            .whatsapp-modal {
+                bottom: 90px;
+                right: 20px;
+                width: 280px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -759,6 +765,9 @@
         <button class="action-btn" onclick="openWhatsApp('feature')" style="width: 100%; margin: 10px 0;">
             <i class="fas fa-lightbulb"></i> Request Feature
         </button>
+        <button class="action-btn" onclick="openWhatsApp('demo')" style="width: 100%; margin: 10px 0; background: var(--success);">
+            <i class="fas fa-phone-alt"></i> Schedule Demo Call
+        </button>
         <button class="action-btn" onclick="toggleWhatsAppModal()" 
                 style="width: 100%; margin-top: 15px; background: var(--secondary);">
             <i class="fas fa-times"></i> Close
@@ -806,7 +815,9 @@
                 <div class="card">
                     <h2><i class="fas fa-history"></i> Recent Commands</h2>
                     <div id="commandHistory">
-                        <!-- Dynamic content -->
+                        <p style="color: var(--text-secondary); text-align: center; padding: 10px;">
+                            No commands yet
+                        </p>
                     </div>
                 </div>
 
@@ -876,7 +887,7 @@
                                         <div class="typing-dot"></div>
                                         <div class="typing-dot"></div>
                                     </div>
-                                    Initializing...
+                                    Loading AI Assistant...
                                 </div>
                             </div>
 
@@ -910,10 +921,7 @@
 
                             <!-- Command Suggestions -->
                             <div class="command-suggestions">
-                                <div class="command-chip" onclick="speakCommand('Call Nancy')">
-                                    <i class="fas fa-phone"></i> Call Nancy
-                                </div>
-                                <div class="command-chip" onclick="speakCommand('Add note project ends Tuesday')">
+                                <div class="command-chip" onclick="speakCommand('Add note meeting at 3 PM')">
                                     <i class="fas fa-edit"></i> Add Note
                                 </div>
                                 <div class="command-chip" onclick="speakCommand('Remind me to call mom tomorrow')">
@@ -921,6 +929,9 @@
                                 </div>
                                 <div class="command-chip" onclick="speakCommand('Search for latest news')">
                                     <i class="fas fa-search"></i> Search Web
+                                </div>
+                                <div class="command-chip" onclick="speakCommand('What time is it')">
+                                    <i class="fas fa-clock"></i> Current Time
                                 </div>
                             </div>
                         </div>
@@ -930,6 +941,9 @@
                     <div id="contacts" class="tab-pane">
                         <div class="card">
                             <h2><i class="fas fa-users"></i> Contact Management</h2>
+                            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                                Add your contacts manually or sync from device. All data is stored locally for privacy.
+                            </p>
                             <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                                 <button class="action-btn" onclick="trySyncContacts()" style="flex: 1;">
                                     <i class="fas fa-sync"></i> Sync Contacts
@@ -940,7 +954,9 @@
                             </div>
                             
                             <div id="contactsList" class="contacts-list">
-                                <!-- Contacts will appear here -->
+                                <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                                    No contacts yet. Add your first contact!
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -954,7 +970,9 @@
                             </button>
                             
                             <div id="remindersList" class="reminders-list">
-                                <!-- Reminders will appear here -->
+                                <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                                    No reminders scheduled
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -963,7 +981,7 @@
                     <div id="notes" class="tab-pane">
                         <div class="card">
                             <h2><i class="fas fa-edit"></i> Quick Notes</h2>
-                            <textarea id="quickNotes" rows="10" placeholder="Type your notes here or use voice commands..."></textarea>
+                            <textarea id="quickNotes" rows="10" placeholder="Type your notes here or use voice commands... Your notes are automatically saved locally."></textarea>
                             <div style="display: flex; gap: 15px; margin-top: 20px;">
                                 <button class="action-btn" onclick="saveNotes()">
                                     <i class="fas fa-save"></i> Save Notes
@@ -977,7 +995,9 @@
                         <div class="card">
                             <h2><i class="fas fa-history"></i> Recent Notes</h2>
                             <div id="notesHistory" class="notes-container">
-                                <!-- Note history will appear here -->
+                                <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                                    No recent notes
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -999,13 +1019,24 @@
                                 </div>
                                 
                                 <div style="margin-bottom: 15px;">
-                                    <label style="display: flex; align-items: center; gap: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                         <input type="checkbox" id="autoSave" checked>
                                         Auto-save notes
                                     </label>
                                 </div>
                                 
-                                <button class="action-btn" onclick="clearAllData()" style="background: var(--danger); width: 100%; margin-top: 20px;">
+                                <div style="margin-bottom: 15px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                        <input type="checkbox" id="enableNotifications" checked>
+                                        Enable notifications
+                                    </label>
+                                </div>
+                                
+                                <button class="action-btn" onclick="exportData()" style="width: 100%; margin-top: 10px;">
+                                    <i class="fas fa-download"></i> Export All Data
+                                </button>
+                                
+                                <button class="action-btn" onclick="clearAllData()" style="width: 100%; margin-top: 10px; background: var(--danger);">
                                     <i class="fas fa-trash-alt"></i> Clear All Data
                                 </button>
                             </div>
@@ -1013,10 +1044,15 @@
 
                         <div class="card">
                             <h2><i class="fas fa-info-circle"></i> About</h2>
-                            <p style="margin-top: 15px;">ALTECH AI Assistant v2.0</p>
+                            <p style="margin-top: 15px;"><strong>ALTECH AI Assistant v2.0</strong></p>
                             <p>Powered by advanced AI with voice recognition</p>
+                            <div style="margin-top: 15px; padding: 15px; background: var(--primary-light); border-radius: var(--radius-sm);">
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    <i class="fas fa-shield-alt"></i> <strong>Privacy First:</strong> All data is stored locally on your device. No data is sent to external servers unless you use AI features.
+                                </p>
+                            </div>
                             <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
-                                All data is stored locally on your device for privacy.
+                                <i class="fas fa-code"></i> Built with modern web technologies
                             </p>
                         </div>
                     </div>
@@ -1029,7 +1065,7 @@
     <div id="addContactModal" class="whatsapp-modal" style="width: 400px;">
         <h3><i class="fas fa-user-plus"></i> Add Contact</h3>
         <input type="text" id="newContactName" placeholder="Contact Name" style="width: 100%; margin: 15px 0;">
-        <input type="tel" id="newContactPhone" placeholder="Phone Number" style="width: 100%; margin-bottom: 20px;">
+        <input type="tel" id="newContactPhone" placeholder="Phone Number (e.g., 0712345678)" style="width: 100%; margin-bottom: 20px;">
         <div style="display: flex; gap: 15px;">
             <button class="action-btn" onclick="addNewContact()" style="flex: 1;">
                 <i class="fas fa-save"></i> Save
@@ -1108,25 +1144,37 @@
             updateVoiceSpeed(voiceSpeed);
             checkAndSetReminderInterval();
             
-            // Auto-load sample contact if none exist
-            if (myContacts.length === 0) {
-                myContacts.push({ name: "Nancy", phone: "0794564340" });
-                myContacts.push({ name: "Alex", phone: "0712345678" });
-                saveContacts();
-                renderContacts();
+            // Setup notes auto-save
+            const autoSave = document.getElementById('autoSave');
+            if (autoSave) {
+                autoSave.checked = localStorage.getItem('autoSave') !== 'false';
+                autoSave.addEventListener('change', () => {
+                    localStorage.setItem('autoSave', autoSave.checked);
+                });
             }
             
-            // Setup notes auto-save
             quickNotesEl.addEventListener('input', () => {
                 if (document.getElementById('autoSave')?.checked) {
                     saveNotes();
                 }
             });
             
+            // Enable notifications if checked
+            const enableNotifications = document.getElementById('enableNotifications');
+            if (enableNotifications) {
+                enableNotifications.checked = localStorage.getItem('enableNotifications') !== 'false';
+                enableNotifications.addEventListener('change', () => {
+                    localStorage.setItem('enableNotifications', enableNotifications.checked);
+                    if (enableNotifications.checked) {
+                        requestNotificationPermission();
+                    }
+                });
+            }
+            
             // Initial greeting
             setTimeout(() => {
-                speakResponse("ALTECH AI Assistant is ready. How can I help you?");
-                updateAIResponse("Hello! I'm your ALTECH AI Assistant. Try saying 'Call Nancy' or 'What time is it?'");
+                speakResponse("ALTECH AI Assistant is ready. Your privacy is protected.");
+                updateAIResponse("Hello! I'm your ALTECH AI Assistant. All your data is stored locally. Try adding contacts or saying 'Add note meeting today'");
             }, 1000);
         }
 
@@ -1356,7 +1404,8 @@
                 date: [`Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`],
                 weather: ["I can't check weather right now. Try saying 'search for weather in [your city]'."],
                 joke: ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!"],
-                help: ["I can help you with: Calling contacts, Setting reminders, Taking notes, Web search, Time and date, Weather information"]
+                help: ["I can help you with: Calling contacts, Setting reminders, Taking notes, Web search, Time and date, Weather information"],
+                privacy: ["Your data is stored locally on your device. No personal information is shared with external servers."]
             };
             
             const lowerCmd = command.toLowerCase();
@@ -1379,6 +1428,9 @@
             if (lowerCmd.includes('help') || lowerCmd.includes('what can you do')) {
                 return responses.help[0];
             }
+            if (lowerCmd.includes('privacy') || lowerCmd.includes('data')) {
+                return responses.privacy[0];
+            }
             
             return `I heard: "${command}". Try saying: "Call [Name]", "Add note [your note]", "Remind me [task]", or "Search [query]"`;
         }
@@ -1394,6 +1446,7 @@
             aiEnabled = !aiEnabled;
             aiToggleBtn.classList.toggle('active', aiEnabled);
             aiToggleBtn.innerHTML = `<i class="fas fa-${aiEnabled ? 'brain' : 'ban'}"></i>`;
+            localStorage.setItem('aiEnabled', aiEnabled);
             updateAIResponse(`AI ${aiEnabled ? 'enabled' : 'disabled'}`);
         }
 
@@ -1439,10 +1492,60 @@
                         speakResponse(`Calling ${contact.name}...`);
                         updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
                         conversationContext.lastContact = contact;
+                        
+                        // ACTUAL CALL - Uncomment for real calls
                         // window.location.href = `tel:${contact.phone}`;
+                        
+                        // For demo purposes on desktop
+                        if (!/Mobi|Android/i.test(navigator.userAgent)) {
+                            updateAIResponse(`📞 Would call: <strong>${contact.name}</strong> at ${contact.phone}<br><small><i>On mobile, this would initiate a real call.</i></small>`);
+                        }
                         return true;
                     } else {
-                        updateAIResponse(`Contact "${name}" not found. Try adding them first.`);
+                        updateAIResponse(`Contact "${name}" not found. Add contacts in the Contacts tab.`);
+                        return true;
+                    }
+                }
+            }
+            
+            // WhatsApp to contact
+            if (lowerCmd.includes('whatsapp') || lowerCmd.includes('send message')) {
+                let contactName = '';
+                
+                if (lowerCmd.includes('whatsapp to')) {
+                    contactName = command.split('whatsapp to')[1]?.trim();
+                } else if (lowerCmd.includes('send whatsapp to')) {
+                    contactName = command.split('send whatsapp to')[1]?.trim();
+                } else if (lowerCmd.includes('whatsapp')) {
+                    contactName = command.split('whatsapp')[1]?.trim();
+                }
+                
+                if (contactName) {
+                    const contact = findContact(contactName);
+                    if (contact) {
+                        // Clean phone number (remove spaces, non-digits)
+                        const cleanPhone = contact.phone.replace(/\D/g, '');
+                        
+                        // Get message from command or use default
+                        let message = "Hello from ALTECH AI Assistant!";
+                        const messageMatch = lowerCmd.match(/saying (.+)$/);
+                        if (messageMatch) {
+                            message = messageMatch[1];
+                        } else {
+                            const userMessage = prompt(`What message to ${contactName}?`, "Hello!");
+                            if (userMessage) message = userMessage;
+                        }
+                        
+                        // Open WhatsApp
+                        const encodedMessage = encodeURIComponent(message);
+                        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+                        window.open(whatsappUrl, '_blank');
+                        
+                        speakResponse(`Opening WhatsApp to ${contact.name}`);
+                        updateAIResponse(`💬 Opening WhatsApp to <strong>${contact.name}</strong>`);
+                        return true;
+                    } else {
+                        updateAIResponse(`Contact "${contactName}" not found.`);
                         return true;
                     }
                 }
@@ -1489,6 +1592,9 @@
                     }
                     if (lowerCmd.includes('next week')) {
                         time.setDate(time.getDate() + 7);
+                    }
+                    if (lowerCmd.includes('in 1 hour') || lowerCmd.includes('in one hour')) {
+                        time.setHours(time.getHours() + 1);
                     }
                     
                     addReminder(task, time.toISOString());
@@ -1546,18 +1652,29 @@
                 try {
                     const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
                     if (contacts.length) {
+                        let addedCount = 0;
                         contacts.forEach(c => {
-                            if (c.tel && c.tel.length > 0) {
-                                myContacts.push({ name: c.name[0], phone: c.tel[0] });
+                            if (c.tel && c.tel.length > 0 && c.name && c.name.length > 0) {
+                                // Check if contact already exists
+                                const exists = myContacts.some(existing => 
+                                    existing.name === c.name[0] && existing.phone === c.tel[0]
+                                );
+                                if (!exists) {
+                                    myContacts.push({ name: c.name[0], phone: c.tel[0] });
+                                    addedCount++;
+                                }
                             }
                         });
                         saveContacts();
                         renderContacts();
-                        speakResponse(`Synced ${contacts.length} contacts`);
-                        updateAIResponse(`✅ Synced ${contacts.length} contacts`);
+                        speakResponse(`Synced ${addedCount} contacts`);
+                        updateAIResponse(`✅ Synced ${addedCount} new contacts from device`);
+                    } else {
+                        updateAIResponse("No contacts selected");
                     }
                 } catch (error) {
-                    updateAIResponse("⚠️ Contact sync not available");
+                    console.error('Contact sync error:', error);
+                    updateAIResponse("⚠️ Contact sync not available or permission denied");
                 }
             } else {
                 updateAIResponse("⚠️ Contact API not supported in this browser");
@@ -1573,6 +1690,13 @@
             const phone = document.getElementById('newContactPhone').value.trim();
             
             if (name && phone) {
+                // Basic phone validation
+                const phoneRegex = /^[0-9\s\+\-\(\)]{10,}$/;
+                if (!phoneRegex.test(phone)) {
+                    alert('Please enter a valid phone number (minimum 10 digits)');
+                    return;
+                }
+                
                 myContacts.push({ name, phone });
                 saveContacts();
                 renderContacts();
@@ -1591,7 +1715,7 @@
         function renderContacts() {
             const list = document.getElementById('contactsList');
             if (myContacts.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No contacts yet. Add some!</p>';
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No contacts yet. Add your first contact!</p>';
                 return;
             }
             
@@ -1602,8 +1726,34 @@
                         <div class="contact-name">${contact.name}</div>
                         <div class="contact-phone">${contact.phone}</div>
                     </div>
+                    <button onclick="deleteContact('${contact.name}')" 
+                            style="background: none; border: none; color: var(--danger); cursor: pointer; padding: 8px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             `).join('');
+        }
+
+        function deleteContact(contactName) {
+            if (confirm(`Delete contact ${contactName}?`)) {
+                myContacts = myContacts.filter(c => c.name !== contactName);
+                saveContacts();
+                renderContacts();
+                updateAIResponse(`🗑️ Contact ${contactName} deleted`);
+            }
+        }
+
+        function callContact(contactName) {
+            const contact = findContact(contactName);
+            if (contact) {
+                if (confirm(`Call ${contact.name} at ${contact.phone}?`)) {
+                    // ACTUAL CALL - Uncomment for real calls
+                    // window.location.href = `tel:${contact.phone}`;
+                    
+                    updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
+                    conversationContext.lastContact = contact;
+                }
+            }
         }
 
         // ================ REMINDERS ================
@@ -1646,7 +1796,7 @@
         function renderReminders() {
             const list = document.getElementById('remindersList');
             if (reminders.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No reminders yet.</p>';
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No reminders yet.</p>';
                 return;
             }
             
@@ -1671,19 +1821,36 @@
         }
 
         function deleteReminder(id) {
-            reminders = reminders.filter(r => r.id !== id);
-            saveReminders();
-            renderReminders();
+            if (confirm('Delete this reminder?')) {
+                reminders = reminders.filter(r => r.id !== id);
+                saveReminders();
+                renderReminders();
+            }
+        }
+
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("ALTECH AI Assistant", {
+                            body: "Notifications enabled! You'll get reminder alerts.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/3448/3448737.png"
+                        });
+                    }
+                });
+            }
         }
 
         function checkAndSetReminderInterval() {
             setInterval(() => {
                 const now = new Date();
+                const notificationsEnabled = document.getElementById('enableNotifications')?.checked !== false;
+                
                 reminders.forEach(reminder => {
                     const reminderTime = new Date(reminder.time);
                     if (reminderTime <= now && reminderTime > new Date(reminderTime.getTime() - 60000)) {
                         // Fire notification
-                        if (Notification.permission === 'granted') {
+                        if (notificationsEnabled && Notification.permission === "granted") {
                             new Notification('ALTECH Reminder', {
                                 body: reminder.task,
                                 icon: 'https://cdn-icons-png.flaticon.com/512/3448/3448737.png'
@@ -1702,8 +1869,9 @@
             localStorage.setItem('quickNotes', notes);
             
             // Add to history if not empty
-            if (notes.trim()) {
-                addNoteToHistory(notes.split('\n').slice(-1)[0]);
+            const lastLine = notes.trim().split('\n').pop();
+            if (lastLine && lastLine.trim()) {
+                addNoteToHistory(lastLine.trim());
             }
         }
 
@@ -1736,7 +1904,7 @@
         function renderNotesHistory() {
             const container = document.getElementById('notesHistory');
             if (notesHistory.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent notes.</p>';
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No recent notes.</p>';
                 return;
             }
             
@@ -1794,9 +1962,10 @@
             switch(action) {
                 case 'call_last':
                     if (conversationContext.lastContact) {
-                        speakResponse(`Calling ${conversationContext.lastContact.name}`);
-                        updateAIResponse(`📞 Calling ${conversationContext.lastContact.name}`);
-                        // window.location.href = `tel:${conversationContext.lastContact.phone}`;
+                        if (confirm(`Call ${conversationContext.lastContact.name}?`)) {
+                            updateAIResponse(`📞 Calling ${conversationContext.lastContact.name}`);
+                            // window.location.href = `tel:${conversationContext.lastContact.phone}`;
+                        }
                     } else {
                         updateAIResponse("No recent contact found");
                     }
@@ -1870,8 +2039,10 @@
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
             
             // Activate selected tab
-            document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`).classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            const btn = document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`);
+            if (btn) btn.classList.add('active');
+            const pane = document.getElementById(tabId);
+            if (pane) pane.classList.add('active');
         }
 
         function speakCommand(command) {
@@ -1884,9 +2055,11 @@
             localStorage.setItem('voiceSpeed', speed);
             
             const speedValue = document.getElementById('speedValue');
-            if (speed < 0.8) speedValue.textContent = 'Slow';
-            else if (speed > 1.2) speedValue.textContent = 'Fast';
-            else speedValue.textContent = 'Normal';
+            if (speedValue) {
+                if (speed < 0.8) speedValue.textContent = 'Slow';
+                else if (speed > 1.2) speedValue.textContent = 'Fast';
+                else speedValue.textContent = 'Normal';
+            }
         }
 
         // ================ WHATSAPP INTEGRATION ================
@@ -1899,7 +2072,8 @@
             const messages = {
                 help: "Hello, I need help with ALTECH AI Assistant.",
                 feedback: "Hello, here's my feedback about ALTECH AI Assistant: ",
-                feature: "Hello, I'd like to suggest a feature for ALTECH AI Assistant: "
+                feature: "Hello, I'd like to suggest a feature for ALTECH AI Assistant: ",
+                demo: "Hello, I'd like to schedule a demo call for ALTECH AI Assistant."
             };
             
             const message = encodeURIComponent(messages[type] || "Hello, I need assistance with ALTECH AI Assistant.");
@@ -1912,6 +2086,28 @@
         }
 
         // ================ DATA MANAGEMENT ================
+        function exportData() {
+            const data = {
+                contacts: myContacts,
+                reminders: reminders,
+                notes: localStorage.getItem('quickNotes'),
+                settings: {
+                    aiProvider: currentAIProvider,
+                    voiceSpeed: voiceSpeed,
+                    theme: document.body.className
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `altech-ai-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            
+            updateAIResponse("✅ Data exported successfully");
+        }
+
         function clearAllData() {
             if (confirm('Are you sure you want to clear ALL data? This cannot be undone.')) {
                 localStorage.clear();
@@ -1942,6 +2138,16 @@
         }
         
         updateAIStatus();
+        
+        // Initialize typing indicator
+        aiOutputEl.innerHTML = `
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            Loading AI Assistant...
+        `;
     </script>
 </body>
 </html>
