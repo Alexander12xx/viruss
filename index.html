@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTECH AI - Fully Automated Assistant</title>
+    <title>ALTECH AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -12,6 +12,8 @@
             --danger: #dc3545;
             --warning: #ffc107;
             --info: #17a2b8;
+            --dark: #343a40;
+            --light: #f8f9fa;
         }
         
         * {
@@ -22,89 +24,58 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
             min-height: 100vh;
             padding: 20px;
         }
         
         .app-container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
         
         .header {
-            text-align: center;
+            background: linear-gradient(135deg, var(--primary), #0056b3);
+            color: white;
             padding: 30px;
-            background: rgba(0, 123, 255, 0.2);
-            border-radius: 20px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
         }
         
         .header h1 {
-            font-size: 2.8em;
+            font-size: 2.5em;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #00b4db, #0083b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .automation-level {
-            display: flex;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .level-badge {
-            padding: 10px 20px;
-            background: rgba(40, 167, 69, 0.2);
-            border-radius: 25px;
-            font-weight: 600;
-            border: 2px solid var(--success);
-        }
-        
-        .level-badge.max {
-            background: rgba(220, 53, 69, 0.2);
-            border-color: var(--danger);
-            animation: glow 2s infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px var(--danger); }
-            50% { box-shadow: 0 0 20px var(--danger); }
         }
         
         .main-content {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 280px 1fr;
             gap: 25px;
+            padding: 25px;
         }
         
         .sidebar {
-            background: rgba(255,255,255,0.05);
+            background: var(--light);
             padding: 25px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .voice-section {
-            background: rgba(255,255,255,0.05);
+            background: white;
             padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .voice-orb {
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, var(--primary), #0056b3);
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
             border-radius: 50%;
             margin: 0 auto 30px;
             display: flex;
@@ -112,202 +83,371 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 8px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 50px rgba(0,123,255,0.5);
-            position: relative;
+            border: 8px solid rgba(255,255,255,0.9);
+            box-shadow: 0 15px 35px rgba(0,123,255,0.4);
         }
         
-        .voice-orb::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: conic-gradient(transparent, var(--primary), transparent);
-            border-radius: 50%;
-            animation: rotate 3s linear infinite;
-        }
-        
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
+        .voice-orb:hover {
+            transform: scale(1.05);
         }
         
         .voice-orb.listening {
-            background: radial-gradient(circle, var(--danger), #bd2130);
-            animation: pulse 1s infinite;
+            background: linear-gradient(135deg, var(--danger), var(--warning));
+            animation: pulse 1.5s infinite;
         }
         
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
+        }
+        
+        .voice-orb i {
+            font-size: 3.5em;
+            color: white;
         }
         
         #status {
             font-size: 1.2em;
-            margin: 20px 0;
-            color: #a0a0a0;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
         }
         
         #transcript {
-            background: rgba(0,0,0,0.3);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 25px 0;
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
             font-size: 1.3em;
-            min-height: 100px;
+            min-height: 80px;
             border-left: 5px solid var(--primary);
-            text-align: left;
+            font-weight: 600;
         }
         
         .ai-response {
-            background: rgba(0,0,0,0.3);
+            background: #e8f4fd;
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 12px;
             margin: 25px 0;
-            text-align: left;
             border-left: 5px solid var(--success);
         }
         
-        .automation-controls {
+        .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
-            margin: 30px 0;
+            margin: 25px 0;
         }
         
-        .auto-btn {
+        .action-btn {
             padding: 20px;
-            background: linear-gradient(135deg, var(--primary), #0056b3);
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            font-size: 1.1em;
             font-weight: 600;
+            font-size: 1em;
         }
         
-        .auto-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        .action-btn:hover {
+            background: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
-        .auto-btn.call {
-            background: linear-gradient(135deg, var(--success), #1e7e34);
+        .action-btn.success {
+            background: var(--success);
         }
         
-        .auto-btn.call:hover {
-            background: linear-gradient(135deg, #218838, #1c7430);
+        .action-btn.warning {
+            background: var(--warning);
+            color: var(--dark);
         }
         
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+        .action-btn.info {
+            background: var(--info);
         }
         
-        .feature-card {
-            background: rgba(255,255,255,0.05);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 15px;
+        }
+        
+        .tab-btn {
+            padding: 15px 25px;
+            background: var(--light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
             transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
         }
         
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+        .tab-btn:hover {
+            background: #e9ecef;
         }
         
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            color: var(--primary);
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
         }
         
-        .auto-process {
-            background: rgba(0,0,0,0.3);
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .contact-item {
             padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .contact-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .note-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .reminder-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
             border-left: 5px solid var(--warning);
         }
         
-        .process-step {
+        .reminder-item.due {
+            border-left-color: var(--danger);
+            background: #fff5f5;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal h3 {
+            margin-bottom: 25px;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+            gap: 10px;
         }
         
-        .process-step.completed {
-            background: rgba(40,167,69,0.2);
-            color: #90ee90;
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .mobile-app-section {
-            background: linear-gradient(135deg, rgba(0,123,255,0.3), rgba(108,92,231,0.3));
-            padding: 30px;
-            border-radius: 20px;
-            margin-top: 30px;
-            text-align: center;
-            border: 2px solid rgba(255,255,255,0.2);
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
         }
         
-        .app-badge {
-            display: inline-block;
-            padding: 15px 30px;
-            background: white;
-            color: black;
-            border-radius: 50px;
-            margin: 15px;
-            text-decoration: none;
-            font-weight: bold;
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
             transition: all 0.3s ease;
         }
         
-        .app-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
         
-        @media (max-width: 768px) {
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .command-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .command-chip {
+            padding: 12px 20px;
+            background: var(--light);
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .command-chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 992px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
             
-            .automation-controls {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .voice-orb {
-                width: 150px;
-                height: 150px;
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 16px;
-            background: rgba(40,167,69,0.2);
-            border-radius: 20px;
-            margin: 10px;
+        @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                flex: none;
+                width: 100%;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+        
+        .search-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .search-result-item {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--info);
         }
         
         .typing-indicator {
@@ -330,222 +470,375 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        #notesTextarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        
+        #notesTextarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">
-            <h1><i class="fas fa-robot"></i> ALTECH AI - FULLY AUTOMATED</h1>
-            <p>Voice-controlled assistant with complete hands-free operation</p>
-            <div class="automation-level">
-                <span class="level-badge">🎤 Voice Recognition</span>
-                <span class="level-badge">🤖 AI Processing</span>
-                <span class="level-badge max">⚡ Full Automation</span>
-                <span class="level-badge">🦾 Accessibility Mode</span>
-            </div>
-            <div class="status-indicator">
-                <i class="fas fa-circle" style="color: #28a745;"></i>
-                <span>System: ONLINE</span>
-            </div>
+            <h1><i class="fas fa-robot"></i> ALTECH AI Assistant</h1>
+            <p>Fully functional AI assistant with contacts, notes, reminders & search</p>
         </div>
         
         <div class="main-content">
+            <!-- Sidebar -->
             <div class="sidebar">
-                <h3><i class="fas fa-sliders-h"></i> Automation Settings</h3>
-                <div style="margin: 20px 0;">
-                    <label style="display: block; margin-bottom: 10px;">Automation Level:</label>
-                    <select id="autoLevel" style="width: 100%; padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2);">
-                        <option value="full">Full Automation (Hands-free)</option>
-                        <option value="semi">Semi-Automatic</option>
-                        <option value="voice">Voice Only</option>
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h3><i class="fas fa-cog"></i> AI Settings</h3>
+                    <select id="aiMode" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e9ecef; margin-top: 10px;">
+                        <option value="smart">Smart AI Mode</option>
+                        <option value="search">Search Mode</option>
+                        <option value="simple">Simple Mode</option>
                     </select>
                 </div>
                 
-                <div style="margin: 20px 0;">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" id="autoCall" checked>
-                        Auto-press call button
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                        <input type="checkbox" id="autoConfirm" checked>
-                        Auto-confirm actions
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                        <input type="checkbox" id="autoRespond" checked>
-                        Auto-respond to messages
-                    </label>
+                <div style="margin-bottom: 30px;">
+                    <h3><i class="fas fa-chart-bar"></i> Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="contactCount">0</div>
+                            <div class="stat-label">Contacts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="noteCount">0</div>
+                            <div class="stat-label">Notes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="reminderCount">0</div>
+                            <div class="stat-label">Reminders</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="aiCount">0</div>
+                            <div class="stat-label">AI Responses</div>
+                        </div>
+                    </div>
                 </div>
                 
-                <h3><i class="fas fa-history"></i> Auto-Log</h3>
-                <div id="autoLog" style="height: 200px; overflow-y: auto; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; font-size: 0.9em;">
-                    <div style="color: #90ee90;">System initialized...</div>
-                    <div style="color: #90ee90;">Voice recognition ready...</div>
+                <div>
+                    <h3><i class="fas fa-history"></i> Recent Commands</h3>
+                    <div id="commandHistory" style="max-height: 200px; overflow-y: auto; margin-top: 15px;">
+                        <p style="text-align: center; color: #666; padding: 20px;">No commands yet</p>
+                    </div>
                 </div>
             </div>
             
+            <!-- Main Voice Section -->
             <div class="voice-section">
-                <!-- Voice Interface -->
-                <div class="voice-orb" id="voiceOrb" onclick="toggleListening()">
-                    <i class="fas fa-microphone" style="font-size: 3.5em; color: white; z-index: 1; position: relative;"></i>
-                </div>
-                
-                <div id="status">Say "Hey ALTECH" or tap to activate</div>
-                <div id="transcript">Waiting for voice command...</div>
-                
-                <div class="ai-response">
-                    <h3><i class="fas fa-brain"></i> AI Assistant</h3>
-                    <div id="aiOutput">
-                        <div class="typing-indicator">
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                        </div>
-                        Ready for full automation. Try: "Call Brian", "Send message to mom", or "Set alarm for 7 AM"
-                    </div>
-                </div>
-                
-                <!-- Automation Controls -->
-                <div class="automation-controls">
-                    <button class="auto-btn call" onclick="autoCall('Brian')">
-                        <i class="fas fa-phone-volume"></i>
-                        <span>Auto-Call</span>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="openTab('assistant')">
+                        <i class="fas fa-robot"></i> Assistant
                     </button>
-                    <button class="auto-btn" onclick="autoMessage()">
-                        <i class="fas fa-comment-dots"></i>
-                        <span>Auto-Message</span>
+                    <button class="tab-btn" onclick="openTab('contacts')">
+                        <i class="fas fa-users"></i> Contacts
                     </button>
-                    <button class="auto-btn" onclick="autoNote()">
-                        <i class="fas fa-sticky-note"></i>
-                        <span>Auto-Note</span>
+                    <button class="tab-btn" onclick="openTab('notes')">
+                        <i class="fas fa-sticky-note"></i> Notes
                     </button>
-                    <button class="auto-btn" onclick="autoReminder()">
-                        <i class="fas fa-clock"></i>
-                        <span>Auto-Reminder</span>
+                    <button class="tab-btn" onclick="openTab('reminders')">
+                        <i class="fas fa-bell"></i> Reminders
+                    </button>
+                    <button class="tab-btn" onclick="openTab('search')">
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
                 
-                <!-- Automation Process Display -->
-                <div class="auto-process">
-                    <h4><i class="fas fa-cogs"></i> Current Automation Process</h4>
-                    <div id="processSteps">
-                        <div class="process-step">
-                            <i class="fas fa-microphone"></i>
-                            <span>1. Listening for command...</span>
-                        </div>
-                        <div class="process-step">
-                            <i class="fas fa-brain"></i>
-                            <span>2. Processing intent...</span>
-                        </div>
-                        <div class="process-step">
-                            <i class="fas fa-bolt"></i>
-                            <span>3. Executing action...</span>
+                <!-- Assistant Tab -->
+                <div id="assistant" class="tab-content active">
+                    <div class="voice-orb" id="voiceOrb" onclick="toggleListening()">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    
+                    <div id="status">Click microphone and speak your command</div>
+                    <div id="transcript">Waiting for voice command...</div>
+                    
+                    <div class="ai-response">
+                        <h3><i class="fas fa-brain"></i> AI Response</h3>
+                        <div id="aiOutput">
+                            <div class="typing-indicator">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                            Initializing AI Assistant...
                         </div>
                     </div>
-                </div>
-                
-                <!-- Features Grid -->
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <h4>Auto-Calling</h4>
-                        <p>Finds contact, dials, and initiates call automatically</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-sms"></i>
-                        </div>
-                        <h4>Auto-Messaging</h4>
-                        <p>Sends SMS/WhatsApp without manual typing</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <h4>Auto-Tasks</h4>
-                        <p>Sets reminders, alarms, and schedules automatically</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
+                    
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="quickAction('add_contact')">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Contact</span>
+                        </button>
+                        <button class="action-btn success" onclick="quickAction('add_note')">
+                            <i class="fas fa-edit"></i>
+                            <span>Add Note</span>
+                        </button>
+                        <button class="action-btn warning" onclick="quickAction('add_reminder')">
+                            <i class="fas fa-bell"></i>
+                            <span>Add Reminder</span>
+                        </button>
+                        <button class="action-btn info" onclick="quickAction('search_web')">
                             <i class="fas fa-search"></i>
+                            <span>Search Web</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('check_weather')">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span>Check Weather</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('ask_ai')">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Ask AI</span>
+                        </button>
+                    </div>
+                    
+                    <div class="command-suggestions">
+                        <div class="command-chip" onclick="speakCommand('Add contact John Doe phone 0712345678')">
+                            Add Contact
                         </div>
-                        <h4>Auto-Search</h4>
-                        <p>Performs web searches and reads results aloud</p>
+                        <div class="command-chip" onclick="speakCommand('Add note meeting tomorrow at 3 PM')">
+                            Add Note
+                        </div>
+                        <div class="command-chip" onclick="speakCommand('Remind me to call mom tomorrow')">
+                            Set Reminder
+                        </div>
+                        <div class="command-chip" onclick="speakCommand('What is artificial intelligence')">
+                            Ask AI Question
+                        </div>
+                        <div class="command-chip" onclick="speakCommand('Weather in Nairobi')">
+                            Check Weather
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contacts Tab -->
+                <div id="contacts" class="tab-content">
+                    <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                        <button class="action-btn" onclick="showAddContactModal()" style="flex: 1;">
+                            <i class="fas fa-user-plus"></i> Add Contact
+                        </button>
+                        <button class="action-btn info" onclick="importContacts()" style="flex: 1;">
+                            <i class="fas fa-file-import"></i> Import Contacts
+                        </button>
+                    </div>
+                    
+                    <div id="contactsList">
+                        <p style="text-align: center; padding: 40px; color: #666;">
+                            No contacts yet. Add your first contact!
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Notes Tab -->
+                <div id="notes" class="tab-content">
+                    <div style="margin-bottom: 25px;">
+                        <textarea id="notesTextarea" placeholder="Type your notes here... (Auto-saves every 30 seconds)"></textarea>
+                        <div style="display: flex; gap: 15px;">
+                            <button class="btn btn-primary" onclick="saveNotes()">
+                                <i class="fas fa-save"></i> Save Notes
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearNotes()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-history"></i> Recent Notes</h3>
+                    <div id="notesList">
+                        <p style="text-align: center; padding: 40px; color: #666;">
+                            No notes yet. Start typing above!
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Reminders Tab -->
+                <div id="reminders" class="tab-content">
+                    <div style="margin-bottom: 25px;">
+                        <div class="form-group">
+                            <label>Reminder Text</label>
+                            <input type="text" id="reminderText" class="form-control" placeholder="What to remind?">
+                        </div>
+                        <div class="form-group">
+                            <label>Date & Time</label>
+                            <input type="datetime-local" id="reminderTime" class="form-control">
+                        </div>
+                        <button class="btn btn-primary" onclick="addReminder()" style="width: 100%;">
+                            <i class="fas fa-plus"></i> Add Reminder
+                        </button>
+                    </div>
+                    
+                    <h3><i class="fas fa-bell"></i> Active Reminders</h3>
+                    <div id="remindersList">
+                        <p style="text-align: center; padding: 40px; color: #666;">
+                            No reminders scheduled
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Search Tab -->
+                <div id="search" class="tab-content">
+                    <div style="margin-bottom: 25px;">
+                        <div class="form-group">
+                            <label>Search Query</label>
+                            <input type="text" id="searchQuery" class="form-control" placeholder="Ask anything or search the web...">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <button class="btn btn-primary" onclick="performSearch()" style="flex: 1;">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            <button class="btn btn-info" onclick="searchWikipedia()" style="flex: 1;">
+                                <i class="fab fa-wikipedia-w"></i> Wikipedia
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="searchResults" class="search-results">
+                        <p style="text-align: center; padding: 40px; color: #666;">
+                            Enter a search query above
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Mobile App Section -->
-        <div class="mobile-app-section">
-            <h3><i class="fas fa-mobile-alt"></i> For Complete Automation</h3>
-            <p>Install the native mobile app for FULL hands-free operation including auto-pressing buttons</p>
-            <div style="margin: 25px 0;">
-                <a href="#" class="app-badge" onclick="installApp('android')">
-                    <i class="fab fa-android"></i> Android App
-                </a>
-                <a href="#" class="app-badge" onclick="installApp('ios')">
-                    <i class="fab fa-apple"></i> iOS App
-                </a>
-                <a href="#" class="app-badge" onclick="installApp('pwa')">
-                    <i class="fab fa-chrome"></i> PWA Install
-                </a>
-            </div>
-            <p style="font-size: 0.9em; opacity: 0.8;">
-                <i class="fas fa-info-circle"></i> Native apps can use Accessibility Services for complete automation
-            </p>
         </div>
     </div>
+    
+    <!-- Modals -->
+    <div class="modal-overlay" id="addContactModal">
+        <div class="modal">
+            <h3><i class="fas fa-user-plus"></i> Add New Contact</h3>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="contactName" class="form-control" placeholder="Enter full name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="contactPhone" class="form-control" placeholder="e.g., 0712345678">
+            </div>
+            <div class="form-group">
+                <label>Email (Optional)</label>
+                <input type="email" id="contactEmail" class="form-control" placeholder="email@example.com">
+            </div>
+            <div class="form-group">
+                <label>Group (Optional)</label>
+                <select id="contactGroup" class="form-control">
+                    <option value="">Select Group</option>
+                    <option value="family">Family</option>
+                    <option value="friends">Friends</option>
+                    <option value="work">Work</option>
+                    <option value="emergency">Emergency</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="saveContact()">
+                    <i class="fas fa-save"></i> Save Contact
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('addContactModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        // ================ FULL AUTOMATION SYSTEM ================
+        // ================ CORE SYSTEM ================
         
-        // Core Variables
+        // Data Storage
+        let contacts = [];
+        let notes = '';
+        let reminders = [];
+        let commandHistory = [];
+        let aiResponseCount = 0;
+        
+        // Voice Recognition
         let recognition = null;
         let isListening = false;
-        let automationLevel = 'full';
-        let autoCallEnabled = true;
-        let autoConfirmEnabled = true;
-        let autoRespondEnabled = true;
         
-        // Sample Contacts
-        const contacts = [
-            { id: 1, name: "Brian Smith", phone: "+1234567890", type: "mobile" },
-            { id: 2, name: "Brian Johnson", phone: "+0987654321", type: "home" },
-            { id: 3, name: "Sarah Johnson", phone: "+1122334455", type: "mobile" },
-            { id: 4, name: "Emergency Contact", phone: "911", type: "emergency" },
-            { id: 5, name: "Mom", phone: "+1555123456", type: "mobile" }
-        ];
-        
-        // Initialize System
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Initializing Full Automation System...');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initializing ALTECH AI Assistant...');
             
-            // Initialize voice recognition
-            await initializeVoiceRecognition();
+            // Load data
+            loadAllData();
             
-            // Setup wake word detection
-            setupWakeWord();
+            // Initialize voice
+            initializeVoiceRecognition();
             
-            // Load settings
-            loadSettings();
+            // Setup auto-save
+            setupAutoSave();
+            
+            // Setup reminder checking
+            setupReminderChecks();
             
             // Show welcome
             setTimeout(() => {
-                speakResponse("ALTECH AI fully automated system initialized. Ready for hands-free operation.");
-                updateAIResponse("🤖 <strong>Full Automation Mode Active</strong><br>I can now perform tasks completely hands-free. Try saying 'Call Brian' or 'Send message to mom'");
-                logEvent('System initialized with full automation');
-                updateProcessStep(0, true);
+                showToast('ALTECH AI Assistant ready! Try voice commands or click buttons.');
+                updateAIResponse(`
+                    <h4 style="margin-bottom: 15px;">🤖 ALTECH AI Assistant Ready!</h4>
+                    <p>I can help you with:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>📝 <strong>Notes</strong> - Add and manage notes</li>
+                        <li>⏰ <strong>Reminders</strong> - Set time-based reminders</li>
+                        <li>🔍 <strong>Search</strong> - Search web & ask questions</li>
+                        <li>👥 <strong>Contacts</strong> - Manage your contacts</li>
+                        <li>🌤️ <strong>Weather</strong> - Check weather forecasts</li>
+                        <li>🤖 <strong>AI Answers</strong> - Get intelligent responses</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Try saying: <em>"Add note meeting tomorrow"</em> or <em>"What is AI?"</em></p>
+                `);
             }, 1000);
         });
         
-        // Initialize Voice Recognition
-        async function initializeVoiceRecognition() {
+        // ================ VOICE RECOGNITION ================
+        
+        function initializeVoiceRecognition() {
             try {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (!SpeechRecognition) {
-                    showError('Voice recognition not supported');
+                    showToast('Voice recognition not supported in this browser', 'error');
                     return;
                 }
                 
@@ -558,19 +851,23 @@
                     isListening = true;
                     document.getElementById('voiceOrb').classList.add('listening');
                     document.getElementById('status').textContent = '🎤 Listening... Speak now';
-                    updateProcessStep(0, true);
-                    logEvent('Voice recognition started');
+                    updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Listening...');
                 };
                 
                 recognition.onresult = (event) => {
-                    const transcript = Array.from(event.results)
-                        .map(result => result[0].transcript)
-                        .join('');
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            transcript += event.results[i][0].transcript;
+                        } else {
+                            // Show interim results
+                            document.getElementById('transcript').textContent = event.results[i][0].transcript;
+                        }
+                    }
                     
-                    document.getElementById('transcript').textContent = transcript;
-                    
-                    if (event.results[0].isFinal) {
-                        handleAutomatedCommand(transcript);
+                    if (transcript) {
+                        document.getElementById('transcript').textContent = transcript;
+                        handleVoiceCommand(transcript);
                     }
                 };
                 
@@ -578,411 +875,27 @@
                     isListening = false;
                     document.getElementById('voiceOrb').classList.remove('listening');
                     document.getElementById('status').textContent = '✅ Ready';
-                    updateProcessStep(0, false);
                 };
                 
                 recognition.onerror = (event) => {
-                    console.error('Recognition error:', event.error);
-                    showError('Voice recognition error: ' + event.error);
+                    console.error('Speech recognition error:', event.error);
+                    isListening = false;
+                    document.getElementById('voiceOrb').classList.remove('listening');
+                    
+                    if (event.error === 'not-allowed') {
+                        showToast('Microphone permission denied. Please allow microphone access.', 'error');
+                    }
                 };
                 
-                console.log('✅ Voice recognition initialized');
-                
             } catch (error) {
-                console.error('Voice init error:', error);
-                showError('Failed to initialize voice recognition');
+                console.error('Voice initialization error:', error);
+                showToast('Voice recognition initialization failed', 'error');
             }
         }
-        
-        // Setup Wake Word Detection
-        function setupWakeWord() {
-            // Simple wake word detection
-            document.addEventListener('keypress', (e) => {
-                if (e.key === ' ' || e.key === 'Enter') {
-                    toggleListening();
-                }
-            });
-            
-            // Also listen for "Hey ALTECH"
-            setTimeout(() => {
-                speakResponse("You can say 'Hey ALTECH' at any time to activate me.");
-            }, 3000);
-        }
-        
-        // Handle Automated Commands
-        async function handleAutomatedCommand(command) {
-            logEvent(`Command received: "${command}"`);
-            updateProcessStep(1, true);
-            
-            // Process the command with AI
-            const intent = await analyzeIntent(command);
-            
-            // Execute based on intent
-            await executeAutomatedAction(intent, command);
-            
-            updateProcessStep(1, false);
-        }
-        
-        // Analyze Command Intent
-        async function analyzeIntent(command) {
-            const lowerCmd = command.toLowerCase();
-            
-            if (/(call|phone|dial|ring)/i.test(lowerCmd)) {
-                return { type: 'call', command: command };
-            }
-            else if (/(message|text|sms|whatsapp)/i.test(lowerCmd)) {
-                return { type: 'message', command: command };
-            }
-            else if (/(note|remember|write)/i.test(lowerCmd)) {
-                return { type: 'note', command: command };
-            }
-            else if (/(remind|alarm|alert)/i.test(lowerCmd)) {
-                return { type: 'reminder', command: command };
-            }
-            else if (/(search|google|find)/i.test(lowerCmd)) {
-                return { type: 'search', command: command };
-            }
-            else if (/(weather|forecast)/i.test(lowerCmd)) {
-                return { type: 'weather', command: command };
-            }
-            else if (/(time|clock)/i.test(lowerCmd)) {
-                return { type: 'time', command: command };
-            }
-            else {
-                // Use AI for general queries
-                const aiResponse = await getAIResponse(command);
-                return { type: 'general', command: command, response: aiResponse };
-            }
-        }
-        
-        // Execute Automated Action
-        async function executeAutomatedAction(intent, originalCommand) {
-            updateProcessStep(2, true);
-            
-            switch(intent.type) {
-                case 'call':
-                    await performAutoCall(intent.command);
-                    break;
-                case 'message':
-                    await performAutoMessage(intent.command);
-                    break;
-                case 'note':
-                    performAutoNote(intent.command);
-                    break;
-                case 'reminder':
-                    performAutoReminder(intent.command);
-                    break;
-                case 'search':
-                    performAutoSearch(intent.command);
-                    break;
-                case 'weather':
-                    performAutoWeather(intent.command);
-                    break;
-                case 'time':
-                    performAutoTime();
-                    break;
-                case 'general':
-                    updateAIResponse(intent.response);
-                    speakResponse(intent.response);
-                    break;
-            }
-            
-            updateProcessStep(2, false);
-            logEvent(`Action completed: ${intent.type}`);
-        }
-        
-        // ================ AUTO-CALL SYSTEM ================
-        async function performAutoCall(command) {
-            const nameMatch = command.match(/(?:call|phone|dial|ring)\s+(?:me\s+)?(\w+(?:\s+\w+)?)/i);
-            
-            if (!nameMatch) {
-                speakResponse("Who would you like to call? Please say the name.");
-                return;
-            }
-            
-            const name = nameMatch[1];
-            const matchingContacts = contacts.filter(c => 
-                c.name.toLowerCase().includes(name.toLowerCase())
-            );
-            
-            if (matchingContacts.length === 0) {
-                const response = `No contact found named ${name}. Would you like to add this contact?`;
-                updateAIResponse(response);
-                speakResponse(response);
-                return;
-            }
-            
-            let contactToCall;
-            
-            if (matchingContacts.length === 1) {
-                contactToCall = matchingContacts[0];
-            } else {
-                // Multiple matches - use the first mobile contact or ask
-                contactToCall = matchingContacts.find(c => c.type === 'mobile') || matchingContacts[0];
-                speakResponse(`Found ${matchingContacts.length} contacts. Calling ${contactToCall.name}`);
-            }
-            
-            // Start the automated call process
-            await initiateAutoCall(contactToCall);
-        }
-        
-        async function initiateAutoCall(contact) {
-            logEvent(`Initiating auto-call to ${contact.name}`);
-            
-            // Step 1: Announce the call
-            speakResponse(`Calling ${contact.name} at ${formatPhone(contact.phone)}`);
-            updateAIResponse(`📞 <strong>Auto-Calling ${contact.name}</strong><br>Phone: ${contact.phone}`);
-            
-            // Step 2: Prepare call URL
-            const callUrl = `tel:${contact.phone.replace(/\D/g, '')}`;
-            
-            // Step 3: Check if we can auto-press (requires special permissions)
-            const canAutoPress = await checkAutoPressCapability();
-            
-            if (canAutoPress && autoCallEnabled) {
-                // Attempt to auto-press the call button
-                attemptAutoPressCall(callUrl, contact);
-            } else {
-                // Fallback: Open dialer with number pre-filled
-                openDialerWithNumber(contact);
-            }
-        }
-        
-        function attemptAutoPressCall(callUrl, contact) {
-            // This would require Accessibility Services in a native app
-            // For web, we simulate and provide instructions
-            
-            updateAIResponse(`
-                <div style="padding: 15px; background: rgba(40,167,69,0.2); border-radius: 10px; margin: 10px 0;">
-                    <strong>🔄 Auto-Call Process:</strong>
-                    <div class="process-step completed">
-                        <i class="fas fa-check"></i>
-                        <span>1. Contact identified: ${contact.name}</span>
-                    </div>
-                    <div class="process-step completed">
-                        <i class="fas fa-check"></i>
-                        <span>2. Number prepared: ${contact.phone}</span>
-                    </div>
-                    <div class="process-step">
-                        <i class="fas fa-phone"></i>
-                        <span>3. Opening phone app...</span>
-                    </div>
-                </div>
-                <p style="margin-top: 10px; font-size: 0.9em;">
-                    <i class="fas fa-info-circle"></i> For complete auto-dialing, install the mobile app.
-                </p>
-            `);
-            
-            // Simulate the process
-            setTimeout(() => {
-                if (isMobileDevice()) {
-                    // On mobile, open the dialer with number
-                    window.location.href = callUrl;
-                    speakResponse("Phone app opening. Number is ready to dial.");
-                } else {
-                    // On desktop, show simulation
-                    simulateCall(contact);
-                }
-            }, 2000);
-        }
-        
-        function openDialerWithNumber(contact) {
-            const phoneNumber = contact.phone.replace(/\D/g, '');
-            
-            if (isMobileDevice()) {
-                // Mobile - open dialer
-                window.location.href = `tel:${phoneNumber}`;
-                speakResponse(`Opening phone app with ${contact.name}'s number. Please press the green call button.`);
-            } else {
-                // Desktop - show instructions
-                simulateCall(contact);
-            }
-        }
-        
-        function simulateCall(contact) {
-            const callWindow = window.open('', '_blank');
-            if (callWindow) {
-                callWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Auto-Calling ${contact.name}</title>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                text-align: center;
-                                padding: 50px;
-                                background: linear-gradient(135deg, #667eea, #764ba2);
-                                color: white;
-                            }
-                            .call-screen {
-                                background: white;
-                                color: black;
-                                padding: 40px;
-                                border-radius: 20px;
-                                margin: 20px auto;
-                                max-width: 400px;
-                                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-                            }
-                            .call-button {
-                                width: 80px;
-                                height: 80px;
-                                background: #28a745;
-                                border-radius: 50%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                margin: 30px auto;
-                                cursor: pointer;
-                                animation: pulse 2s infinite;
-                            }
-                            @keyframes pulse {
-                                0% { transform: scale(1); }
-                                50% { transform: scale(1.1); }
-                                100% { transform: scale(1); }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>📞 Auto-Call Simulation</h1>
-                        <div class="call-screen">
-                            <h2>Calling: ${contact.name}</h2>
-                            <p style="font-size: 1.5em; margin: 20px 0;">${contact.phone}</p>
-                            <div class="call-button" onclick="alert('In native app, this would automatically press the call button')">
-                                <i class="fas fa-phone" style="color: white; font-size: 2em;"></i>
-                            </div>
-                            <p>In the mobile app, this call would be placed automatically</p>
-                        </div>
-                    </body>
-                    </html>
-                `);
-            }
-            
-            speakResponse(`Call simulation for ${contact.name}. In the mobile app, this would dial automatically.`);
-        }
-        
-        // ================ OTHER AUTO FUNCTIONS ================
-        
-        async function performAutoMessage(command) {
-            let contactName = '';
-            let message = '';
-            
-            if (command.includes('message to')) {
-                contactName = command.split('message to')[1]?.split('saying')[0]?.trim();
-                message = command.split('saying')[1]?.trim();
-            }
-            
-            if (!contactName) {
-                contactName = prompt("Who to message?");
-            }
-            if (!message) {
-                message = prompt("Message text?");
-            }
-            
-            const contact = contacts.find(c => c.name.toLowerCase().includes(contactName.toLowerCase()));
-            
-            if (contact) {
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappUrl = `https://wa.me/${contact.phone.replace(/\D/g, '')}?text=${encodedMessage}`;
-                
-                updateAIResponse(`💬 <strong>Auto-Message to ${contact.name}:</strong><br>"${message}"`);
-                speakResponse(`Sending message to ${contact.name}: ${message}`);
-                
-                if (autoConfirmEnabled) {
-                    setTimeout(() => {
-                        window.open(whatsappUrl, '_blank');
-                        speakResponse("Message app opening.");
-                    }, 1500);
-                }
-            }
-        }
-        
-        function performAutoNote(command) {
-            const noteText = command.replace(/add note|note that|remember that/gi, '').trim();
-            
-            if (noteText) {
-                updateAIResponse(`📝 <strong>Auto-Note Created:</strong><br>"${noteText}"`);
-                speakResponse(`Note added: ${noteText}`);
-                logEvent(`Note created: ${noteText}`);
-            }
-        }
-        
-        function performAutoReminder(command) {
-            let task = '';
-            if (command.includes('remind me to')) {
-                task = command.split('remind me to')[1]?.trim();
-            }
-            
-            if (task) {
-                const time = new Date();
-                if (command.includes('tomorrow')) time.setDate(time.getDate() + 1);
-                if (command.includes('next week')) time.setDate(time.getDate() + 7);
-                
-                updateAIResponse(`⏰ <strong>Auto-Reminder Set:</strong><br>${task}<br>Time: ${time.toLocaleString()}`);
-                speakResponse(`Reminder set for ${task}`);
-                logEvent(`Reminder created: ${task}`);
-            }
-        }
-        
-        function performAutoSearch(command) {
-            let query = '';
-            if (command.includes('search for')) {
-                query = command.split('search for')[1]?.trim();
-            }
-            
-            if (query) {
-                updateAIResponse(`🔍 <strong>Auto-Searching:</strong><br>${query}`);
-                speakResponse(`Searching for ${query}`);
-                
-                if (autoConfirmEnabled) {
-                    setTimeout(() => {
-                        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                    }, 2000);
-                }
-            }
-        }
-        
-        function performAutoWeather(command) {
-            let location = '';
-            if (command.includes('weather in')) {
-                location = command.split('weather in')[1]?.trim();
-            }
-            
-            if (location) {
-                updateAIResponse(`🌤️ <strong>Auto-Weather Check:</strong><br>Location: ${location}`);
-                speakResponse(`Checking weather for ${location}`);
-                
-                if (autoConfirmEnabled) {
-                    setTimeout(() => {
-                        window.open(`https://www.google.com/search?q=weather+${encodeURIComponent(location)}`, '_blank');
-                    }, 2000);
-                }
-            }
-        }
-        
-        function performAutoTime() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            const dateStr = now.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            updateAIResponse(`🕒 <strong>Current Time:</strong><br>${timeStr}<br>${dateStr}`);
-            speakResponse(`The time is ${timeStr} on ${dateStr}`);
-        }
-        
-        // ================ HELPER FUNCTIONS ================
         
         function toggleListening() {
             if (!recognition) {
-                showError('Voice recognition not ready');
+                showToast('Voice recognition not initialized', 'error');
                 return;
             }
             
@@ -992,183 +905,918 @@
                 try {
                     recognition.start();
                 } catch (error) {
-                    console.error('Start error:', error);
+                    showToast('Error starting voice recognition', 'error');
                 }
             }
         }
         
-        async function getAIResponse(query) {
-            // Simple AI responses
-            const responses = {
-                greeting: "Hello! I'm your fully automated ALTECH assistant. What can I do for you hands-free?",
-                help: "I can: 📞 Make calls automatically, 💬 Send messages, 📝 Take notes, ⏰ Set reminders, 🔍 Search the web, 🌤️ Check weather, and more - all without you touching anything!",
-                capabilities: "I understand natural language. Try: 'Call mom', 'Send message to Brian saying I'll be late', 'Set reminder for meeting tomorrow', or 'What's the weather like?'"
-            };
+        // ================ COMMAND HANDLING ================
+        
+        async function handleVoiceCommand(command) {
+            console.log('Command received:', command);
             
-            const lowerQuery = query.toLowerCase();
-            if (/(hello|hi|hey)/.test(lowerQuery)) return responses.greeting;
-            if (/(help|what can you do)/.test(lowerQuery)) return responses.capabilities;
+            // Add to history
+            addToHistory(command);
             
-            return `I understand: "${query}". I'll perform that action automatically for you.`;
+            // Show processing
+            updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Processing...');
+            
+            // Process command
+            await processCommand(command);
         }
         
-        function speakResponse(text) {
-            if (!('speechSynthesis' in window)) return;
+        async function processCommand(command) {
+            const lowerCmd = command.toLowerCase();
             
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-            window.speechSynthesis.speak(utterance);
+            // Contact commands
+            if (lowerCmd.includes('add contact') || lowerCmd.includes('new contact')) {
+                handleAddContactCommand(command);
+            }
+            
+            // Note commands
+            else if (lowerCmd.includes('add note') || lowerCmd.includes('note that') || lowerCmd.includes('remember')) {
+                handleAddNoteCommand(command);
+            }
+            
+            // Reminder commands
+            else if (lowerCmd.includes('remind') || lowerCmd.includes('reminder') || lowerCmd.includes('alert me')) {
+                handleAddReminderCommand(command);
+            }
+            
+            // Search/Question commands
+            else if (lowerCmd.includes('search') || lowerCmd.includes('what is') || lowerCmd.includes('how to') || 
+                     lowerCmd.includes('why') || lowerCmd.includes('who is') || lowerCmd.includes('where is')) {
+                await handleSearchCommand(command);
+            }
+            
+            // Weather commands
+            else if (lowerCmd.includes('weather')) {
+                handleWeatherCommand(command);
+            }
+            
+            // General AI questions
+            else {
+                await handleAIQuestion(command);
+            }
+        }
+        
+        // ================ CONTACT MANAGEMENT ================
+        
+        function handleAddContactCommand(command) {
+            let name = '';
+            let phone = '';
+            
+            // Extract name and phone from command
+            const phoneMatch = command.match(/(\d{10,})/);
+            if (phoneMatch) {
+                phone = phoneMatch[1];
+                name = command.replace(/add contact|new contact|\d{10,}/gi, '').trim();
+            } else {
+                // If no phone in command, show modal
+                showAddContactModal();
+                updateAIResponse("Please enter the contact details in the form.");
+                speakResponse("Please fill in the contact details.");
+                return;
+            }
+            
+            if (name && phone) {
+                addContact(name, phone);
+            } else {
+                showAddContactModal();
+            }
+        }
+        
+        function showAddContactModal() {
+            document.getElementById('addContactModal').style.display = 'flex';
+            document.getElementById('contactName').focus();
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function saveContact() {
+            const name = document.getElementById('contactName').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const group = document.getElementById('contactGroup').value;
+            
+            if (!name || !phone) {
+                showToast('Please enter name and phone number', 'error');
+                return;
+            }
+            
+            // Basic phone validation
+            if (!/^[\d\s\-\+\(\)]{10,}$/.test(phone.replace(/\s/g, ''))) {
+                showToast('Please enter a valid phone number', 'error');
+                return;
+            }
+            
+            addContact(name, phone, email, group);
+            closeModal('addContactModal');
+            
+            // Clear form
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactPhone').value = '';
+            document.getElementById('contactEmail').value = '';
+            document.getElementById('contactGroup').value = '';
+        }
+        
+        function addContact(name, phone, email = '', group = '') {
+            const contact = {
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                email: email,
+                group: group,
+                created: new Date().toISOString()
+            };
+            
+            contacts.push(contact);
+            saveContacts();
+            updateContactsDisplay();
+            
+            const message = `Contact "${name}" added successfully`;
+            updateAIResponse(`✅ <strong>Contact Added</strong><br>Name: ${name}<br>Phone: ${phone}`);
+            speakResponse(message);
+            showToast(message);
+        }
+        
+        function importContacts() {
+            // Simulate importing sample contacts
+            const sampleContacts = [
+                { id: Date.now() + 1, name: "John Doe", phone: "0712345678", email: "john@example.com", group: "friends" },
+                { id: Date.now() + 2, name: "Jane Smith", phone: "0798765432", email: "jane@example.com", group: "work" },
+                { id: Date.now() + 3, name: "Emergency", phone: "911", email: "", group: "emergency" }
+            ];
+            
+            sampleContacts.forEach(contact => contacts.push(contact));
+            saveContacts();
+            updateContactsDisplay();
+            
+            showToast(`Imported ${sampleContacts.length} sample contacts`);
+            updateAIResponse(`✅ Imported ${sampleContacts.length} sample contacts`);
+        }
+        
+        function deleteContact(id) {
+            if (confirm('Delete this contact?')) {
+                contacts = contacts.filter(c => c.id !== id);
+                saveContacts();
+                updateContactsDisplay();
+                showToast('Contact deleted');
+            }
+        }
+        
+        // ================ NOTES MANAGEMENT ================
+        
+        function handleAddNoteCommand(command) {
+            let noteText = '';
+            
+            if (command.includes('add note')) {
+                noteText = command.split('add note')[1]?.trim();
+            } else if (command.includes('note that')) {
+                noteText = command.split('note that')[1]?.trim();
+            } else if (command.includes('remember')) {
+                noteText = command.split('remember')[1]?.trim();
+            }
+            
+            if (!noteText) {
+                noteText = prompt("What would you like to note?");
+                if (!noteText) return;
+            }
+            
+            addNote(noteText);
+        }
+        
+        function addNote(text) {
+            // Add to notes textarea
+            const notesTextarea = document.getElementById('notesTextarea');
+            const timestamp = new Date().toLocaleString();
+            const newNote = `[${timestamp}] ${text}\n`;
+            
+            notesTextarea.value = newNote + notesTextarea.value;
+            saveNotes();
+            
+            // Update recent notes display
+            updateNotesDisplay();
+            
+            const message = `Note added: ${text.substring(0, 50)}...`;
+            updateAIResponse(`📝 <strong>Note Added</strong><br>"${text}"`);
+            speakResponse(message);
+            showToast('Note saved!');
+        }
+        
+        function saveNotes() {
+            const notesText = document.getElementById('notesTextarea').value;
+            localStorage.setItem('altech_notes', notesText);
+            updateNotesDisplay();
+            showToast('Notes saved!', 'success');
+        }
+        
+        function clearNotes() {
+            if (confirm('Clear all notes?')) {
+                document.getElementById('notesTextarea').value = '';
+                saveNotes();
+                showToast('All notes cleared');
+            }
+        }
+        
+        // ================ REMINDERS MANAGEMENT ================
+        
+        function handleAddReminderCommand(command) {
+            let reminderText = '';
+            let timeText = '';
+            
+            if (command.includes('remind me to')) {
+                reminderText = command.split('remind me to')[1]?.trim();
+            } else if (command.includes('reminder for')) {
+                reminderText = command.split('reminder for')[1]?.trim();
+            }
+            
+            if (!reminderText) {
+                reminderText = prompt("What should I remind you about?");
+                if (!reminderText) return;
+            }
+            
+            // Parse time
+            const time = parseTimeFromCommand(command);
+            addReminderFromCommand(reminderText, time);
+        }
+        
+        function parseTimeFromCommand(command) {
+            const now = new Date();
+            const time = new Date(now);
+            
+            if (command.includes('tomorrow')) {
+                time.setDate(time.getDate() + 1);
+            }
+            if (command.includes('next week')) {
+                time.setDate(time.getDate() + 7);
+            }
+            if (command.includes('in 1 hour') || command.includes('in one hour')) {
+                time.setHours(time.getHours() + 1);
+            }
+            if (command.includes('in 30 minutes')) {
+                time.setMinutes(time.getMinutes() + 30);
+            }
+            
+            // Try to parse specific time
+            const timeMatch = command.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+            if (timeMatch) {
+                let hours = parseInt(timeMatch[1]);
+                const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+                const period = timeMatch[3]?.toLowerCase();
+                
+                if (period === 'pm' && hours < 12) hours += 12;
+                if (period === 'am' && hours === 12) hours = 0;
+                
+                time.setHours(hours, minutes, 0, 0);
+            }
+            
+            return time;
+        }
+        
+        function addReminderFromCommand(text, time) {
+            const reminder = {
+                id: Date.now(),
+                text: text,
+                time: time.toISOString(),
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveReminders();
+            updateRemindersDisplay();
+            
+            const timeStr = time.toLocaleString();
+            updateAIResponse(`⏰ <strong>Reminder Set</strong><br>${text}<br>Time: ${timeStr}`);
+            speakResponse(`Reminder set for ${text}`);
+            showToast('Reminder set!');
+        }
+        
+        function addReminder() {
+            const text = document.getElementById('reminderText').value.trim();
+            const timeStr = document.getElementById('reminderTime').value;
+            
+            if (!text || !timeStr) {
+                showToast('Please enter reminder text and time', 'error');
+                return;
+            }
+            
+            const time = new Date(timeStr);
+            const reminder = {
+                id: Date.now(),
+                text: text,
+                time: time.toISOString(),
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveReminders();
+            updateRemindersDisplay();
+            
+            // Clear inputs
+            document.getElementById('reminderText').value = '';
+            const now = new Date();
+            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
+            
+            showToast('Reminder added!');
+        }
+        
+        function deleteReminder(id) {
+            if (confirm('Delete this reminder?')) {
+                reminders = reminders.filter(r => r.id !== id);
+                saveReminders();
+                updateRemindersDisplay();
+                showToast('Reminder deleted');
+            }
+        }
+        
+        // ================ SEARCH FUNCTIONALITY ================
+        
+        async function handleSearchCommand(command) {
+            let query = '';
+            
+            if (command.includes('search for')) {
+                query = command.split('search for')[1]?.trim();
+            } else if (command.includes('what is')) {
+                query = command.split('what is')[1]?.trim();
+            } else if (command.includes('how to')) {
+                query = command.split('how to')[1]?.trim();
+            } else if (command.includes('who is')) {
+                query = command.split('who is')[1]?.trim();
+            } else if (command.includes('where is')) {
+                query = command.split('where is')[1]?.trim();
+            } else {
+                query = command;
+            }
+            
+            if (!query) {
+                query = prompt("What would you like to search for?");
+                if (!query) return;
+            }
+            
+            await performSmartSearch(query, command);
+        }
+        
+        async function performSmartSearch(query, originalCommand = '') {
+            updateAIResponse(`🔍 <strong>Searching:</strong> ${query}`);
+            speakResponse(`Searching for ${query}`);
+            
+            // Try to get AI response first
+            try {
+                const aiResponse = await getAIResponse(query);
+                aiResponseCount++;
+                updateStats();
+                
+                updateAIResponse(`
+                    <div style="margin-bottom: 15px;">
+                        <strong>🔍 Search Query:</strong> ${query}
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef;">
+                        <strong>🤖 AI Answer:</strong>
+                        <p>${aiResponse}</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(query)}', '_blank')" style="padding: 10px 20px;">
+                            <i class="fas fa-external-link-alt"></i> Open in Google
+                        </button>
+                    </div>
+                `);
+                
+                // Also speak the response
+                speakResponse(aiResponse.substring(0, 150) + '...');
+                
+            } catch (error) {
+                console.error('AI search error:', error);
+                // Fallback to regular search
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                updateAIResponse(`🔍 <strong>Search Results:</strong><br>Opened Google search for "${query}"`);
+            }
+        }
+        
+        async function performSearch() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                showToast('Please enter a search query', 'error');
+                return;
+            }
+            
+            await performSmartSearch(query);
+        }
+        
+        function searchWikipedia() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                showToast('Please enter a search query', 'error');
+                return;
+            }
+            
+            window.open(`https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`, '_blank');
+            updateAIResponse(`📚 <strong>Wikipedia Search:</strong><br>Searching for "${query}" on Wikipedia`);
+            showToast('Opening Wikipedia...');
+        }
+        
+        // ================ WEATHER FUNCTIONALITY ================
+        
+        function handleWeatherCommand(command) {
+            let location = '';
+            
+            if (command.includes('weather in')) {
+                location = command.split('weather in')[1]?.trim();
+            } else if (command.includes('weather at')) {
+                location = command.split('weather at')[1]?.trim();
+            } else {
+                location = prompt("Which location?", "your current location");
+            }
+            
+            if (location) {
+                getWeather(location);
+            } else {
+                getWeather('current location');
+            }
+        }
+        
+        async function getWeather(location) {
+            updateAIResponse(`🌤️ <strong>Checking weather for:</strong> ${location}`);
+            speakResponse(`Checking weather for ${location}`);
+            
+            // For demo, simulate weather data
+            const weatherData = {
+                location: location,
+                temperature: Math.floor(Math.random() * 30) + 15,
+                condition: ['Sunny', 'Cloudy', 'Rainy', 'Partly Cloudy'][Math.floor(Math.random() * 4)],
+                humidity: Math.floor(Math.random() * 60) + 30,
+                wind: Math.floor(Math.random() * 20) + 5
+            };
+            
+            setTimeout(() => {
+                updateAIResponse(`
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 25px; border-radius: 12px;">
+                        <h4 style="margin-bottom: 15px;">🌤️ Weather for ${weatherData.location}</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                            <div>
+                                <strong>Temperature:</strong><br>
+                                <span style="font-size: 2em;">${weatherData.temperature}°C</span>
+                            </div>
+                            <div>
+                                <strong>Condition:</strong><br>
+                                <span style="font-size: 1.5em;">${weatherData.condition}</span>
+                            </div>
+                            <div>
+                                <strong>Humidity:</strong><br>
+                                ${weatherData.humidity}%
+                            </div>
+                            <div>
+                                <strong>Wind Speed:</strong><br>
+                                ${weatherData.wind} km/h
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <button class="btn" onclick="window.open('https://www.google.com/search?q=weather+${encodeURIComponent(location)}', '_blank')" style="background: white; color: #764ba2;">
+                                <i class="fas fa-external-link-alt"></i> More Details
+                            </button>
+                        </div>
+                    </div>
+                `);
+                
+                speakResponse(`Weather in ${location}: ${weatherData.temperature} degrees, ${weatherData.condition}`);
+            }, 1500);
+        }
+        
+        // ================ AI RESPONSES ================
+        
+        async function handleAIQuestion(question) {
+            aiResponseCount++;
+            updateStats();
+            
+            updateAIResponse('<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Thinking...');
+            
+            try {
+                const response = await getAIResponse(question);
+                updateAIResponse(`
+                    <div style="margin-bottom: 10px;">
+                        <strong>🤖 Question:</strong> ${question}
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef;">
+                        <strong>💡 Answer:</strong>
+                        <p>${response}</p>
+                    </div>
+                `);
+                speakResponse(response.substring(0, 100) + '...');
+            } catch (error) {
+                console.error('AI error:', error);
+                const fallback = getLocalAIResponse(question);
+                updateAIResponse(fallback);
+                speakResponse("Here's what I can tell you about that.");
+            }
+        }
+        
+        async function getAIResponse(query) {
+            // Try multiple free AI endpoints
+            const endpoints = [
+                {
+                    url: 'https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-70b-chat-hf',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer dc2bc3e2cdd2c6ccad9f5df96d0df850c4e284b7'
+                    },
+                    body: {
+                        input: query,
+                        max_new_tokens: 150
+                    }
+                },
+                {
+                    url: 'https://free.churchless.tech/v1/chat/completions',
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: {
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: query }],
+                        max_tokens: 200
+                    }
+                }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint.url, {
+                        method: endpoint.method,
+                        headers: endpoint.headers,
+                        body: JSON.stringify(endpoint.body)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.choices?.[0]?.message?.content) {
+                            return data.choices[0].message.content;
+                        }
+                        if (data.results?.[0]?.generated_text) {
+                            return data.results[0].generated_text;
+                        }
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            // Fallback to local responses
+            return getLocalAIResponse(query);
+        }
+        
+        function getLocalAIResponse(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Common questions and answers
+            const responses = {
+                greeting: ["Hello! How can I help you today?", "Hi there! What can I do for you?", "Hey! Ready to assist you."],
+                time: [`The current time is ${new Date().toLocaleTimeString()}`],
+                date: [`Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`],
+                help: "I can help with: 📝 Notes, ⏰ Reminders, 🔍 Web search, 🌤️ Weather, 👥 Contacts, and answering questions!",
+                ai: "Artificial Intelligence (AI) refers to computer systems that can perform tasks that normally require human intelligence, like understanding language, recognizing images, or making decisions.",
+                weather: "I can check weather for any location. Just say 'weather in [city name]'.",
+                note: "To add a note, say 'Add note [your note]' or type in the Notes tab.",
+                reminder: "To set a reminder, say 'Remind me to [task] [time]' or use the Reminders tab."
+            };
+            
+            if (/(hello|hi|hey)/.test(lowerQuery)) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            }
+            if (/(time|what.time)/.test(lowerQuery)) {
+                return responses.time[0];
+            }
+            if (/(date|today|what.date)/.test(lowerQuery)) {
+                return responses.date[0];
+            }
+            if (/(help|what.can.you.do)/.test(lowerQuery)) {
+                return responses.help;
+            }
+            if (/(artificial.intelligence|what.is.ai)/.test(lowerQuery)) {
+                return responses.ai;
+            }
+            if (/(note|notes)/.test(lowerQuery)) {
+                return responses.note;
+            }
+            if (/(remind|reminder)/.test(lowerQuery)) {
+                return responses.reminder;
+            }
+            
+            return `I understand you're asking about "${query}". I can help you search for this information or you can ask me specific questions.`;
+        }
+        
+        // ================ QUICK ACTIONS ================
+        
+        function quickAction(action) {
+            switch(action) {
+                case 'add_contact':
+                    showAddContactModal();
+                    break;
+                case 'add_note':
+                    const note = prompt("Enter your note:");
+                    if (note) addNote(note);
+                    break;
+                case 'add_reminder':
+                    openTab('reminders');
+                    document.getElementById('reminderText').focus();
+                    break;
+                case 'search_web':
+                    const search = prompt("What to search for?");
+                    if (search) performSmartSearch(search);
+                    break;
+                case 'check_weather':
+                    const location = prompt("Weather location?", "Nairobi");
+                    if (location) getWeather(location);
+                    break;
+                case 'ask_ai':
+                    const question = prompt("Ask me anything:");
+                    if (question) handleAIQuestion(question);
+                    break;
+            }
+        }
+        
+        function speakCommand(command) {
+            document.getElementById('transcript').textContent = command;
+            handleVoiceCommand(command);
+        }
+        
+        // ================ UI UPDATES ================
+        
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active to clicked button
+            event.target.classList.add('active');
+            
+            // Focus appropriate field
+            if (tabId === 'search') {
+                setTimeout(() => document.getElementById('searchQuery').focus(), 100);
+            } else if (tabId === 'notes') {
+                setTimeout(() => document.getElementById('notesTextarea').focus(), 100);
+            }
+        }
+        
+        function updateContactsDisplay() {
+            const container = document.getElementById('contactsList');
+            
+            if (contacts.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No contacts yet. Add your first contact!</p>';
+                return;
+            }
+            
+            container.innerHTML = contacts.map(contact => `
+                <div class="contact-item">
+                    <div>
+                        <strong style="font-size: 1.1em;">${contact.name}</strong><br>
+                        <span>📞 ${contact.phone}</span>
+                        ${contact.email ? `<br><span>📧 ${contact.email}</span>` : ''}
+                        ${contact.group ? `<br><span style="background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.9em;">${contact.group}</span>` : ''}
+                    </div>
+                    <div>
+                        <button onclick="deleteContact(${contact.id})" style="padding: 8px 15px; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            updateStats();
+        }
+        
+        function updateNotesDisplay() {
+            const container = document.getElementById('notesList');
+            const notesText = document.getElementById('notesTextarea').value;
+            
+            if (!notesText.trim()) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No notes yet. Start typing above!</p>';
+                return;
+            }
+            
+            // Show last 5 notes
+            const lines = notesText.split('\n').filter(line => line.trim());
+            const recentNotes = lines.slice(0, 5);
+            
+            container.innerHTML = recentNotes.map(note => `
+                <div class="note-item">
+                    <p>${note}</p>
+                </div>
+            `).join('');
+            
+            updateStats();
+        }
+        
+        function updateRemindersDisplay() {
+            const container = document.getElementById('remindersList');
+            const now = new Date();
+            
+            if (reminders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No reminders scheduled</p>';
+                return;
+            }
+            
+            const activeReminders = reminders.filter(r => r.active);
+            
+            if (activeReminders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No active reminders</p>';
+                return;
+            }
+            
+            container.innerHTML = activeReminders.map(reminder => {
+                const time = new Date(reminder.time);
+                const isDue = time <= now;
+                
+                return `
+                    <div class="reminder-item ${isDue ? 'due' : ''}">
+                        <p><strong>${reminder.text}</strong></p>
+                        <p style="color: #666; margin-top: 10px;">
+                            <i class="fas fa-clock"></i> ${time.toLocaleString()}
+                        </p>
+                        <button onclick="deleteReminder(${reminder.id})" style="margin-top: 10px; padding: 8px 15px; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('contactCount').textContent = contacts.length;
+            document.getElementById('noteCount').textContent = document.getElementById('notesTextarea').value.split('\n').filter(l => l.trim()).length;
+            document.getElementById('reminderCount').textContent = reminders.filter(r => r.active).length;
+            document.getElementById('aiCount').textContent = aiResponseCount;
         }
         
         function updateAIResponse(html) {
             document.getElementById('aiOutput').innerHTML = html;
         }
         
-        function updateProcessStep(stepIndex, active) {
-            const steps = document.querySelectorAll('.process-step');
-            if (steps[stepIndex]) {
-                steps[stepIndex].classList.toggle('completed', active);
+        function addToHistory(command) {
+            commandHistory.unshift({
+                command: command,
+                time: new Date().toLocaleTimeString()
+            });
+            
+            if (commandHistory.length > 5) {
+                commandHistory = commandHistory.slice(0, 5);
+            }
+            
+            // Update history display
+            const container = document.getElementById('commandHistory');
+            container.innerHTML = commandHistory.map(item => `
+                <div style="padding: 10px; border-bottom: 1px solid #e9ecef;">
+                    <div style="color: #666; font-size: 0.9em;">${item.time}</div>
+                    <div>"${item.command.substring(0, 40)}${item.command.length > 40 ? '...' : ''}"</div>
+                </div>
+            `).join('');
+            
+            saveHistory();
+        }
+        
+        // ================ DATA MANAGEMENT ================
+        
+        function loadAllData() {
+            // Load contacts
+            const savedContacts = localStorage.getItem('altech_contacts');
+            contacts = savedContacts ? JSON.parse(savedContacts) : [];
+            
+            // Load notes
+            const savedNotes = localStorage.getItem('altech_notes');
+            document.getElementById('notesTextarea').value = savedNotes || '';
+            
+            // Load reminders
+            const savedReminders = localStorage.getItem('altech_reminders');
+            reminders = savedReminders ? JSON.parse(savedReminders) : [];
+            
+            // Load history
+            const savedHistory = localStorage.getItem('altech_history');
+            commandHistory = savedHistory ? JSON.parse(savedHistory) : [];
+            
+            // Load AI count
+            aiResponseCount = parseInt(localStorage.getItem('altech_ai_count') || '0');
+            
+            // Update displays
+            updateContactsDisplay();
+            updateNotesDisplay();
+            updateRemindersDisplay();
+            updateStats();
+        }
+        
+        function saveContacts() {
+            localStorage.setItem('altech_contacts', JSON.stringify(contacts));
+            updateStats();
+        }
+        
+        function saveNotes() {
+            localStorage.setItem('altech_notes', document.getElementById('notesTextarea').value);
+            updateStats();
+        }
+        
+        function saveReminders() {
+            localStorage.setItem('altech_reminders', JSON.stringify(reminders));
+            updateStats();
+        }
+        
+        function saveHistory() {
+            localStorage.setItem('altech_history', JSON.stringify(commandHistory));
+            localStorage.setItem('altech_ai_count', aiResponseCount.toString());
+        }
+        
+        // ================ UTILITY FUNCTIONS ================
+        
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? 'var(--danger)' : 
+                                  type === 'success' ? 'var(--success)' : 'var(--dark)';
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+        
+        function speakResponse(text) {
+            if (!text) return;
+            
+            try {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } catch (error) {
+                console.error('Speech synthesis error:', error);
             }
         }
         
-        function logEvent(message) {
-            const logDiv = document.getElementById('autoLog');
-            const entry = document.createElement('div');
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            entry.style.color = '#90ee90';
-            logDiv.appendChild(entry);
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
-        
-        function showError(message) {
-            logEvent(`ERROR: ${message}`);
-            speakResponse(`Error: ${message}`);
-        }
-        
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        
-        function formatPhone(phone) {
-            return phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-        }
-        
-        async function checkAutoPressCapability() {
-            // In a real native app, this would check Accessibility Service permissions
-            // For web, we return false (limited capability)
-            return false;
-        }
-        
-        function loadSettings() {
-            const autoLevel = document.getElementById('autoLevel');
-            const autoCall = document.getElementById('autoCall');
-            const autoConfirm = document.getElementById('autoConfirm');
-            const autoRespond = document.getElementById('autoRespond');
+        function setupAutoSave() {
+            // Auto-save notes every 30 seconds
+            setInterval(() => {
+                if (document.getElementById('notesTextarea').value.trim()) {
+                    saveNotes();
+                }
+            }, 30000);
             
-            if (autoLevel) autoLevel.value = automationLevel;
-            if (autoCall) autoCall.checked = autoCallEnabled;
-            if (autoConfirm) autoConfirm.checked = autoConfirmEnabled;
-            if (autoRespond) autoRespond.checked = autoRespondEnabled;
-            
-            // Add event listeners
-            if (autoLevel) autoLevel.addEventListener('change', (e) => {
-                automationLevel = e.target.value;
-                logEvent(`Automation level changed to: ${automationLevel}`);
-            });
-            
-            if (autoCall) autoCall.addEventListener('change', (e) => {
-                autoCallEnabled = e.target.checked;
-                logEvent(`Auto-call ${autoCallEnabled ? 'enabled' : 'disabled'}`);
-            });
-            
-            if (autoConfirm) autoConfirm.addEventListener('change', (e) => {
-                autoConfirmEnabled = e.target.checked;
-                logEvent(`Auto-confirm ${autoConfirmEnabled ? 'enabled' : 'disabled'}`);
-            });
-            
-            if (autoRespond) autoRespond.addEventListener('change', (e) => {
-                autoRespondEnabled = e.target.checked;
-                logEvent(`Auto-respond ${autoRespondEnabled ? 'enabled' : 'disabled'}`);
-            });
+            // Auto-save other data every minute
+            setInterval(() => {
+                saveContacts();
+                saveReminders();
+                saveHistory();
+            }, 60000);
         }
         
-        // ================ PUBLIC FUNCTIONS ================
-        
-        function autoCall(name) {
-            const command = `Call ${name}`;
-            document.getElementById('transcript').textContent = command;
-            handleAutomatedCommand(command);
-        }
-        
-        function autoMessage() {
-            const contact = prompt("Contact name?");
-            const message = prompt("Message?");
-            if (contact && message) {
-                const command = `Send message to ${contact} saying ${message}`;
-                document.getElementById('transcript').textContent = command;
-                handleAutomatedCommand(command);
-            }
-        }
-        
-        function autoNote() {
-            const note = prompt("Note text?");
-            if (note) {
-                const command = `Add note ${note}`;
-                document.getElementById('transcript').textContent = command;
-                handleAutomatedCommand(command);
-            }
-        }
-        
-        function autoReminder() {
-            const task = prompt("Reminder for?");
-            const time = prompt("When? (e.g., 'tomorrow at 3 PM')");
-            if (task && time) {
-                const command = `Remind me to ${task} ${time}`;
-                document.getElementById('transcript').textContent = command;
-                handleAutomatedCommand(command);
-            }
-        }
-        
-        function installApp(platform) {
-            let message = '';
-            
-            switch(platform) {
-                case 'android':
-                    message = "Android app provides full Accessibility Service access for complete automation including auto-pressing buttons.";
-                    window.open('https://play.google.com/store/apps/details?id=com.example.altechai', '_blank');
-                    break;
-                case 'ios':
-                    message = "iOS app uses Voice Control and Accessibility features for hands-free operation.";
-                    window.open('https://apps.apple.com/app/altech-ai-assistant/id1234567890', '_blank');
-                    break;
-                case 'pwa':
-                    message = "Progressive Web App with enhanced capabilities for hands-free use.";
-                    if ('serviceWorker' in navigator) {
-                        navigator.serviceWorker.register('/sw.js');
-                        showInstallPrompt();
+        function setupReminderChecks() {
+            // Check reminders every minute
+            setInterval(() => {
+                const now = new Date();
+                reminders.forEach(reminder => {
+                    if (reminder.active) {
+                        const time = new Date(reminder.time);
+                        const timeDiff = time - now;
+                        
+                        // Check if reminder is due (within 1 minute)
+                        if (timeDiff > 0 && timeDiff < 60000) {
+                            showToast(`⏰ Reminder: ${reminder.text}`, 'warning');
+                            speakResponse(`Reminder: ${reminder.text}`);
+                            reminder.active = false;
+                            saveReminders();
+                            updateRemindersDisplay();
+                        }
                     }
-                    break;
+                });
+            }, 60000);
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + / to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                openTab('search');
             }
             
-            logEvent(`App installation initiated: ${platform}`);
-            speakResponse(message);
-        }
-        
-        function showInstallPrompt() {
-            if ('BeforeInstallPromptEvent' in window) {
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    e.prompt();
-                    logEvent('PWA install prompt shown');
-                });
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                closeModal('addContactModal');
             }
-        }
+        });
         
-        // Initialize
-        console.log('✅ Full Automation System Ready');
-        
+        console.log('✅ ALTECH AI Assistant fully loaded and ready!');
     </script>
 </body>
 </html>
