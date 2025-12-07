@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTECH AI Assistant - Full Working Version</title>
+    <title>ALTECH AI Assistant </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
     <style>
         :root {
             --primary: #007bff;
@@ -18,6 +19,13 @@
             --dark: #343a40;
             --background: #f4f7f9;
             --surface: #ffffff;
+            --study: #4CAF50;
+            --business: #9C27B0;
+            --entertainment: #FF9800;
+        }
+        
+        * {
+            box-sizing: border-box;
         }
         
         body {
@@ -26,6 +34,7 @@
             padding: 0;
             background: var(--background);
             color: var(--dark);
+            overflow-x: hidden;
         }
         
         .app-container {
@@ -42,6 +51,19 @@
             border-radius: 15px;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .header-badge {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: var(--warning);
+            color: var(--dark);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
         }
         
         .main-content {
@@ -55,6 +77,9 @@
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
         }
         
         .voice-section {
@@ -78,16 +103,25 @@
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(0,123,255,0.3);
             border: 5px solid rgba(255,255,255,0.8);
-        }
-        
-        .voice-orb:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0,123,255,0.4);
+            position: relative;
         }
         
         .voice-orb.listening {
             animation: pulse 1.5s infinite;
             background: linear-gradient(135deg, var(--danger), var(--warning));
+        }
+        
+        .wake-word {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
         }
         
         @keyframes pulse {
@@ -112,6 +146,7 @@
             border-radius: 10px;
             margin: 20px 0;
             border-left: 5px solid var(--success);
+            text-align: left;
         }
         
         .quick-actions {
@@ -133,11 +168,25 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
+            font-weight: 600;
         }
         
         .action-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .action-btn.study {
+            background: var(--study);
+        }
+        
+        .action-btn.business {
+            background: var(--business);
+        }
+        
+        .action-btn.entertainment {
+            background: var(--entertainment);
         }
         
         .tabs {
@@ -176,7 +225,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .contact-item {
+        .task-item, .contact-item, .note-item, .reminder-item {
             padding: 15px;
             background: var(--light);
             border-radius: 8px;
@@ -184,38 +233,251 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .mobile-app-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            margin-top: 30px;
-            animation: slideUp 0.5s ease;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .install-btn {
-            display: inline-block;
-            padding: 15px 30px;
-            background: white;
-            color: #764ba2;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 15px;
             transition: all 0.3s ease;
         }
         
-        .install-btn:hover {
+        .task-item:hover, .contact-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .task-priority {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .priority-high { background: #ffebee; color: #c62828; }
+        .priority-medium { background: #fff3e0; color: #ef6c00; }
+        .priority-low { background: #e8f5e9; color: #2e7d32; }
+        
+        .task-completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .command-example {
+            display: inline-block;
+            background: var(--light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #ddd;
+        }
+        
+        .command-example:hover {
+            background: var(--primary);
+            color: white;
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .mode-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .exam-question {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .option {
+            padding: 12px;
+            margin: 10px 0;
+            background: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid var(--success);
+        }
+        
+        .option.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid var(--danger);
+        }
+        
+        .music-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .flashlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .flashlight.active {
+            display: block;
+            animation: flash 0.3s ease;
+        }
+        
+        @keyframes flash {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .joke-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+        
+        .decision-wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            margin: 30px auto;
+            position: relative;
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            border: 10px solid var(--primary);
+            overflow: hidden;
+        }
+        
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid var(--danger);
+        }
+        
+        .admin-panel {
+            background: var(--dark);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
         }
         
         .toast {
@@ -229,6 +491,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 1000;
             animation: slideInRight 0.3s ease;
+            max-width: 300px;
         }
         
         @keyframes slideInRight {
@@ -255,17 +518,68 @@
                 grid-template-columns: 1fr;
             }
             
-            .quick-actions {
+            .quick-actions, .feature-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .decision-wheel {
+                width: 250px;
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .quick-actions, .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                justify-content: center;
+            }
+            
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9em;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Flashlight Overlay -->
+    <div class="flashlight" id="flashlight"></div>
+    
+    <!-- Mode Indicator -->
+    <div class="mode-indicator" id="modeIndicator">
+        <i class="fas fa-robot"></i> Smart Mode
+    </div>
+    
     <div class="app-container">
         <div class="header">
+            <div class="header-badge">100% FREE</div>
             <h1><i class="fas fa-robot"></i> ALTECH AI Assistant</h1>
-            <p>Voice-controlled intelligent assistant with real calling & messaging</p>
+            <p>Voice-controlled intelligent assistant for Students, Developers & Hustlers</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="taskCount">0</div>
+                    <div>Active Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="noteCount">0</div>
+                    <div>Notes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="reminderCount">0</div>
+                    <div>Reminders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="commandCount">0</div>
+                    <div>Commands</div>
+                </div>
+            </div>
         </div>
         
         <div class="main-content">
@@ -273,11 +587,12 @@
                 <div class="sidebar-section">
                     <h3><i class="fas fa-cog"></i> Settings</h3>
                     <div style="margin: 15px 0;">
-                        <label>AI Provider:</label>
-                        <select id="aiProvider" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
-                            <option value="smart">Smart Mode (Auto)</option>
-                            <option value="chatgpt">ChatGPT</option>
-                            <option value="local">Local AI</option>
+                        <label>AI Mode:</label>
+                        <select id="aiMode" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="smart">Smart Assistant</option>
+                            <option value="study">Study Mode</option>
+                            <option value="business">Business Mode</option>
+                            <option value="entertainment">Entertainment Mode</option>
                         </select>
                     </div>
                     
@@ -291,8 +606,17 @@
                         </div>
                     </div>
                     
+                    <div style="margin: 15px 0;">
+                        <label>Wake Word:</label>
+                        <input type="text" id="wakeWord" value="Hey ALTECH" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                    
                     <button id="aiToggle" class="action-btn" style="width: 100%; margin-top: 10px;">
                         <i class="fas fa-brain"></i> AI: ON
+                    </button>
+                    
+                    <button onclick="toggleAdmin()" class="action-btn" style="width: 100%; margin-top: 10px; background: var(--dark);">
+                        <i class="fas fa-lock"></i> Admin Panel
                     </button>
                 </div>
                 
@@ -302,19 +626,42 @@
                         <p style="text-align: center; color: #666; padding: 20px;">No commands yet</p>
                     </div>
                 </div>
+                
+                <div class="sidebar-section" style="margin-top: 25px;">
+                    <h3><i class="fas fa-bolt"></i> Quick Features</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <button onclick="openTab('tasks')" class="action-btn">
+                            <i class="fas fa-tasks"></i> Task Manager
+                        </button>
+                        <button onclick="openTab('study')" class="action-btn study">
+                            <i class="fas fa-graduation-cap"></i> Study Mode
+                        </button>
+                        <button onclick="openTab('business')" class="action-btn business">
+                            <i class="fas fa-briefcase"></i> Business Tools
+                        </button>
+                        <button onclick="openTab('entertainment')" class="action-btn entertainment">
+                            <i class="fas fa-gamepad"></i> Entertainment
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <div class="voice-section">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="openTab('assistant')">Assistant</button>
+                    <button class="tab-btn" onclick="openTab('tasks')">Tasks</button>
                     <button class="tab-btn" onclick="openTab('contacts')">Contacts</button>
                     <button class="tab-btn" onclick="openTab('notes')">Notes</button>
                     <button class="tab-btn" onclick="openTab('reminders')">Reminders</button>
+                    <button class="tab-btn" onclick="openTab('study')">Study</button>
+                    <button class="tab-btn" onclick="openTab('business')">Business</button>
+                    <button class="tab-btn" onclick="openTab('entertainment')">Fun</button>
                 </div>
                 
                 <!-- Assistant Tab -->
                 <div id="assistant" class="tab-content active">
                     <div class="voice-orb" id="voiceOrb" onclick="toggleListening()">
+                        <div class="wake-word" id="currentWakeWord">Hey ALTECH</div>
                         <i class="fas fa-microphone" style="font-size: 3em; color: white;"></i>
                     </div>
                     
@@ -323,44 +670,77 @@
                     
                     <div class="ai-response">
                         <h3><i class="fas fa-comment-alt"></i> AI Response</h3>
-                        <div id="aiOutput">Initializing AI Assistant...</div>
+                        <div id="aiOutput">ALTECH AI Assistant initialized. Say "Hey ALTECH" followed by your command.</div>
                     </div>
                     
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="quickAction('call')">
-                            <i class="fas fa-phone"></i>
-                            <span>Make Call</span>
-                        </button>
-                        <button class="action-btn" onclick="quickAction('note')">
-                            <i class="fas fa-sticky-note"></i>
-                            <span>Add Note</span>
-                        </button>
-                        <button class="action-btn" onclick="quickAction('reminder')">
-                            <i class="fas fa-bell"></i>
-                            <span>Set Reminder</span>
-                        </button>
-                        <button class="action-btn" onclick="quickAction('search')">
-                            <i class="fas fa-search"></i>
-                            <span>Search Web</span>
-                        </button>
-                        <button class="action-btn" onclick="quickAction('weather')">
-                            <i class="fas fa-cloud-sun"></i>
-                            <span>Weather</span>
-                        </button>
-                        <button class="action-btn" onclick="quickAction('time')">
-                            <i class="fas fa-clock"></i>
-                            <span>Current Time</span>
-                        </button>
+                    <div class="feature-grid">
+                        <div class="feature-card" onclick="quickAction('call')">
+                            <div class="feature-icon"><i class="fas fa-phone"></i></div>
+                            <h4>Voice Calls</h4>
+                            <p>Make real phone calls by voice</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="quickAction('task')">
+                            <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+                            <h4>Task Manager</h4>
+                            <p>Manage tasks by voice</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="openTab('study')">
+                            <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <h4>Study Assistant</h4>
+                            <p>Exam prep & learning</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="quickAction('calculate')">
+                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                            <h4>Voice Calculator</h4>
+                            <p>Math by voice</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="quickAction('weather')">
+                            <div class="feature-icon"><i class="fas fa-cloud-sun"></i></div>
+                            <h4>Weather</h4>
+                            <p>Weather forecasts</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="openTab('entertainment')">
+                            <div class="feature-icon"><i class="fas fa-music"></i></div>
+                            <h4>Music & Fun</h4>
+                            <p>Entertainment features</p>
+                        </div>
                     </div>
                     
                     <div style="margin-top: 25px; text-align: center;">
                         <h4>Try saying:</h4>
                         <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                            <span class="command-example" onclick="speakCommand('Call Brian')">"Call Brian"</span>
-                            <span class="command-example" onclick="speakCommand('Add note meeting tomorrow at 3 PM')">"Add note meeting"</span>
-                            <span class="command-example" onclick="speakCommand('Search for Toyota cars')">"Search Toyota"</span>
-                            <span class="command-example" onclick="speakCommand('What time is it?')">"What time?"</span>
+                            <span class="command-example" onclick="speakCommand('Add task complete project')">"Add task"</span>
+                            <span class="command-example" onclick="speakCommand('What is 45 times 8')">"Calculate 45×8"</span>
+                            <span class="command-example" onclick="speakCommand('Explain OOP')">"Explain OOP"</span>
+                            <span class="command-example" onclick="speakCommand('Tell me a joke')">"Tell joke"</span>
+                            <span class="command-example" onclick="speakCommand('Open YouTube')">"Open YouTube"</span>
+                            <span class="command-example" onclick="speakCommand('Turn on flashlight')">"Flashlight on"</span>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Tasks Tab -->
+                <div id="tasks" class="tab-content">
+                    <h3><i class="fas fa-tasks"></i> Task Manager</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="taskInput" placeholder="New task..." style="flex: 3; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                        <select id="taskPriority" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button class="action-btn" onclick="addTask()" style="flex: 1;">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    
+                    <div id="tasksList">
+                        <!-- Tasks will be loaded here -->
                     </div>
                 </div>
                 
@@ -410,25 +790,213 @@
                         <!-- Reminders will be displayed here -->
                     </div>
                 </div>
+                
+                <!-- Study Tab -->
+                <div id="study" class="tab-content">
+                    <h3><i class="fas fa-graduation-cap"></i> Study Assistant</h3>
+                    <div style="text-align: center; margin: 25px 0;">
+                        <h4>Choose Subject:</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0;">
+                            <button class="action-btn study" onclick="startExam('programming')">
+                                <i class="fas fa-code"></i> Programming
+                            </button>
+                            <button class="action-btn study" onclick="startExam('web')">
+                                <i class="fas fa-globe"></i> Web Dev
+                            </button>
+                            <button class="action-btn study" onclick="startExam('cybersecurity')">
+                                <i class="fas fa-shield-alt"></i> Cyber Security
+                            </button>
+                            <button class="action-btn study" onclick="startExam('math')">
+                                <i class="fas fa-calculator"></i> Mathematics
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="examContainer">
+                        <!-- Exam questions will appear here -->
+                    </div>
+                    
+                    <div class="feature-grid" style="margin-top: 30px;">
+                        <div class="feature-card" onclick="explainConcept('OOP')">
+                            <div class="feature-icon"><i class="fas fa-cube"></i></div>
+                            <h4>Explain OOP</h4>
+                            <p>Object Oriented Programming</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="explainConcept('encapsulation')">
+                            <div class="feature-icon"><i class="fas fa-box"></i></div>
+                            <h4>Encapsulation</h4>
+                            <p>Learn with examples</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="explainConcept('algorithm')">
+                            <div class="feature-icon"><i class="fas fa-sitemap"></i></div>
+                            <h4>Algorithms</h4>
+                            <p>Step-by-step guide</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="generateQuestion()">
+                            <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+                            <h4>Random Q&A</h4>
+                            <p>Test your knowledge</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Tab -->
+                <div id="business" class="tab-content">
+                    <h3><i class="fas fa-briefcase"></i> Business Tools</h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card" onclick="collectLead()">
+                            <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+                            <h4>Lead Collection</h4>
+                            <p>Collect contacts by voice</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="sendToWhatsApp()">
+                            <div class="feature-icon"><i class="fab fa-whatsapp"></i></div>
+                            <h4>WhatsApp Connect</h4>
+                            <p>Auto-connect leads</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="openFeedback()">
+                            <div class="feature-icon"><i class="fas fa-comment"></i></div>
+                            <h4>Feedback System</h4>
+                            <p>Collect user feedback</p>
+                        </div>
+                        
+                        <div class="feature-card" onclick="showPromo()">
+                            <div class="feature-icon"><i class="fas fa-bullhorn"></i></div>
+                            <h4>Promo Mode</h4>
+                            <p>Marketing automation</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h4>Website Launcher</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+                            <button class="action-btn business" onclick="launchWebsite('youtube')">
+                                <i class="fab fa-youtube"></i> YouTube
+                            </button>
+                            <button class="action-btn business" onclick="launchWebsite('gmail')">
+                                <i class="fas fa-envelope"></i> Gmail
+                            </button>
+                            <button class="action-btn business" onclick="launchWebsite('whatsapp')">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="action-btn business" onclick="launchWebsite('altech')">
+                                <i class="fas fa-code"></i> ALTECH
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Entertainment Tab -->
+                <div id="entertainment" class="tab-content">
+                    <h3><i class="fas fa-gamepad"></i> Entertainment</h3>
+                    
+                    <div style="text-align: center; margin: 25px 0;">
+                        <button class="action-btn entertainment" onclick="tellJoke()" style="margin: 10px;">
+                            <i class="fas fa-laugh"></i> Tell a Joke
+                        </button>
+                        <button class="action-btn entertainment" onclick="dailyQuote()" style="margin: 10px;">
+                            <i class="fas fa-quote-left"></i> Daily Quote
+                        </button>
+                        <button class="action-btn entertainment" onclick="motivateMe()" style="margin: 10px;">
+                            <i class="fas fa-fire"></i> Motivate Me
+                        </button>
+                        <button class="action-btn entertainment" onclick="spinWheel()" style="margin: 10px;">
+                            <i class="fas fa-redo"></i> Spin Wheel
+                        </button>
+                    </div>
+                    
+                    <div id="jokeContainer" class="joke-container" style="display: none;">
+                        <!-- Jokes will appear here -->
+                    </div>
+                    
+                    <div class="music-player">
+                        <h4><i class="fas fa-music"></i> Music Player</h4>
+                        <div id="nowPlaying">No music playing</div>
+                        <div class="music-controls">
+                            <button class="music-btn" onclick="playMusic('study')">
+                                <i class="fas fa-graduation-cap"></i>
+                            </button>
+                            <button class="music-btn" onclick="playMusic('focus')">
+                                <i class="fas fa-brain"></i>
+                            </button>
+                            <button class="music-btn" onclick="playMusic('relax')">
+                                <i class="fas fa-spa"></i>
+                            </button>
+                            <button class="music-btn" onclick="stopMusic()">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <h4>Decision Wheel</h4>
+                        <div class="decision-wheel" id="decisionWheel">
+                            <div class="wheel-pointer"></div>
+                        </div>
+                        <button class="action-btn entertainment" onclick="spinWheel()" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> Spin Decision Wheel
+                        </button>
+                        <div id="wheelResult" style="margin-top: 20px; font-weight: bold; font-size: 1.2em;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Panel (Hidden by default) -->
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <h3><i class="fas fa-lock"></i> Admin Panel</h3>
+            <div style="display: flex; gap: 10px; margin: 20px 0;">
+                <input type="password" id="adminPin" placeholder="Enter PIN" style="flex: 2; padding: 12px; border-radius: 8px; border: none;">
+                <button onclick="loginAdmin()" class="action-btn" style="flex: 1;">Login</button>
+                <button onclick="toggleAdmin()" class="action-btn" style="flex: 1; background: var(--danger);">Close</button>
+            </div>
+            
+            <div id="adminControls" style="display: none;">
+                <h4>Admin Controls:</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0;">
+                    <button onclick="clearAllData()" class="action-btn" style="background: var(--danger);">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                    <button onclick="exportData()" class="action-btn" style="background: var(--info);">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <button onclick="importData()" class="action-btn" style="background: var(--success);">
+                        <i class="fas fa-upload"></i> Import Data
+                    </button>
+                    <button onclick="toggleLock()" class="action-btn" style="background: var(--warning);">
+                        <i class="fas fa-lock"></i> Lock Assistant
+                    </button>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <h5>Statistics:</h5>
+                    <div id="adminStats"></div>
+                </div>
             </div>
         </div>
         
         <!-- Mobile App Banner -->
         <div class="mobile-app-banner" id="mobileAppBanner">
-            <h3><i class="fas fa-mobile-alt"></i> Get Mobile App</h3>
-            <p>Install ALTECH AI Assistant on your phone for better experience</p>
-            <a href="#" class="install-btn" onclick="installApp()">
+            <h3><i class="fas fa-mobile-alt"></i> Install as App</h3>
+            <p>Get ALTECH AI Assistant on your home screen for better experience</p>
+            <button onclick="installApp()" class="install-btn">
                 <i class="fas fa-download"></i> Install App
-            </a>
-            <div style="margin-top: 15px; font-size: 0.9em;">
-                <p>Supports: iOS, Android, and PWA</p>
-            </div>
+            </button>
         </div>
     </div>
     
     <!-- Toast Notification -->
     <div class="toast" id="toast" style="display: none;"></div>
     
+    <!-- Audio Player (Hidden) -->
+    <audio id="audioPlayer" style="display: none;"></audio>
+
     <!-- Modals -->
     <div id="addContactModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
         <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
@@ -442,14 +1010,16 @@
         </div>
     </div>
     
-    <div id="chooseContactModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
+    <div id="leadModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
         <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
-            <h3>Multiple Contacts Found</h3>
-            <p id="multipleContactsText">Select which contact to call:</p>
-            <div id="contactOptions" style="max-height: 200px; overflow-y: auto; margin: 15px 0;">
-                <!-- Contact options will be added here -->
+            <h3>Contact ALTECH</h3>
+            <input type="text" id="leadName" placeholder="Your Name" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="tel" id="leadPhone" placeholder="Phone Number" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <textarea id="leadMessage" placeholder="Message (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; height: 100px;"></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="submitLead()" style="flex: 1; padding: 12px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">Submit</button>
+                <button onclick="closeModal('leadModal')" style="flex: 1; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
             </div>
-            <button onclick="closeModal('chooseContactModal')" style="width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;">Cancel</button>
         </div>
     </div>
 
@@ -460,26 +1030,243 @@
         let aiEnabled = true;
         let voiceSpeed = 1;
         let myContacts = [];
+        let tasks = [];
         let notes = [];
         let reminders = [];
         let conversationHistory = [];
-        let selectedContactForCall = null;
+        let currentMode = 'smart';
+        let wakeWord = 'Hey ALTECH';
+        let isAdmin = false;
+        let adminPin = '1234'; // Default PIN
+        let isLocked = false;
+        let audio = null;
+        let currentMusic = null;
+        
+        // Knowledge base for offline AI
+        const knowledgeBase = {
+            programming: {
+                OOP: "Object-Oriented Programming (OOP) is a programming paradigm based on the concept of 'objects', which can contain data and code. The four main principles are: Encapsulation, Inheritance, Polymorphism, and Abstraction.",
+                encapsulation: "Encapsulation is the bundling of data with the methods that operate on that data. It restricts direct access to some of an object's components, which is a means of preventing accidental interference and misuse.",
+                algorithm: "An algorithm is a step-by-step procedure to solve a problem or accomplish a task. Algorithms must be: 1) Unambiguous, 2) Finite, 3) Effective, and 4) Input/Output defined.",
+                html: "HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser.",
+                css: "CSS (Cascading Style Sheets) is a style sheet language used for describing the presentation of a document written in HTML.",
+                javascript: "JavaScript is a programming language that enables interactive web pages and is an essential part of web applications.",
+                python: "Python is an interpreted, high-level, general-purpose programming language known for its code readability.",
+                java: "Java is a class-based, object-oriented programming language designed to have as few implementation dependencies as possible."
+            },
+            jokes: [
+                "Why do programmers prefer dark mode? Because light attracts bugs!",
+                "Why did the developer go broke? Because he used up all his cache!",
+                "What's a programmer's favorite hangout place? Foo Bar!",
+                "Why do Python developers need glasses? Because they can't C!",
+                "How many programmers does it take to change a light bulb? None, that's a hardware problem!",
+                "Why was the JavaScript developer sad? Because he didn't know how to 'null' his feelings!",
+                "What's the object-oriented way to become wealthy? Inheritance!",
+                "Why did the database administrator leave his wife? She had one-to-many relationships!",
+                "What's a computer's favorite snack? Microchips!",
+                "Why don't programmers like nature? It has too many bugs!"
+            ],
+            quotes: [
+                "The only way to do great work is to love what you do. - Steve Jobs",
+                "Code is like humor. When you have to explain it, it's bad. - Cory House",
+                "First, solve the problem. Then, write the code. - John Johnson",
+                "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. - Martin Fowler",
+                "Programming isn't about what you know; it's about what you can figure out. - Chris Pine",
+                "The best error message is the one that never shows up. - Thomas Fuchs",
+                "Don't comment bad code - rewrite it. - Brian Kernighan",
+                "Before software can be reusable it first has to be usable. - Ralph Johnson",
+                "Programs must be written for people to read, and only incidentally for machines to execute. - Harold Abelson",
+                "Testing leads to failure, and failure leads to understanding. - Burt Rutan"
+            ],
+            motivations: [
+                "Keep going! Every expert was once a beginner.",
+                "Your code may have bugs today, but you'll debug them tomorrow!",
+                "The only bad code is the code that isn't written.",
+                "Every bug you fix makes you a better developer.",
+                "Don't watch the clock; do what it does. Keep going!",
+                "Success is the sum of small efforts, repeated day in and day out.",
+                "The future depends on what you do today.",
+                "Believe you can and you're halfway there.",
+                "It always seems impossible until it's done.",
+                "The secret of getting ahead is getting started."
+            ],
+            examQuestions: {
+                programming: [
+                    {
+                        question: "What does OOP stand for?",
+                        options: ["Object-Oriented Programming", "Object-Oriented Process", "Object-Output Programming", "Object-Oriented Protocol"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which of these is NOT an OOP principle?",
+                        options: ["Encapsulation", "Inheritance", "Compilation", "Polymorphism"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is an array?",
+                        options: ["A collection of similar data types", "A type of loop", "A conditional statement", "A function"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which language is known as the 'web language'?",
+                        options: ["JavaScript", "Python", "Java", "C++"],
+                        answer: 0
+                    },
+                    {
+                        question: "What does HTML stand for?",
+                        options: ["HyperText Markup Language", "HighText Machine Language", "HyperTabular Markup Language", "None of these"],
+                        answer: 0
+                    }
+                ],
+                web: [
+                    {
+                        question: "What does CSS stand for?",
+                        options: ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which tag is used for the largest heading?",
+                        options: ["<h1>", "<head>", "<heading>", "<h6>"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is React?",
+                        options: ["JavaScript library for UI", "Programming language", "Database", "Operating System"],
+                        answer: 0
+                    },
+                    {
+                        question: "What does API stand for?",
+                        options: ["Application Programming Interface", "Application Program Interface", "Applied Programming Interface", "All Purpose Interface"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which method is used to add an element to the end of an array?",
+                        options: ["push()", "pop()", "shift()", "unshift()"],
+                        answer: 0
+                    }
+                ],
+                cybersecurity: [
+                    {
+                        question: "What is phishing?",
+                        options: ["A cyber attack using fake emails", "A type of programming", "A network protocol", "A data structure"],
+                        answer: 0
+                    },
+                    {
+                        question: "What does VPN stand for?",
+                        options: ["Virtual Private Network", "Virtual Public Network", "Verified Private Network", "Virtual Protocol Network"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which is a strong password?",
+                        options: ["P@ssw0rd!2024", "password123", "12345678", "qwerty"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is two-factor authentication?",
+                        options: ["Using two methods to verify identity", "Two passwords", "Double encryption", "Two usernames"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is malware?",
+                        options: ["Malicious software", "A type of hardware", "A programming error", "A network device"],
+                        answer: 0
+                    }
+                ],
+                math: [
+                    {
+                        question: "What is 15% of 200?",
+                        options: ["30", "15", "20", "25"],
+                        answer: 0
+                    },
+                    {
+                        question: "Solve: 2x + 5 = 15",
+                        options: ["x = 5", "x = 10", "x = 7.5", "x = 2.5"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the square root of 144?",
+                        options: ["12", "14", "16", "18"],
+                        answer: 0
+                    },
+                    {
+                        question: "If a=5, b=3, what is a² + b²?",
+                        options: ["34", "25", "16", "64"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the area of a circle with radius 7?",
+                        options: ["154", "49", "22", "44"],
+                        answer: 0
+                    }
+                ]
+            },
+            websites: {
+                youtube: "https://youtube.com",
+                gmail: "https://gmail.com",
+                whatsapp: "https://web.whatsapp.com",
+                altech: "https://github.com",
+                google: "https://google.com",
+                facebook: "https://facebook.com",
+                twitter: "https://twitter.com",
+                github: "https://github.com",
+                linkedin: "https://linkedin.com",
+                instagram: "https://instagram.com"
+            },
+            music: {
+                study: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                focus: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                relax: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                motivation: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+            },
+            wheelOptions: [
+                "Yes", "No", "Maybe", "Try Again",
+                "Definitely", "Not Now", "Ask Later",
+                "Go For It", "Wait", "Good Idea",
+                "Bad Idea", "Success", "Failure",
+                "Lucky Day", "Be Careful"
+            ]
+        };
 
         // ================ INITIALIZATION ================
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Initializing ALTECH AI Assistant...');
+            console.log('🚀 Initializing ALTECH AI Assistant Ultimate Edition...');
+            
+            // Register Service Worker for PWA
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ Service Worker registered');
+                } catch (error) {
+                    console.log('❌ Service Worker registration failed:', error);
+                }
+            }
             
             // Initialize components
             await initializeVoiceRecognition();
             loadData();
             updateUI();
+            setupWakeWord();
+            initializeDecisionWheel();
             
             // Show welcome message
             setTimeout(() => {
-                showToast('ALTECH AI Assistant is ready! Say "Hey ALTECH" or click the microphone.');
-                speakResponse("Welcome to ALTECH AI Assistant. I'm ready to help you with calls, notes, reminders, and more!");
-                updateAIResponse("Hello! I'm your ALTECH AI Assistant. Try saying: 'Call Brian', 'Add note meeting tomorrow', or 'What time is it?'");
+                showToast('🎉 ALTECH AI Assistant Ultimate Edition is ready!', 'success');
+                speakResponse("Welcome to ALTECH AI Assistant Ultimate Edition. I'm your intelligent helper for study, business, and entertainment!");
+                updateAIResponse("<div style='padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px;'><h4>🎯 ALTECH AI Assistant Ultimate</h4><p>I can help you with: 📚 Study Assistant, 💼 Business Tools, 🎮 Entertainment, 📞 Real Calls, 📝 Notes & Tasks, 🎵 Music, and much more!</p><p>Try saying: <strong>'Hey ALTECH, what can you do?'</strong></p></div>");
             }, 1000);
+            
+            // Auto-promo mode
+            setInterval(() => {
+                if (Math.random() > 0.7 && !isListening) {
+                    showPromoMessage();
+                }
+            }, 60000); // Every minute
+            
+            // Check for reminders every 30 seconds
+            setInterval(checkReminders, 30000);
+            
+            // Auto-clear completed tasks weekly
+            setInterval(clearCompletedTasks, 604800000); // 7 days
         });
 
         // ================ VOICE RECOGNITION ================
@@ -495,8 +1282,9 @@
                 }
                 
                 recognition.continuous = false;
-                recognition.interimResults = false;
+                recognition.interimResults = true;
                 recognition.lang = 'en-US';
+                recognition.maxAlternatives = 3;
                 
                 recognition.onstart = () => {
                     isListening = true;
@@ -506,9 +1294,24 @@
                 };
                 
                 recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    document.getElementById('transcript').textContent = `You said: "${transcript}"`;
-                    handleVoiceCommand(transcript);
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    if (finalTranscript) {
+                        document.getElementById('transcript').textContent = `You said: "${finalTranscript}"`;
+                        handleVoiceCommand(finalTranscript);
+                    } else if (interimTranscript) {
+                        document.getElementById('transcript').textContent = `Listening: "${interimTranscript}"`;
+                    }
                 };
                 
                 recognition.onend = () => {
@@ -525,8 +1328,6 @@
                     if (event.error === 'not-allowed') {
                         showToast('Microphone access denied. Please allow microphone permissions.', 'error');
                         updateAIResponse('⚠️ Microphone permission required. Please allow microphone access in your browser settings.');
-                    } else {
-                        showToast('Speech recognition error: ' + event.error, 'error');
                     }
                 };
                 
@@ -538,7 +1339,26 @@
             }
         }
 
+        function setupWakeWord() {
+            wakeWord = localStorage.getItem('wakeWord') || 'Hey ALTECH';
+            document.getElementById('wakeWord').value = wakeWord;
+            document.getElementById('currentWakeWord').textContent = wakeWord;
+            
+            // Update wake word when changed
+            document.getElementById('wakeWord').addEventListener('change', (e) => {
+                wakeWord = e.target.value;
+                localStorage.setItem('wakeWord', wakeWord);
+                document.getElementById('currentWakeWord').textContent = wakeWord;
+                showToast(`Wake word set to: "${wakeWord}"`, 'success');
+            });
+        }
+
         function toggleListening() {
+            if (isLocked) {
+                showToast('Assistant is locked. Enter admin mode to unlock.', 'error');
+                return;
+            }
+            
             if (!recognition) {
                 showToast('Voice recognition not initialized', 'error');
                 return;
@@ -561,11 +1381,35 @@
             console.log('Processing command:', command);
             addToHistory(command);
             
+            // Check for wake word
+            const lowerCmd = command.toLowerCase();
+            const lowerWake = wakeWord.toLowerCase();
+            
+            if (!lowerCmd.includes(lowerWake) && lowerWake !== '') {
+                // Not for us, ignore
+                return;
+            }
+            
+            // Remove wake word from command
+            const cleanCmd = command.replace(new RegExp(lowerWake, 'gi'), '').trim();
+            
             // Show processing indicator
             updateAIResponse('<div class="loading"></div> Processing your command...');
             
-            // Process the command
-            await processCommand(command);
+            // Process based on current mode
+            switch(currentMode) {
+                case 'study':
+                    await handleStudyCommand(cleanCmd);
+                    break;
+                case 'business':
+                    await handleBusinessCommand(cleanCmd);
+                    break;
+                case 'entertainment':
+                    await handleEntertainmentCommand(cleanCmd);
+                    break;
+                default:
+                    await processCommand(cleanCmd);
+            }
         }
 
         async function processCommand(command) {
@@ -575,6 +1419,9 @@
             if (lowerCmd.includes('call') || lowerCmd.includes('phone') || lowerCmd.includes('dial')) {
                 await handleCallCommand(command);
             } 
+            else if (lowerCmd.includes('task') || lowerCmd.includes('todo')) {
+                handleTaskCommand(command);
+            }
             else if (lowerCmd.includes('note') || lowerCmd.includes('remember') || lowerCmd.includes('write down')) {
                 handleNoteCommand(command);
             }
@@ -590,8 +1437,59 @@
             else if (lowerCmd.includes('time')) {
                 handleTimeCommand();
             }
-            else if (lowerCmd.includes('what can you do') || lowerCmd.includes('help')) {
+            else if (lowerCmd.includes('date') || lowerCmd.includes('day') || lowerCmd.includes('today')) {
+                handleDateCommand(command);
+            }
+            else if (lowerCmd.includes('calculate') || lowerCmd.includes('what is') || lowerCmd.match(/\d+\s*[\+\-\*\/]\s*\d+/)) {
+                handleCalculatorCommand(command);
+            }
+            else if (lowerCmd.includes('open') || lowerCmd.includes('launch')) {
+                handleWebsiteCommand(command);
+            }
+            else if (lowerCmd.includes('flashlight') || lowerCmd.includes('torch')) {
+                handleFlashlightCommand(command);
+            }
+            else if (lowerCmd.includes('volume') || lowerCmd.includes('sound')) {
+                handleVolumeCommand(command);
+            }
+            else if (lowerCmd.includes('fullscreen') || lowerCmd.includes('full screen')) {
+                handleFullscreenCommand(command);
+            }
+            else if (lowerCmd.includes('screenshot') || lowerCmd.includes('screen shot')) {
+                handleScreenshotCommand();
+            }
+            else if (lowerCmd.includes('what can you do') || lowerCmd.includes('help') || lowerCmd.includes('capabilities')) {
                 showHelp();
+            }
+            else if (lowerCmd.includes('who are you') || lowerCmd.includes('what are you')) {
+                handleIdentityCommand();
+            }
+            else if (lowerCmd.includes('thank you') || lowerCmd.includes('thanks')) {
+                handleThanksCommand();
+            }
+            else if (lowerCmd.includes('explain') || lowerCmd.includes('what is') || lowerCmd.includes('define')) {
+                handleExplainCommand(command);
+            }
+            else if (lowerCmd.includes('joke') || lowerCmd.includes('funny')) {
+                tellJoke();
+            }
+            else if (lowerCmd.includes('quote') || lowerCmd.includes('inspiration')) {
+                dailyQuote();
+            }
+            else if (lowerCmd.includes('motivate') || lowerCmd.includes('inspire')) {
+                motivateMe();
+            }
+            else if (lowerCmd.includes('music') || lowerCmd.includes('play') || lowerCmd.includes('song')) {
+                handleMusicCommand(command);
+            }
+            else if (lowerCmd.includes('spin') || lowerCmd.includes('wheel') || lowerCmd.includes('decide')) {
+                spinWheel();
+            }
+            else if (lowerCmd.includes('contact') || lowerCmd.includes('lead') || lowerCmd.includes('business')) {
+                collectLead();
+            }
+            else if (lowerCmd.includes('feedback') || lowerCmd.includes('suggest') || lowerCmd.includes('report')) {
+                openFeedback();
             }
             else {
                 // Use AI for general queries
@@ -601,349 +1499,1133 @@
             }
         }
 
-        // ================ CALL FUNCTIONALITY ================
-        async function handleCallCommand(command) {
-            // Extract name from command
-            const nameMatch = command.match(/call\s+(\w+)/i) || 
-                             command.match(/phone\s+(\w+)/i) ||
-                             command.match(/dial\s+(\w+)/i);
+        // ================ TASK MANAGEMENT ================
+        function handleTaskCommand(command) {
+            const lowerCmd = command.toLowerCase();
             
-            if (!nameMatch) {
-                updateAIResponse("Who would you like to call? Say 'Call [Name]'");
-                speakResponse("Who would you like to call? Please say the name.");
-                return;
-            }
-            
-            const name = nameMatch[1];
-            const matchingContacts = findContactsByName(name);
-            
-            if (matchingContacts.length === 0) {
-                updateAIResponse(`No contact found named "${name}". Add contacts in the Contacts tab.`);
-                speakResponse(`No contact found named ${name}.`);
-            } 
-            else if (matchingContacts.length === 1) {
-                await makeCall(matchingContacts[0]);
-            }
-            else {
-                // Multiple contacts found - ask user to choose
-                showContactSelection(matchingContacts, name);
-            }
-        }
-
-        function findContactsByName(name) {
-            const searchName = name.toLowerCase();
-            return myContacts.filter(contact => 
-                contact.name.toLowerCase().includes(searchName)
-            );
-        }
-
-        async function makeCall(contact) {
-            updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
-            speakResponse(`Calling ${contact.name}`);
-            
-            // Save as last called contact
-            selectedContactForCall = contact;
-            
-            // REAL CALL FUNCTIONALITY
-            if (isMobileDevice()) {
-                // For mobile devices - make actual call
-                window.location.href = `tel:${contact.phone}`;
-                showToast(`Opening phone app to call ${contact.name}...`, 'success');
-            } else {
-                // For desktop - show call interface
-                showToast(`Would call: ${contact.name} at ${contact.phone}`, 'info');
-                
-                // Simulate call on desktop
-                const callWindow = window.open('', '_blank');
-                if (callWindow) {
-                    callWindow.document.write(`
-                        <html>
-                            <head><title>Calling ${contact.name}</title></head>
-                            <body style="text-align: center; padding: 50px; font-family: Arial;">
-                                <h1>📞 Calling ${contact.name}</h1>
-                                <p>Phone: ${contact.phone}</p>
-                                <p>On a real mobile device, this would initiate a phone call</p>
-                                <div style="margin: 30px;">
-                                    <button onclick="window.close()" style="padding: 15px 30px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                                        End Call
-                                    </button>
-                                </div>
-                            </body>
-                        </html>
-                    `);
+            if (lowerCmd.includes('add task') || lowerCmd.includes('create task')) {
+                const taskText = command.replace(/add task|create task|new task/gi, '').trim();
+                if (taskText) {
+                    addTaskByVoice(taskText);
+                } else {
+                    const text = prompt("Enter task description:");
+                    if (text) addTaskByVoice(text);
                 }
             }
-        }
-
-        function showContactSelection(contacts, searchName) {
-            const modal = document.getElementById('chooseContactModal');
-            const optionsDiv = document.getElementById('contactOptions');
-            const textDiv = document.getElementById('multipleContactsText');
-            
-            textDiv.textContent = `Found ${contacts.length} contacts matching "${searchName}":`;
-            optionsDiv.innerHTML = '';
-            
-            contacts.forEach(contact => {
-                const button = document.createElement('button');
-                button.innerHTML = `
-                    <div style="text-align: left; padding: 10px; width: 100%;">
-                        <strong>${contact.name}</strong><br>
-                        <small>${contact.phone}</small>
-                    </div>
-                `;
-                button.style.cssText = `
-                    width: 100%;
-                    padding: 12px;
-                    margin: 5px 0;
-                    background: var(--light);
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    text-align: left;
-                `;
-                button.onmouseover = () => button.style.background = '#e9ecef';
-                button.onmouseout = () => button.style.background = 'var(--light)';
-                button.onclick = () => {
-                    closeModal('chooseContactModal');
-                    makeCall(contact);
-                };
-                optionsDiv.appendChild(button);
-            });
-            
-            modal.style.display = 'flex';
-        }
-
-        // ================ NOTE FUNCTIONALITY ================
-        function handleNoteCommand(command) {
-            let noteText = command.replace(/add note|note that|remember that|write down/gi, '').trim();
-            
-            if (!noteText) {
-                noteText = prompt("What would you like to note?");
-                if (!noteText) return;
+            else if (lowerCmd.includes('show task') || lowerCmd.includes('list task')) {
+                showTasks();
             }
-            
-            const note = {
+            else if (lowerCmd.includes('complete') || lowerCmd.includes('done') || lowerCmd.includes('finish')) {
+                const taskNum = command.match(/\d+/);
+                if (taskNum) {
+                    completeTask(parseInt(taskNum[0]));
+                } else {
+                    showToast("Please specify task number (e.g., 'complete task 1')", 'error');
+                }
+            }
+            else if (lowerCmd.includes('delete task') || lowerCmd.includes('remove task')) {
+                const taskNum = command.match(/\d+/);
+                if (taskNum) {
+                    deleteTask(parseInt(taskNum[0]));
+                } else {
+                    showToast("Please specify task number (e.g., 'delete task 1')", 'error');
+                }
+            }
+            else if (lowerCmd.includes('clear completed')) {
+                clearCompletedTasks();
+            }
+            else {
+                // Add as new task
+                addTaskByVoice(command);
+            }
+        }
+
+        function addTaskByVoice(text, priority = 'medium') {
+            const task = {
                 id: Date.now(),
-                text: noteText,
-                time: new Date().toLocaleString(),
+                text: text,
+                priority: priority,
+                completed: false,
+                createdAt: new Date().toISOString(),
                 createdByVoice: true
             };
             
-            notes.unshift(note);
+            tasks.unshift(task);
             saveData();
-            updateNotesDisplay();
+            updateTasksDisplay();
             
-            updateAIResponse(`📝 Note added: "${noteText}"`);
-            speakResponse(`Note added: ${noteText.substring(0, 50)}...`);
-            showToast('Note saved successfully!');
+            updateAIResponse(`✅ Task added: "${text}"`);
+            speakResponse(`Task added: ${text.substring(0, 50)}`);
+            showToast('Task added successfully!');
         }
 
-        // ================ REMINDER FUNCTIONALITY ================
-        function handleReminderCommand(command) {
-            let reminderText = '';
-            let timeText = '';
+        function addTask() {
+            const text = document.getElementById('taskInput').value.trim();
+            const priority = document.getElementById('taskPriority').value;
             
-            if (command.includes('remind me to')) {
-                reminderText = command.split('remind me to')[1]?.trim();
-            } else if (command.includes('reminder for')) {
-                reminderText = command.split('reminder for')[1]?.trim();
-            } else {
-                reminderText = command.replace(/remind|reminder|alert/gi, '').trim();
+            if (!text) {
+                showToast('Please enter task text', 'error');
+                return;
             }
             
-            if (!reminderText) {
-                reminderText = prompt("What should I remind you about?");
-                if (!reminderText) return;
-            }
-            
-            // Simple time parsing
-            const time = new Date();
-            if (command.includes('tomorrow')) {
-                time.setDate(time.getDate() + 1);
-            }
-            if (command.includes('next week')) {
-                time.setDate(time.getDate() + 7);
-            }
-            
-            const reminder = {
+            const task = {
                 id: Date.now(),
-                text: reminderText,
-                time: time.toISOString(),
-                created: new Date().toISOString(),
-                active: true
+                text: text,
+                priority: priority,
+                completed: false,
+                createdAt: new Date().toISOString(),
+                createdByVoice: false
             };
             
-            reminders.push(reminder);
+            tasks.unshift(task);
             saveData();
-            updateRemindersDisplay();
+            updateTasksDisplay();
             
-            const timeStr = time.toLocaleString();
-            updateAIResponse(`⏰ Reminder set: "${reminderText}"<br>Time: ${timeStr}`);
-            speakResponse(`Reminder set for ${reminderText}`);
-            showToast('Reminder set!');
+            document.getElementById('taskInput').value = '';
+            showToast('Task added!');
         }
 
-        // ================ SEARCH FUNCTIONALITY ================
-        function handleSearchCommand(command) {
-            let query = '';
+        function completeTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                task.completedAt = task.completed ? new Date().toISOString() : null;
+                saveData();
+                updateTasksDisplay();
+                
+                const action = task.completed ? 'completed' : 'uncompleted';
+                updateAIResponse(`✅ Task ${action}: "${task.text}"`);
+                speakResponse(`Task ${action}`);
+                showToast(`Task ${action}!`);
+            }
+        }
+
+        function deleteTask(taskId) {
+            tasks = tasks.filter(t => t.id !== taskId);
+            saveData();
+            updateTasksDisplay();
+            showToast('Task deleted');
+        }
+
+        function showTasks() {
+            const pending = tasks.filter(t => !t.completed);
+            const completed = tasks.filter(t => t.completed);
             
-            if (command.includes('search for')) {
-                query = command.split('search for')[1]?.trim();
-            } else if (command.includes('google')) {
-                query = command.split('google')[1]?.trim();
+            let response = `<h4>📋 Your Tasks</h4>`;
+            
+            if (pending.length > 0) {
+                response += `<p><strong>Pending (${pending.length}):</strong></p>`;
+                response += pending.map((t, i) => 
+                    `${i+1}. ${t.text} <span class="priority-${t.priority}">[${t.priority}]</span>`
+                ).join('<br>');
+            }
+            
+            if (completed.length > 0) {
+                response += `<p style="margin-top: 15px;"><strong>Completed (${completed.length}):</strong></p>`;
+                response += completed.map((t, i) => 
+                    `${i+1}. <s>${t.text}</s>`
+                ).join('<br>');
+            }
+            
+            if (tasks.length === 0) {
+                response = "No tasks yet. Say 'Add task [description]' to create one.";
+            }
+            
+            updateAIResponse(response);
+            speakResponse(`You have ${pending.length} pending tasks and ${completed.length} completed tasks.`);
+        }
+
+        function clearCompletedTasks() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            tasks = tasks.filter(t => !t.completed);
+            saveData();
+            updateTasksDisplay();
+            
+            if (completedCount > 0) {
+                showToast(`Cleared ${completedCount} completed tasks`, 'success');
+                speakResponse(`Cleared ${completedCount} completed tasks.`);
+            }
+        }
+
+        // ================ STUDY ASSISTANT ================
+        async function handleStudyCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('explain') || lowerCmd.includes('what is') || lowerCmd.includes('define')) {
+                handleExplainCommand(command);
+            }
+            else if (lowerCmd.includes('question') || lowerCmd.includes('test') || lowerCmd.includes('quiz')) {
+                generateQuestion();
+            }
+            else if (lowerCmd.includes('exam') || lowerCmd.includes('start')) {
+                const subject = command.match(/programming|web|cybersecurity|math/i);
+                if (subject) {
+                    startExam(subject[0].toLowerCase());
+                } else {
+                    startExam('programming');
+                }
+            }
+            else {
+                const aiResponse = await getStudyResponse(command);
+                updateAIResponse(aiResponse);
+                speakResponse(aiResponse.substring(0, 150));
+            }
+        }
+
+        function handleExplainCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            let topic = '';
+            
+            // Extract topic from command
+            if (lowerCmd.includes('explain')) {
+                topic = command.split('explain')[1]?.trim();
+            } else if (lowerCmd.includes('what is')) {
+                topic = command.split('what is')[1]?.replace('?', '').trim();
+            } else if (lowerCmd.includes('define')) {
+                topic = command.split('define')[1]?.trim();
+            }
+            
+            if (topic) {
+                const explanation = getExplanation(topic);
+                updateAIResponse(`<div class="exam-question"><h4>📚 Explanation: ${topic}</h4><p>${explanation}</p></div>`);
+                speakResponse(explanation.substring(0, 200));
             } else {
-                query = command.replace(/search|look up|find/gi, '').trim();
-            }
-            
-            if (!query) {
-                query = prompt("What would you like to search for?");
-                if (!query) return;
-            }
-            
-            updateAIResponse(`🔍 Searching for: "${query}"`);
-            speakResponse(`Searching for ${query}`);
-            
-            // Open search in new tab
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-            showToast(`Searching for: ${query}`);
-        }
-
-        // ================ WEATHER FUNCTIONALITY ================
-        function handleWeatherCommand(command) {
-            let location = '';
-            
-            if (command.includes('weather in')) {
-                location = command.split('weather in')[1]?.trim();
-            } else if (command.includes('weather at')) {
-                location = command.split('weather at')[1]?.trim();
-            } else {
-                location = prompt("Which location?", "your current location");
-            }
-            
-            if (location) {
-                updateAIResponse(`🌤️ Getting weather for ${location}...`);
-                speakResponse(`Checking weather for ${location}`);
-                window.open(`https://www.google.com/search?q=weather+${encodeURIComponent(location)}`, '_blank');
-            } else {
-                updateAIResponse(`🌤️ Checking current weather...`);
-                speakResponse("Checking weather");
-                window.open('https://www.google.com/search?q=weather', '_blank');
+                updateAIResponse("What topic would you like me to explain? Try: 'Explain OOP' or 'What is HTML?'");
+                speakResponse("Please specify a topic to explain.");
             }
         }
 
-        // ================ TIME FUNCTIONALITY ================
-        function handleTimeCommand() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            const dateStr = now.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
+        function getExplanation(topic) {
+            const lowerTopic = topic.toLowerCase();
             
-            updateAIResponse(`🕒 Current time: <strong>${timeStr}</strong><br>📅 Date: <strong>${dateStr}</strong>`);
-            speakResponse(`The time is ${timeStr} on ${dateStr}`);
-        }
-
-        // ================ AI RESPONSE SYSTEM ================
-        async function getAIResponse(query) {
-            if (!aiEnabled) {
-                return "AI responses are currently disabled. Enable AI in settings.";
-            }
-            
-            try {
-                // Try free AI APIs
-                const response = await tryFreeAI(query);
-                return response || getLocalResponse(query);
-            } catch (error) {
-                console.error('AI Error:', error);
-                return getLocalResponse(query);
-            }
-        }
-
-        async function tryFreeAI(query) {
-            // Try multiple free AI endpoints
-            const endpoints = [
-                'https://api.deepseek.com/chat/completions',
-                'https://free.churchless.tech/v1/chat/completions'
-            ];
-            
-            for (const endpoint of endpoints) {
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: "gpt-3.5-turbo",
-                            messages: [{ role: "user", content: query }],
-                            max_tokens: 150
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        return data.choices?.[0]?.message?.content;
-                    }
-                } catch (error) {
-                    continue;
+            // Check knowledge base
+            for (const category in knowledgeBase.programming) {
+                if (category.toLowerCase().includes(lowerTopic) || lowerTopic.includes(category.toLowerCase())) {
+                    return knowledgeBase.programming[category];
                 }
             }
             
-            return null;
+            // Fallback responses
+            const explanations = {
+                'oop': knowledgeBase.programming.OOP,
+                'html': knowledgeBase.programming.html,
+                'css': knowledgeBase.programming.css,
+                'javascript': knowledgeBase.programming.javascript,
+                'python': knowledgeBase.programming.python,
+                'java': knowledgeBase.programming.java,
+                'encapsulation': knowledgeBase.programming.encapsulation,
+                'algorithm': knowledgeBase.programming.algorithm
+            };
+            
+            for (const key in explanations) {
+                if (lowerTopic.includes(key)) {
+                    return explanations[key];
+                }
+            }
+            
+            return `I don't have a detailed explanation for "${topic}" in my knowledge base. Try asking about programming concepts like OOP, HTML, CSS, JavaScript, Python, or Java.`;
         }
 
-        function getLocalResponse(query) {
+        function startExam(subject) {
+            const questions = knowledgeBase.examQuestions[subject] || knowledgeBase.examQuestions.programming;
+            let examHTML = `<div class="exam-question"><h4>📝 ${subject.toUpperCase()} Exam (${questions.length} questions)</h4>`;
+            
+            questions.forEach((q, index) => {
+                examHTML += `
+                    <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <p><strong>Q${index+1}:</strong> ${q.question}</p>
+                        <div style="margin-left: 20px;">
+                            ${q.options.map((opt, i) => `
+                                <div class="option" onclick="checkAnswer(${index}, ${i}, '${subject}')">
+                                    ${String.fromCharCode(65+i)}) ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            examHTML += `</div>`;
+            document.getElementById('examContainer').innerHTML = examHTML;
+            openTab('study');
+            
+            updateAIResponse(`Starting ${subject} exam with ${questions.length} questions. Good luck!`);
+            speakResponse(`Starting ${subject} exam with ${questions.length} questions. Good luck!`);
+        }
+
+        function checkAnswer(qIndex, aIndex, subject) {
+            const questions = knowledgeBase.examQuestions[subject];
+            const question = questions[qIndex];
+            const options = document.querySelectorAll(`#examContainer .exam-question div:nth-child(${qIndex+2}) .option`);
+            
+            options.forEach((opt, i) => {
+                opt.classList.remove('correct', 'wrong');
+                if (i === question.answer) {
+                    opt.classList.add('correct');
+                } else if (i === aIndex) {
+                    opt.classList.add('wrong');
+                }
+            });
+            
+            if (aIndex === question.answer) {
+                speakResponse("Correct!");
+                showToast("✅ Correct answer!", 'success');
+            } else {
+                speakResponse("Wrong answer!");
+                showToast("❌ Wrong answer!", 'error');
+            }
+        }
+
+        function generateQuestion() {
+            const subjects = Object.keys(knowledgeBase.examQuestions);
+            const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+            const questions = knowledgeBase.examQuestions[randomSubject];
+            const randomQ = questions[Math.floor(Math.random() * questions.length)];
+            
+            let questionHTML = `
+                <div class="exam-question">
+                    <h4>❓ Random Question (${randomSubject})</h4>
+                    <p><strong>Question:</strong> ${randomQ.question}</p>
+                    <div style="margin-left: 20px;">
+                        ${randomQ.options.map((opt, i) => `
+                            <div class="option" onclick="revealAnswer(${randomQ.answer}, ${i})">
+                                ${String.fromCharCode(65+i)}) ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="answerReveal" style="margin-top: 15px; display: none;">
+                        <strong>Answer:</strong> ${String.fromCharCode(65+randomQ.answer)}) ${randomQ.options[randomQ.answer]}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('examContainer').innerHTML = questionHTML;
+            openTab('study');
+            
+            updateAIResponse("Here's a random question for you!");
+            speakResponse("Here's a question for you. Try to answer it!");
+        }
+
+        function revealAnswer(correctIndex, selectedIndex) {
+            const options = document.querySelectorAll('#examContainer .option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('correct', 'wrong');
+                if (i === correctIndex) {
+                    opt.classList.add('correct');
+                } else if (i === selectedIndex) {
+                    opt.classList.add('wrong');
+                }
+            });
+            
+            document.getElementById('answerReveal').style.display = 'block';
+        }
+
+        async function getStudyResponse(query) {
+            // Try to find in knowledge base
             const lowerQuery = query.toLowerCase();
             
-            // Smart local responses
-            if (/(hello|hi|hey)/.test(lowerQuery)) {
-                return "Hello! I'm your ALTECH AI Assistant. How can I help you today?";
-            }
-            if (/(how are you|how's it going)/.test(lowerQuery)) {
-                return "I'm doing great! Ready to help you with calls, notes, reminders, and more!";
-            }
-            if (/(thank you|thanks)/.test(lowerQuery)) {
-                return "You're welcome! Is there anything else I can help you with?";
-            }
-            if (/(what can you do|capabilities)/.test(lowerQuery)) {
-                return "I can: 📞 Make phone calls, 📝 Add notes, ⏰ Set reminders, 🔍 Search the web, 🌤️ Check weather, 🕒 Tell time, 💬 Send messages, and much more!";
-            }
-            if (/(who are you|what are you)/.test(lowerQuery)) {
-                return "I'm ALTECH AI Assistant, your intelligent voice-controlled helper. I can understand natural language and perform various tasks for you!";
+            for (const category in knowledgeBase.programming) {
+                if (lowerQuery.includes(category.toLowerCase())) {
+                    return knowledgeBase.programming[category];
+                }
             }
             
-            return `I understood: "${query}". I can help you with calls, notes, reminders, searches, and more. Try being specific like "Call John" or "Add note meeting tomorrow".`;
+            // General study responses
+            const studyResponses = [
+                "I can help you with programming concepts, exam questions, and study tips. Try asking me to explain OOP, HTML, CSS, or give you a practice question.",
+                "For study help, you can ask me to explain concepts, start an exam, or give you random questions to test your knowledge.",
+                "Need help with coding? I can explain programming concepts and test your knowledge with interactive questions."
+            ];
+            
+            return studyResponses[Math.floor(Math.random() * studyResponses.length)];
+        }
+
+        // ================ BUSINESS TOOLS ================
+        async function handleBusinessCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('contact') || lowerCmd.includes('lead') || lowerCmd.includes('business')) {
+                collectLead();
+            }
+            else if (lowerCmd.includes('whatsapp') || lowerCmd.includes('message')) {
+                sendToWhatsApp();
+            }
+            else if (lowerCmd.includes('feedback') || lowerCmd.includes('suggest') || lowerCmd.includes('report')) {
+                openFeedback();
+            }
+            else if (lowerCmd.includes('promo') || lowerCmd.includes('market')) {
+                showPromo();
+            }
+            else if (lowerCmd.includes('open') || lowerCmd.includes('launch')) {
+                handleWebsiteCommand(command);
+            }
+            else {
+                updateAIResponse("I can help you with lead collection, WhatsApp integration, feedback collection, and website launching. Try saying 'Collect lead' or 'Open YouTube'.");
+                speakResponse("Business mode activated. I can help with lead collection and marketing tools.");
+            }
+        }
+
+        function collectLead() {
+            document.getElementById('leadModal').style.display = 'flex';
+            updateAIResponse("Please enter your contact details to connect with ALTECH.");
+            speakResponse("Please enter your contact details.");
+        }
+
+        function submitLead() {
+            const name = document.getElementById('leadName').value.trim();
+            const phone = document.getElementById('leadPhone').value.trim();
+            const message = document.getElementById('leadMessage').value.trim();
+            
+            if (name && phone) {
+                // Save lead locally
+                const leads = JSON.parse(localStorage.getItem('altech_leads') || '[]');
+                leads.push({
+                    name: name,
+                    phone: phone,
+                    message: message,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('altech_leads', JSON.stringify(leads));
+                
+                // Send to WhatsApp (simulated)
+                const whatsappUrl = `https://wa.me/254706389206?text=${encodeURIComponent(
+                    `Hello ALTECH! My name is ${name}. Phone: ${phone}. ${message ? 'Message: ' + message : ''}`
+                )}`;
+                
+                window.open(whatsappUrl, '_blank');
+                
+                // Close modal and show confirmation
+                closeModal('leadModal');
+                updateAIResponse(`✅ Lead submitted successfully! We've opened WhatsApp for you to send the message.`);
+                speakResponse(`Lead submitted. Opening WhatsApp now.`);
+                showToast('Lead submitted! Opening WhatsApp...', 'success');
+                
+                // Clear form
+                document.getElementById('leadName').value = '';
+                document.getElementById('leadPhone').value = '';
+                document.getElementById('leadMessage').value = '';
+            } else {
+                showToast('Please enter at least name and phone number', 'error');
+            }
+        }
+
+        function sendToWhatsApp() {
+            const phone = prompt("Enter phone number (with country code):", "+254706389206");
+            const message = prompt("Enter message:", "Hello from ALTECH AI Assistant!");
+            
+            if (phone && message) {
+                const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+                showToast('Opening WhatsApp...', 'info');
+            }
+        }
+
+        function openFeedback() {
+            const feedback = prompt("Enter your feedback, suggestion, or problem report:");
+            if (feedback) {
+                // Save feedback locally
+                const feedbacks = JSON.parse(localStorage.getItem('altech_feedback') || '[]');
+                feedbacks.push({
+                    feedback: feedback,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('altech_feedback', JSON.stringify(feedbacks));
+                
+                // Simulate sending to Google Forms
+                const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLSf.../viewform?usp=pp_url&entry.1234567890=${encodeURIComponent(feedback)}`;
+                
+                updateAIResponse(`✅ Feedback submitted! Thank you for your input. <br><br><a href="${formUrl}" target="_blank">Click here to submit via Google Forms</a>`);
+                speakResponse("Feedback submitted. Thank you!");
+                showToast('Feedback saved locally!', 'success');
+            }
+        }
+
+        function showPromo() {
+            const promoMessages = [
+                "🚀 ALTECH builds amazing websites and applications! Need a professional website? Just say 'Build me a website' to get started!",
+                "💡 Did you know ALTECH offers web development services? Say 'Contact ALTECH' to get a free consultation!",
+                "🎯 Looking to boost your online presence? ALTECH can help! We specialize in modern, responsive websites.",
+                "👨‍💻 Need a developer? ALTECH has skilled developers ready to work on your project. Let's build something amazing together!"
+            ];
+            
+            const randomPromo = promoMessages[Math.floor(Math.random() * promoMessages.length)];
+            updateAIResponse(`<div style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4); color: white; padding: 20px; border-radius: 10px;">${randomPromo}</div>`);
+            speakResponse(randomPromo.substring(0, 150));
+        }
+
+        function showPromoMessage() {
+            if (Math.random() > 0.5) {
+                const promo = "💡 Did you know ALTECH builds websites? Say 'Build me a website' to learn more!";
+                showToast(promo, 'info');
+            }
+        }
+
+        // ================ ENTERTAINMENT FEATURES ================
+        async function handleEntertainmentCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('joke') || lowerCmd.includes('funny')) {
+                tellJoke();
+            }
+            else if (lowerCmd.includes('quote') || lowerCmd.includes('inspiration')) {
+                dailyQuote();
+            }
+            else if (lowerCmd.includes('motivate') || lowerCmd.includes('inspire')) {
+                motivateMe();
+            }
+            else if (lowerCmd.includes('music') || lowerCmd.includes('play') || lowerCmd.includes('song')) {
+                handleMusicCommand(command);
+            }
+            else if (lowerCmd.includes('spin') || lowerCmd.includes('wheel') || lowerCmd.includes('decide')) {
+                spinWheel();
+            }
+            else if (lowerCmd.includes('truth') || lowerCmd.includes('dare')) {
+                truthOrDare();
+            }
+            else {
+                updateAIResponse("Entertainment mode! I can tell jokes, play music, give quotes, and help you make decisions. Try saying 'Tell me a joke' or 'Play study music'.");
+                speakResponse("Entertainment mode activated. Let's have some fun!");
+            }
+        }
+
+        function tellJoke() {
+            const joke = knowledgeBase.jokes[Math.floor(Math.random() * knowledgeBase.jokes.length)];
+            document.getElementById('jokeContainer').innerHTML = joke;
+            document.getElementById('jokeContainer').style.display = 'block';
+            
+            updateAIResponse(`<div class="joke-container">${joke}</div>`);
+            speakResponse(joke);
+            showToast('😂 Here\'s a joke for you!', 'info');
+        }
+
+        function dailyQuote() {
+            const quote = knowledgeBase.quotes[Math.floor(Math.random() * knowledgeBase.quotes.length)];
+            updateAIResponse(`<div style="padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px; text-align: center; font-style: italic;">"${quote}"</div>`);
+            speakResponse(quote);
+            showToast('💫 Daily quote!', 'info');
+        }
+
+        function motivateMe() {
+            const motivation = knowledgeBase.motivations[Math.floor(Math.random() * knowledgeBase.motivations.length)];
+            updateAIResponse(`<div style="padding: 20px; background: linear-gradient(135deg, #ff6b6b, #4ecdc4); color: white; border-radius: 10px; text-align: center; font-weight: bold;">${motivation}</div>`);
+            speakResponse(motivation);
+            showToast('🔥 Motivation boost!', 'success');
+        }
+
+        function handleMusicCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('study') || lowerCmd.includes('focus')) {
+                playMusic('study');
+            }
+            else if (lowerCmd.includes('relax') || lowerCmd.includes('calm')) {
+                playMusic('relax');
+            }
+            else if (lowerCmd.includes('stop') || lowerCmd.includes('pause')) {
+                stopMusic();
+            }
+            else if (lowerCmd.includes('motivation') || lowerCmd.includes('energy')) {
+                playMusic('motivation');
+            }
+            else {
+                playMusic('study');
+            }
+        }
+
+        function playMusic(type) {
+            if (!audio) {
+                audio = document.getElementById('audioPlayer');
+            }
+            
+            const musicUrl = knowledgeBase.music[type] || knowledgeBase.music.study;
+            audio.src = musicUrl;
+            audio.play().catch(e => {
+                console.error('Audio play failed:', e);
+                showToast('Cannot play music in this browser', 'error');
+            });
+            
+            currentMusic = type;
+            document.getElementById('nowPlaying').textContent = `Playing: ${type} music`;
+            
+            updateAIResponse(`🎵 Now playing ${type} music...`);
+            speakResponse(`Playing ${type} music`);
+            showToast(`Playing ${type} music`, 'success');
+        }
+
+        function stopMusic() {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+                currentMusic = null;
+                document.getElementById('nowPlaying').textContent = 'No music playing';
+                showToast('Music stopped', 'info');
+            }
+        }
+
+        function initializeDecisionWheel() {
+            const wheel = document.getElementById('decisionWheel');
+            wheel.innerHTML = '<div class="wheel-pointer"></div>';
+            
+            const options = knowledgeBase.wheelOptions;
+            const angle = 360 / options.length;
+            
+            options.forEach((option, i) => {
+                const segment = document.createElement('div');
+                segment.className = 'wheel-segment';
+                segment.textContent = option;
+                segment.style.transform = `rotate(${i * angle}deg)`;
+                segment.style.background = `hsl(${i * (360 / options.length)}, 70%, 60%)`;
+                segment.style.color = 'white';
+                wheel.appendChild(segment);
+            });
+        }
+
+        function spinWheel() {
+            const wheel = document.getElementById('decisionWheel');
+            const resultDiv = document.getElementById('wheelResult');
+            
+            // Random spin between 720 and 1440 degrees (2-4 full rotations)
+            const spinDegrees = 720 + Math.floor(Math.random() * 720);
+            const finalRotation = spinDegrees % 360;
+            
+            wheel.style.transform = `rotate(${spinDegrees}deg)`;
+            
+            // Calculate result
+            const options = knowledgeBase.wheelOptions;
+            const anglePerOption = 360 / options.length;
+            const resultIndex = Math.floor((360 - (finalRotation % 360)) / anglePerOption) % options.length;
+            const result = options[resultIndex];
+            
+            setTimeout(() => {
+                resultDiv.textContent = `🎯 Result: ${result}`;
+                updateAIResponse(`<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); border-radius: 10px;"><h4>Decision Wheel Result</h4><h2>${result}</h2></div>`);
+                speakResponse(`The wheel says: ${result}`);
+                showToast(`Wheel says: ${result}`, 'info');
+            }, 3000);
+        }
+
+        function truthOrDare() {
+            const truths = [
+                "What's your biggest fear?",
+                "What's the most embarrassing thing you've done?",
+                "What's your secret talent?",
+                "What's the biggest lie you've told?",
+                "What's your guilty pleasure?"
+            ];
+            
+            const dares = [
+                "Do 10 pushups right now!",
+                "Sing a song at the top of your voice",
+                "Dance for 30 seconds",
+                "Tell a joke to the next person you see",
+                "Do your best impression"
+            ];
+            
+            const choice = Math.random() > 0.5 ? 'truth' : 'dare';
+            const message = choice === 'truth' 
+                ? `TRUTH: ${truths[Math.floor(Math.random() * truths.length)]}`
+                : `DARE: ${dares[Math.floor(Math.random() * dares.length)]}`;
+            
+            updateAIResponse(`<div style="padding: 20px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #333; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.2em;">${message}</div>`);
+            speakResponse(message);
+            showToast(`${choice.toUpperCase()}!`, 'warning');
+        }
+
+        // ================ DEVICE CONTROLS ================
+        function handleFlashlightCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            const flashlight = document.getElementById('flashlight');
+            
+            if (lowerCmd.includes('on') || lowerCmd.includes('turn on')) {
+                flashlight.classList.add('active');
+                updateAIResponse("🔦 Flashlight turned ON");
+                speakResponse("Flashlight on");
+                showToast('Flashlight ON', 'info');
+            } 
+            else if (lowerCmd.includes('off') || lowerCmd.includes('turn off')) {
+                flashlight.classList.remove('active');
+                updateAIResponse("Flashlight turned OFF");
+                speakResponse("Flashlight off");
+                showToast('Flashlight OFF', 'info');
+            }
+            else {
+                // Toggle
+                if (flashlight.classList.contains('active')) {
+                    flashlight.classList.remove('active');
+                    updateAIResponse("Flashlight turned OFF");
+                    speakResponse("Flashlight off");
+                } else {
+                    flashlight.classList.add('active');
+                    updateAIResponse("🔦 Flashlight turned ON");
+                    speakResponse("Flashlight on");
+                }
+            }
+        }
+
+        function handleVolumeCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('up') || lowerCmd.includes('increase') || lowerCmd.includes('higher')) {
+                // Simulate volume up
+                updateAIResponse("🔊 Volume increased");
+                speakResponse("Volume increased");
+                showToast('Volume +', 'info');
+            }
+            else if (lowerCmd.includes('down') || lowerCmd.includes('decrease') || lowerCmd.includes('lower')) {
+                // Simulate volume down
+                updateAIResponse("🔉 Volume decreased");
+                speakResponse("Volume decreased");
+                showToast('Volume -', 'info');
+            }
+            else if (lowerCmd.includes('mute') || lowerCmd.includes('silent')) {
+                // Simulate mute
+                updateAIResponse("🔇 Volume muted");
+                speakResponse("Volume muted");
+                showToast('Muted', 'info');
+            }
+        }
+
+        function handleFullscreenCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('enter') || lowerCmd.includes('on')) {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(console.error);
+                    updateAIResponse("🖥️ Entering fullscreen mode");
+                    speakResponse("Fullscreen mode on");
+                    showToast('Fullscreen ON', 'info');
+                }
+            }
+            else if (lowerCmd.includes('exit') || lowerCmd.includes('off')) {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                    updateAIResponse("Exiting fullscreen mode");
+                    speakResponse("Fullscreen mode off");
+                    showToast('Fullscreen OFF', 'info');
+                }
+            }
+            else {
+                // Toggle
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(console.error);
+                    updateAIResponse("🖥️ Entering fullscreen mode");
+                    speakResponse("Fullscreen mode on");
+                } else {
+                    document.exitFullscreen();
+                    updateAIResponse("Exiting fullscreen mode");
+                    speakResponse("Fullscreen mode off");
+                }
+            }
+        }
+
+        function handleScreenshotCommand() {
+            // Using html2canvas library would be needed for real screenshots
+            // For now, simulate it
+            updateAIResponse("📸 Taking screenshot... (Simulated)");
+            speakResponse("Taking screenshot");
+            
+            // Create a simulated screenshot effect
+            document.body.style.filter = 'brightness(0.8)';
+            setTimeout(() => {
+                document.body.style.filter = '';
+                showToast('Screenshot captured (simulated)', 'success');
+                updateAIResponse("✅ Screenshot captured! (This is simulated - add html2canvas library for real screenshots)");
+            }, 500);
+        }
+
+        // ================ WEBSITE LAUNCHER ================
+        function handleWebsiteCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            let website = '';
+            
+            // Extract website name
+            for (const site in knowledgeBase.websites) {
+                if (lowerCmd.includes(site)) {
+                    website = site;
+                    break;
+                }
+            }
+            
+            if (website) {
+                launchWebsite(website);
+            } else {
+                // Try to extract from "open [website]"
+                const match = command.match(/open\s+(\w+)/i);
+                if (match) {
+                    const site = match[1].toLowerCase();
+                    if (knowledgeBase.websites[site]) {
+                        launchWebsite(site);
+                    } else {
+                        // Try common domains
+                        launchWebsite(site, true);
+                    }
+                } else {
+                    updateAIResponse("Which website would you like to open? Try: YouTube, Gmail, WhatsApp, or ALTECH");
+                    speakResponse("Please specify which website to open.");
+                }
+            }
+        }
+
+        function launchWebsite(site, isCustom = false) {
+            let url = '';
+            
+            if (isCustom) {
+                // Try common domains
+                const domains = ['.com', '.org', '.net', '.co.ke', '.io'];
+                for (const domain of domains) {
+                    url = `https://${site}${domain}`;
+                    // In real implementation, you'd check if the site exists
+                    break;
+                }
+            } else {
+                url = knowledgeBase.websites[site];
+            }
+            
+            if (url) {
+                window.open(url, '_blank');
+                updateAIResponse(`🌐 Opening ${site}...`);
+                speakResponse(`Opening ${site}`);
+                showToast(`Opening ${site}`, 'info');
+            } else {
+                updateAIResponse(`Sorry, I don't know how to open "${site}". Try: YouTube, Gmail, WhatsApp, or ALTECH.`);
+                speakResponse(`I don't know how to open ${site}.`);
+            }
+        }
+
+        // ================ CALCULATOR ================
+        function handleCalculatorCommand(command) {
+            let expression = '';
+            
+            // Extract math expression
+            if (command.includes('what is')) {
+                expression = command.split('what is')[1]?.replace('?', '').trim();
+            } else if (command.includes('calculate')) {
+                expression = command.split('calculate')[1]?.trim();
+            } else {
+                // Look for math expression in command
+                const mathMatch = command.match(/(\d+\s*[\+\-\*\/]\s*\d+)/);
+                if (mathMatch) {
+                    expression = mathMatch[1];
+                } else {
+                    expression = command.replace(/[^\d\+\-\*\/\.\(\)]/g, ' ').trim();
+                }
+            }
+            
+            if (!expression) {
+                updateAIResponse("What would you like me to calculate? Try: 'What is 45 times 8' or 'Calculate 100 divided by 5'");
+                speakResponse("Please specify a calculation.");
+                return;
+            }
+            
+            // Clean and evaluate expression
+            expression = expression
+                .replace(/times/gi, '*')
+                .replace(/multiplied by/gi, '*')
+                .replace(/divided by/gi, '/')
+                .replace(/plus/gi, '+')
+                .replace(/added to/gi, '+')
+                .replace(/minus/gi, '-')
+                .replace(/subtract/gi, '-')
+                .replace(/to the power of/gi, '**')
+                .replace(/squared/gi, '**2')
+                .replace(/cubed/gi, '**3')
+                .replace(/square root of/gi, 'Math.sqrt')
+                .replace(/sqrt/gi, 'Math.sqrt');
+            
+            try {
+                // Safe evaluation
+                const result = evaluateMathExpression(expression);
+                updateAIResponse(`🧮 Calculation: ${expression} = <strong>${result}</strong>`);
+                speakResponse(`${expression} equals ${result}`);
+                showToast(`Result: ${result}`, 'success');
+            } catch (error) {
+                console.error('Calculation error:', error);
+                updateAIResponse(`❌ Could not calculate "${expression}". Please try a simpler expression.`);
+                speakResponse("Sorry, I couldn't calculate that.");
+                showToast('Calculation failed', 'error');
+            }
+        }
+
+        function evaluateMathExpression(expr) {
+            // Very basic safe evaluation
+            // In production, use a math library like math.js
+            expr = expr.replace(/[^0-9\+\-\*\/\.\s\(\)]/g, '');
+            
+            // Simple operations only
+            if (/^[\d\s\+\-\*\/\.\(\)]+$/.test(expr)) {
+                // eslint-disable-next-line no-eval
+                return eval(expr);
+            } else {
+                throw new Error('Invalid expression');
+            }
+        }
+
+        // ================ DATE & TIME COMMANDS ================
+        function handleDateCommand(command) {
+            const now = new Date();
+            const lowerCmd = command.toLowerCase();
+            
+            if (lowerCmd.includes('today') || lowerCmd.includes('date')) {
+                const dateStr = now.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                updateAIResponse(`📅 Today's date: <strong>${dateStr}</strong>`);
+                speakResponse(`Today is ${dateStr}`);
+            }
+            else if (lowerCmd.includes('tomorrow')) {
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dateStr = tomorrow.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                updateAIResponse(`📅 Tomorrow: <strong>${dateStr}</strong>`);
+                speakResponse(`Tomorrow is ${dateStr}`);
+            }
+            else if (lowerCmd.includes('christmas')) {
+                const christmas = new Date(now.getFullYear(), 11, 25);
+                if (christmas < now) {
+                    christmas.setFullYear(christmas.getFullYear() + 1);
+                }
+                const daysLeft = Math.ceil((christmas - now) / (1000 * 60 * 60 * 24));
+                updateAIResponse(`🎄 Days until Christmas: <strong>${daysLeft} days</strong>`);
+                speakResponse(`There are ${daysLeft} days until Christmas`);
+            }
+            else if (lowerCmd.includes('day') && lowerCmd.includes('next')) {
+                // Find next specific day
+                const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                const targetDay = days.find(day => lowerCmd.includes(day));
+                if (targetDay) {
+                    const targetIndex = days.indexOf(targetDay);
+                    const currentIndex = now.getDay();
+                    let daysToAdd = targetIndex - currentIndex;
+                    if (daysToAdd <= 0) daysToAdd += 7;
+                    
+                    const nextDay = new Date(now);
+                    nextDay.setDate(now.getDate() + daysToAdd);
+                    const dateStr = nextDay.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                    
+                    updateAIResponse(`📅 Next ${targetDay}: <strong>${dateStr}</strong> (in ${daysToAdd} days)`);
+                    speakResponse(`Next ${targetDay} is ${dateStr}, which is in ${daysToAdd} days`);
+                }
+            }
+        }
+
+        // ================ OTHER COMMAND HANDLERS ================
+        function handleIdentityCommand() {
+            const response = "I'm ALTECH AI Assistant Ultimate Edition, built for Students, Developers & Hustlers. I can help you with study, business, entertainment, and daily tasks using voice commands!";
+            updateAIResponse(response);
+            speakResponse(response);
+        }
+
+        function handleThanksCommand() {
+            const responses = [
+                "You're welcome! Happy to help!",
+                "Glad I could assist you!",
+                "Anytime! Let me know if you need anything else.",
+                "You're welcome! That's what I'm here for."
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            updateAIResponse(response);
+            speakResponse(response);
+        }
+
+        // ================ ADMIN FUNCTIONS ================
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function loginAdmin() {
+            const pin = document.getElementById('adminPin').value;
+            if (pin === adminPin) {
+                isAdmin = true;
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('adminPin').value = '';
+                
+                // Show admin stats
+                showAdminStats();
+                
+                updateAIResponse("🔓 Admin mode activated");
+                speakResponse("Admin mode activated");
+                showToast('Admin mode ON', 'success');
+            } else {
+                showToast('Invalid PIN', 'error');
+            }
+        }
+
+        function showAdminStats() {
+            const statsDiv = document.getElementById('adminStats');
+            const stats = {
+                'Total Commands': conversationHistory.length,
+                'Total Contacts': myContacts.length,
+                'Total Tasks': tasks.length,
+                'Total Notes': notes.length,
+                'Total Reminders': reminders.length,
+                'Leads Collected': JSON.parse(localStorage.getItem('altech_leads') || '[]').length,
+                'Feedback Received': JSON.parse(localStorage.getItem('altech_feedback') || '[]').length,
+                'Storage Used': Math.round(JSON.stringify(localStorage).length / 1024) + ' KB'
+            };
+            
+            statsDiv.innerHTML = Object.entries(stats).map(([key, value]) => 
+                `<div style="margin: 5px 0;"><strong>${key}:</strong> ${value}</div>`
+            ).join('');
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ WARNING: This will delete ALL data including contacts, tasks, notes, and history. Continue?')) {
+                localStorage.clear();
+                myContacts = [];
+                tasks = [];
+                notes = [];
+                reminders = [];
+                conversationHistory = [];
+                
+                loadData();
+                updateUI();
+                
+                updateAIResponse("🗑️ All data cleared successfully");
+                speakResponse("All data cleared");
+                showToast('All data cleared', 'success');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                contacts: myContacts,
+                tasks: tasks,
+                notes: notes,
+                reminders: reminders,
+                history: conversationHistory,
+                settings: {
+                    wakeWord: wakeWord,
+                    voiceSpeed: voiceSpeed,
+                    aiEnabled: aiEnabled,
+                    currentMode: currentMode
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `altech-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Data exported successfully', 'success');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (data.contacts) myContacts = data.contacts;
+                        if (data.tasks) tasks = data.tasks;
+                        if (data.notes) notes = data.notes;
+                        if (data.reminders) reminders = data.reminders;
+                        if (data.history) conversationHistory = data.history;
+                        if (data.settings) {
+                            wakeWord = data.settings.wakeWord || wakeWord;
+                            voiceSpeed = data.settings.voiceSpeed || voiceSpeed;
+                            aiEnabled = data.settings.aiEnabled !== false;
+                            currentMode = data.settings.currentMode || currentMode;
+                        }
+                        
+                        saveData();
+                        updateUI();
+                        
+                        updateAIResponse("✅ Data imported successfully!");
+                        speakResponse("Data imported successfully");
+                        showToast('Data imported!', 'success');
+                    } catch (error) {
+                        showToast('Invalid backup file', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function toggleLock() {
+            isLocked = !isLocked;
+            const action = isLocked ? 'locked' : 'unlocked';
+            updateAIResponse(`🔒 Assistant ${action}`);
+            speakResponse(`Assistant ${action}`);
+            showToast(`Assistant ${action}`, isLocked ? 'warning' : 'success');
         }
 
         // ================ UTILITY FUNCTIONS ================
         function showHelp() {
-            updateAIResponse(`
-                <div style="padding: 15px; background: var(--light); border-radius: 10px;">
-                    <h4>🤖 ALTECH AI Assistant Commands:</h4>
-                    <ul style="text-align: left; margin-left: 20px;">
-                        <li><strong>Call [Name]</strong> - Make a phone call</li>
-                        <li><strong>Add note [text]</strong> - Create a note</li>
-                        <li><strong>Remind me to [task]</strong> - Set a reminder</li>
-                        <li><strong>Search for [query]</strong> - Search the web</li>
-                        <li><strong>Weather in [city]</strong> - Check weather</li>
-                        <li><strong>What time is it?</strong> - Get current time</li>
-                        <li><strong>Send message to [name]</strong> - Send SMS/WhatsApp</li>
+            const helpText = `
+                <div style="padding: 20px; background: var(--light); border-radius: 10px;">
+                    <h4>🤖 ALTECH AI Assistant Ultimate - Command Guide</h4>
+                    
+                    <h5>🎓 Study Mode:</h5>
+                    <ul>
+                        <li>"Explain OOP" - Learn programming concepts</li>
+                        <li>"Start exam" - Take a practice test</li>
+                        <li>"Give me a question" - Random Q&A</li>
                     </ul>
-                    <p style="margin-top: 10px;">💡 <strong>Pro Tip:</strong> Use natural language like "Call mom" or "Add note meeting tomorrow at 3 PM"</p>
+                    
+                    <h5>💼 Business Tools:</h5>
+                    <ul>
+                        <li>"Contact ALTECH" - Submit lead information</li>
+                        <li>"Send to WhatsApp" - Open WhatsApp</li>
+                        <li>"Open YouTube" - Launch websites</li>
+                    </ul>
+                    
+                    <h5>🎮 Entertainment:</h5>
+                    <ul>
+                        <li>"Tell me a joke" - Get a funny joke</li>
+                        <li>"Play music" - Listen to study/focus music</li>
+                        <li>"Spin wheel" - Decision maker</li>
+                        <li>"Motivate me" - Get inspired</li>
+                    </ul>
+                    
+                    <h5>🛠️ Productivity:</h5>
+                    <ul>
+                        <li>"Add task [description]" - Create todo</li>
+                        <li>"Add note [text]" - Save notes</li>
+                        <li>"Remind me to [task]" - Set reminders</li>
+                        <li>"Call [name]" - Make phone calls</li>
+                    </ul>
+                    
+                    <h5>⚙️ Device Controls:</h5>
+                    <ul>
+                        <li>"Turn on flashlight" - Screen flashlight</li>
+                        <li>"Fullscreen" - Toggle fullscreen</li>
+                        <li>"Take screenshot" - Capture screen</li>
+                        <li>"Volume up/down" - Adjust volume</li>
+                    </ul>
+                    
+                    <h5>🔢 Utilities:</h5>
+                    <ul>
+                        <li>"Calculate [expression]" - Voice calculator</li>
+                        <li>"What time is it?" - Current time</li>
+                        <li>"What's today's date?" - Current date</li>
+                        <li>"Weather in [city]" - Weather info</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px; font-weight: bold;">💡 Pro Tip: Start with "${wakeWord}" followed by your command!</p>
                 </div>
-            `);
-            speakResponse("Here are some things you can ask me. Check the screen for details.");
+            `;
+            
+            updateAIResponse(helpText);
+            speakResponse("Here's what I can do. Check the screen for detailed command list.");
         }
 
         function speakResponse(text) {
-            if (!text) return;
+            if (!text || !aiEnabled) return;
             
             try {
                 const utterance = new SpeechSynthesisUtterance(text);
@@ -973,8 +2655,26 @@
             }, 3000);
         }
 
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        function checkReminders() {
+            const now = new Date();
+            reminders.forEach(reminder => {
+                const time = new Date(reminder.time);
+                if (reminder.active && time <= now && time > new Date(now.getTime() - 30000)) {
+                    // Trigger reminder notification
+                    if (Notification.permission === 'granted') {
+                        new Notification('⏰ ALTECH Reminder', {
+                            body: reminder.text,
+                            icon: '/icon.png'
+                        });
+                    }
+                    
+                    showToast(`⏰ Reminder: ${reminder.text}`, 'warning');
+                    speakResponse(`Reminder: ${reminder.text}`);
+                    reminder.active = false;
+                    saveData();
+                    updateRemindersDisplay();
+                }
+            });
         }
 
         // ================ DATA MANAGEMENT ================
@@ -987,6 +2687,10 @@
                 { id: 3, name: "Sarah Johnson", phone: "+1122334455" },
                 { id: 4, name: "John Doe", phone: "+1555123456" }
             ];
+            
+            // Load tasks
+            const savedTasks = localStorage.getItem('altech_tasks');
+            tasks = savedTasks ? JSON.parse(savedTasks) : [];
             
             // Load notes
             const savedNotes = localStorage.getItem('altech_notes');
@@ -1003,17 +2707,22 @@
             // Load settings
             voiceSpeed = parseFloat(localStorage.getItem('voiceSpeed') || '1');
             aiEnabled = localStorage.getItem('aiEnabled') !== 'false';
+            currentMode = localStorage.getItem('currentMode') || 'smart';
+            wakeWord = localStorage.getItem('wakeWord') || 'Hey ALTECH';
             
             updateUI();
         }
 
         function saveData() {
             localStorage.setItem('altech_contacts', JSON.stringify(myContacts));
+            localStorage.setItem('altech_tasks', JSON.stringify(tasks));
             localStorage.setItem('altech_notes', JSON.stringify(notes));
             localStorage.setItem('altech_reminders', JSON.stringify(reminders));
             localStorage.setItem('altech_history', JSON.stringify(conversationHistory));
             localStorage.setItem('voiceSpeed', voiceSpeed.toString());
             localStorage.setItem('aiEnabled', aiEnabled.toString());
+            localStorage.setItem('currentMode', currentMode);
+            localStorage.setItem('wakeWord', wakeWord);
         }
 
         function addToHistory(command) {
@@ -1022,21 +2731,99 @@
                 time: new Date().toLocaleString()
             });
             
-            if (conversationHistory.length > 10) {
-                conversationHistory = conversationHistory.slice(0, 10);
+            if (conversationHistory.length > 50) {
+                conversationHistory = conversationHistory.slice(0, 50);
             }
             
             saveData();
             updateHistoryDisplay();
+            updateStats();
         }
 
         // ================ UI UPDATES ================
         function updateUI() {
             updateContactsDisplay();
+            updateTasksDisplay();
             updateNotesDisplay();
             updateRemindersDisplay();
             updateHistoryDisplay();
             updateSettingsDisplay();
+            updateStats();
+            updateModeIndicator();
+        }
+
+        function updateStats() {
+            document.getElementById('taskCount').textContent = tasks.filter(t => !t.completed).length;
+            document.getElementById('noteCount').textContent = notes.length;
+            document.getElementById('reminderCount').textContent = reminders.filter(r => r.active).length;
+            document.getElementById('commandCount').textContent = conversationHistory.length;
+        }
+
+        function updateModeIndicator() {
+            const indicator = document.getElementById('modeIndicator');
+            const modeNames = {
+                smart: 'Smart Mode',
+                study: 'Study Mode',
+                business: 'Business Mode',
+                entertainment: 'Entertainment Mode'
+            };
+            
+            indicator.innerHTML = `<i class="fas fa-robot"></i> ${modeNames[currentMode]}`;
+            indicator.style.background = currentMode === 'study' ? 'var(--study)' :
+                                      currentMode === 'business' ? 'var(--business)' :
+                                      currentMode === 'entertainment' ? 'var(--entertainment)' : 'var(--primary)';
+        }
+
+        function updateTasksDisplay() {
+            const container = document.getElementById('tasksList');
+            if (!container) return;
+            
+            if (tasks.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No tasks yet</p>';
+                return;
+            }
+            
+            const pendingTasks = tasks.filter(t => !t.completed);
+            const completedTasks = tasks.filter(t => t.completed);
+            
+            let html = '';
+            
+            if (pendingTasks.length > 0) {
+                html += '<h4>✅ Pending Tasks</h4>';
+                html += pendingTasks.map(task => `
+                    <div class="task-item">
+                        <div>
+                            <input type="checkbox" onclick="completeTask(${task.id})" style="margin-right: 10px;">
+                            <span>${task.text}</span>
+                            <span class="task-priority priority-${task.priority}">${task.priority}</span>
+                        </div>
+                        <div>
+                            <button onclick="deleteTask(${task.id})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            if (completedTasks.length > 0) {
+                html += '<h4 style="margin-top: 20px;">✅ Completed Tasks</h4>';
+                html += completedTasks.map(task => `
+                    <div class="task-item task-completed">
+                        <div>
+                            <input type="checkbox" checked onclick="completeTask(${task.id})" style="margin-right: 10px;">
+                            <span><s>${task.text}</s></span>
+                        </div>
+                        <div>
+                            <button onclick="deleteTask(${task.id})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            container.innerHTML = html;
         }
 
         function updateContactsDisplay() {
@@ -1078,10 +2865,12 @@
             }
             
             container.innerHTML = notes.map(note => `
-                <div style="padding: 15px; background: var(--light); border-radius: 8px; margin-bottom: 10px;">
-                    <p>${note.text}</p>
-                    <small style="color: #666;">${note.time}</small>
-                    <button onclick="deleteNote(${note.id})" style="float: right; background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                <div class="note-item">
+                    <div>
+                        <p>${note.text}</p>
+                        <small style="color: #666;">${note.time}</small>
+                    </div>
+                    <button onclick="deleteNote(${note.id})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -1103,10 +2892,12 @@
                 const isActive = reminder.active && time > now;
                 
                 return `
-                    <div style="padding: 15px; background: ${isActive ? '#d4edda' : '#f8d7da'}; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid ${isActive ? 'var(--success)' : 'var(--danger)'}">
-                        <p><strong>${reminder.text}</strong></p>
-                        <small>⏰ ${time.toLocaleString()}</small>
-                        <div style="margin-top: 10px;">
+                    <div class="reminder-item">
+                        <div>
+                            <p><strong>${reminder.text}</strong></p>
+                            <small>⏰ ${time.toLocaleString()}</small>
+                        </div>
+                        <div>
                             <button onclick="toggleReminder(${reminder.id})" style="background: ${isActive ? 'var(--warning)' : 'var(--success)'}; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">
                                 ${isActive ? 'Snooze' : 'Activate'}
                             </button>
@@ -1128,7 +2919,7 @@
                 return;
             }
             
-            container.innerHTML = conversationHistory.map(item => `
+            container.innerHTML = conversationHistory.slice(0, 10).map(item => `
                 <div style="padding: 10px; border-bottom: 1px solid #ddd; font-size: 0.9em;">
                     <div style="color: #666; font-size: 0.8em;">${item.time}</div>
                     <div>"${item.command.substring(0, 40)}${item.command.length > 40 ? '...' : ''}"</div>
@@ -1142,6 +2933,8 @@
                 voiceSpeed < 0.8 ? 'Slow' : 
                 voiceSpeed > 1.2 ? 'Fast' : 'Normal';
             
+            document.getElementById('aiMode').value = currentMode;
+            
             const toggleBtn = document.getElementById('aiToggle');
             if (toggleBtn) {
                 toggleBtn.innerHTML = `<i class="fas fa-brain"></i> AI: ${aiEnabled ? 'ON' : 'OFF'}`;
@@ -1149,156 +2942,65 @@
             }
         }
 
-        // ================ MODAL FUNCTIONS ================
-        function openTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
+        // ================ EVENT LISTENERS ================
+        document.getElementById('voiceSpeed').addEventListener('input', (e) => {
+            voiceSpeed = parseFloat(e.target.value);
+            localStorage.setItem('voiceSpeed', voiceSpeed);
+            updateSettingsDisplay();
+        });
 
-        function addContact() {
-            document.getElementById('addContactModal').style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function saveContact() {
-            const name = document.getElementById('contactName').value.trim();
-            const phone = document.getElementById('contactPhone').value.trim();
+        document.getElementById('aiMode').addEventListener('change', (e) => {
+            currentMode = e.target.value;
+            localStorage.setItem('currentMode', currentMode);
+            updateModeIndicator();
+            showToast(`Mode changed to: ${currentMode}`, 'success');
             
-            if (name && phone) {
-                const contact = {
-                    id: Date.now(),
-                    name: name,
-                    phone: phone
-                };
+            const modeMessages = {
+                smart: "Smart mode activated. I can help with everything!",
+                study: "Study mode activated. Ready to learn!",
+                business: "Business mode activated. Let's grow your business!",
+                entertainment: "Entertainment mode activated. Let's have fun!"
+            };
+            
+            speakResponse(modeMessages[currentMode]);
+        });
+
+        document.getElementById('aiToggle').addEventListener('click', () => {
+            aiEnabled = !aiEnabled;
+            saveData();
+            updateSettingsDisplay();
+            showToast(`AI ${aiEnabled ? 'enabled' : 'disabled'}`);
+            speakResponse(aiEnabled ? "AI enabled" : "AI disabled");
+        });
+
+        // ================ PWA INSTALL ================
+        function installApp() {
+            if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
+                let deferredPrompt;
                 
-                myContacts.push(contact);
-                saveData();
-                updateContactsDisplay();
-                closeModal('addContactModal');
-                showToast('Contact saved successfully!');
-                
-                // Clear inputs
-                document.getElementById('contactName').value = '';
-                document.getElementById('contactPhone').value = '';
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    
+                    // Show install prompt
+                    deferredPrompt.prompt();
+                    
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            showToast('App installed successfully!', 'success');
+                        }
+                        deferredPrompt = null;
+                    });
+                });
             } else {
-                showToast('Please enter both name and phone number', 'error');
-            }
-        }
-
-        function importContacts() {
-            // Simulate contact import
-            const sampleContacts = [
-                { id: Date.now() + 1, name: "Alex Morgan", phone: "+1122334455" },
-                { id: Date.now() + 2, name: "Taylor Swift", phone: "+1222333444" },
-                { id: Date.now() + 3, name: "Chris Evans", phone: "+1333444555" }
-            ];
-            
-            myContacts.push(...sampleContacts);
-            saveData();
-            updateContactsDisplay();
-            showToast(`Imported ${sampleContacts.length} sample contacts`);
-        }
-
-        function deleteContact(id) {
-            if (confirm('Delete this contact?')) {
-                myContacts = myContacts.filter(contact => contact.id !== id);
-                saveData();
-                updateContactsDisplay();
-                showToast('Contact deleted');
-            }
-        }
-
-        function saveNote() {
-            const text = document.getElementById('noteInput').value.trim();
-            if (!text) {
-                showToast('Please enter a note', 'error');
-                return;
-            }
-            
-            const note = {
-                id: Date.now(),
-                text: text,
-                time: new Date().toLocaleString(),
-                createdByVoice: false
-            };
-            
-            notes.unshift(note);
-            saveData();
-            updateNotesDisplay();
-            document.getElementById('noteInput').value = '';
-            showToast('Note saved!');
-        }
-
-        function deleteNote(id) {
-            if (confirm('Delete this note?')) {
-                notes = notes.filter(note => note.id !== id);
-                saveData();
-                updateNotesDisplay();
-                showToast('Note deleted');
-            }
-        }
-
-        function setReminder() {
-            const text = document.getElementById('reminderText').value.trim();
-            const time = document.getElementById('reminderTime').value;
-            
-            if (!text || !time) {
-                showToast('Please enter reminder text and time', 'error');
-                return;
-            }
-            
-            const reminder = {
-                id: Date.now(),
-                text: text,
-                time: time,
-                created: new Date().toISOString(),
-                active: true
-            };
-            
-            reminders.push(reminder);
-            saveData();
-            updateRemindersDisplay();
-            
-            // Clear inputs
-            document.getElementById('reminderText').value = '';
-            const now = new Date();
-            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
-            
-            showToast('Reminder set!');
-        }
-
-        function toggleReminder(id) {
-            const reminder = reminders.find(r => r.id === id);
-            if (reminder) {
-                reminder.active = !reminder.active;
-                saveData();
-                updateRemindersDisplay();
-                showToast(reminder.active ? 'Reminder activated' : 'Reminder snoozed');
-            }
-        }
-
-        function deleteReminder(id) {
-            if (confirm('Delete this reminder?')) {
-                reminders = reminders.filter(r => r.id !== id);
-                saveData();
-                updateRemindersDisplay();
-                showToast('Reminder deleted');
+                // Show instructions for manual install
+                const instructions = `To install this app:
+1. Open the menu (three dots) in your browser
+2. Select "Install app" or "Add to Home Screen"
+3. Follow the prompts`;
+                
+                updateAIResponse(`<div style="padding: 20px; background: var(--light); border-radius: 10px;"><h4>📱 Install Instructions</h4><p>${instructions}</p></div>`);
+                speakResponse("Check the screen for installation instructions.");
             }
         }
 
@@ -1316,6 +3018,13 @@
                         } else {
                             showToast(`No contact found named "${contactName}"`, 'error');
                         }
+                    }
+                    break;
+                    
+                case 'task':
+                    const taskText = prompt("Enter task description:");
+                    if (taskText) {
+                        addTaskByVoice(taskText);
                     }
                     break;
                     
@@ -1349,114 +3058,55 @@
                 case 'time':
                     handleTimeCommand();
                     break;
+                    
+                case 'calculate':
+                    const calculation = prompt("Enter calculation:", "45 * 8");
+                    if (calculation) {
+                        handleCalculatorCommand(`calculate ${calculation}`);
+                    }
+                    break;
             }
         }
 
         function speakCommand(command) {
             document.getElementById('transcript').textContent = `You said: "${command}"`;
-            handleVoiceCommand(command);
+            handleVoiceCommand(`${wakeWord} ${command}`);
         }
 
-        // ================ SETTINGS ================
-        document.getElementById('voiceSpeed').addEventListener('input', (e) => {
-            voiceSpeed = parseFloat(e.target.value);
-            localStorage.setItem('voiceSpeed', voiceSpeed);
-            updateSettingsDisplay();
-        });
-
-        document.getElementById('aiToggle').addEventListener('click', () => {
-            aiEnabled = !aiEnabled;
-            saveData();
-            updateSettingsDisplay();
-            showToast(`AI ${aiEnabled ? 'enabled' : 'disabled'}`);
-        });
-
-        document.getElementById('aiProvider').addEventListener('change', (e) => {
-            showToast(`AI provider set to: ${e.target.value}`);
-        });
-
-        // ================ MOBILE APP INSTALL ================
-        function installApp() {
-            if (isMobileDevice()) {
-                // For mobile devices - show install prompt
-                if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
-                    // PWA install prompt
-                    showToast('Installing app... Check your browser for installation prompt.', 'info');
-                    
-                    // Deferred prompt for PWA
-                    let deferredPrompt;
-                    window.addEventListener('beforeinstallprompt', (e) => {
-                        e.preventDefault();
-                        deferredPrompt = e;
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                showToast('App installed successfully!', 'success');
-                            }
-                            deferredPrompt = null;
-                        });
-                    });
-                } else {
-                    // Fallback for non-PWA browsers
-                    showToast('Visit this page on your mobile browser and use "Add to Home Screen"', 'info');
-                }
-            } else {
-                // For desktop - show download options
-                const choice = confirm('Download mobile app?');
-                if (choice) {
-                    window.open('https://drive.google.com/drive/folders/1Y4Ww8V8o8Z8Y8Z8Y8Z8Y8Z8Y8Z8Y8Z8', '_blank');
-                    showToast('Opening download page...', 'info');
-                }
-            }
-        }
-
-        // ================ SMART FEATURES ================
-        
-        // Auto-save every 30 seconds
-        setInterval(() => {
-            saveData();
-            console.log('🔄 Auto-saved data');
-        }, 30000);
-        
-        // Check for reminders every minute
-        setInterval(() => {
-            const now = new Date();
-            reminders.forEach(reminder => {
-                const time = new Date(reminder.time);
-                if (reminder.active && time <= now && time > new Date(now.getTime() - 60000)) {
-                    // Trigger reminder
-                    showToast(`⏰ Reminder: ${reminder.text}`, 'warning');
-                    speakResponse(`Reminder: ${reminder.text}`);
-                    reminder.active = false;
-                    saveData();
-                    updateRemindersDisplay();
-                }
+        // ================ TAB FUNCTIONS ================
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
             });
-        }, 60000);
-        
-        // Wake word detection (simplified)
-        let lastCommandTime = 0;
-        setInterval(() => {
-            const now = Date.now();
-            if (now - lastCommandTime > 30000) { // Every 30 seconds of inactivity
-                // Randomly offer help
-                if (Math.random() > 0.7) {
-                    showToast('💡 Try saying "Hey ALTECH, what can you do?"', 'info');
-                }
-            }
-        }, 30000);
-        
-        // Initialize with sample data if empty
-        if (myContacts.length === 0) {
-            loadData(); // This loads sample contacts
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update mode if needed
+            if (tabId === 'study') currentMode = 'study';
+            else if (tabId === 'business') currentMode = 'business';
+            else if (tabId === 'entertainment') currentMode = 'entertainment';
+            else if (tabId === 'assistant') currentMode = 'smart';
+            
+            updateModeIndicator();
         }
+
+        // ================ INITIALIZE ================
+        console.log('✅ ALTECH AI Assistant Ultimate Edition fully loaded!');
         
-        // Show mobile app banner conditionally
-        if (isMobileDevice()) {
-            document.getElementById('mobileAppBanner').style.display = 'block';
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
         }
-        
-        console.log('✅ ALTECH AI Assistant fully loaded and ready!');
     </script>
 </body>
 </html>
