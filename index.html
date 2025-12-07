@@ -2,2963 +2,1461 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6366f1">
-    <title>ALTECH AI | Advanced Intelligence Assistant</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="description" content="ALTECH AI: Advanced artificial intelligence assistant for productivity, automation, and intelligent task management">
-    <meta name="keywords" content="AI Assistant, Artificial Intelligence, Voice Assistant, Productivity, Automation">
-    <meta name="author" content="ALTECH AI">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALTECH AI Assistant - Full Working Version</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        /* ================ CSS VARIABLES ================ */
         :root {
-            /* Primary Colors - Premium Indigo Theme */
-            --primary-50: #eef2ff;
-            --primary-100: #e0e7ff;
-            --primary-200: #c7d2fe;
-            --primary-300: #a5b4fc;
-            --primary-400: #818cf8;
-            --primary-500: #6366f1;
-            --primary-600: #4f46e5;
-            --primary-700: #4338ca;
-            --primary-800: #3730a3;
-            --primary-900: #312e81;
-            
-            /* Neutral Colors */
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            
-            /* Semantic Colors */
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            
-            /* App Variables */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f9fafb;
-            --bg-surface: #ffffff;
-            --bg-elevated: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --text-tertiary: #9ca3af;
-            --border-color: #e5e7eb;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            
-            /* Spacing */
-            --space-xs: 0.25rem;
-            --space-sm: 0.5rem;
-            --space-md: 1rem;
-            --space-lg: 1.5rem;
-            --space-xl: 2rem;
-            --space-2xl: 3rem;
-            
-            /* Border Radius */
-            --radius-sm: 0.375rem;
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
-            --radius-2xl: 1.5rem;
-            --radius-full: 9999px;
-            
-            /* Typography */
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            
-            /* Transitions */
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-            
-            /* Effects */
-            --shadow-sm: 0 1px 2px 0 var(--shadow-color);
-            --shadow-md: 0 4px 6px -1px var(--shadow-color);
-            --shadow-lg: 0 10px 15px -3px var(--shadow-color);
-            --shadow-xl: 0 20px 25px -5px var(--shadow-color);
-            --shadow-2xl: 0 25px 50px -12px var(--shadow-color);
-            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-            
-            /* Blur Effects */
-            --backdrop-blur: blur(20px);
-            
-            /* Layout */
-            --header-height: 4rem;
-            --bottom-nav-height: 4.5rem;
-            --max-width: 1200px;
-        }
-        
-        /* Dark Theme */
-        .dark-theme {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-surface: #1e293b;
-            --bg-elevated: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-tertiary: #94a3b8;
-            --border-color: #334155;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --glass-bg: rgba(30, 41, 59, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* ================ BASE RESET ================ */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            --primary: #007bff;
+            --primary-dark: #0056b3;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --background: #f4f7f9;
+            --surface: #ffffff;
         }
         
         body {
-            font-family: var(--font-sans);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: background-color var(--transition-base);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--background);
+            color: var(--dark);
         }
         
-        /* ================ TYPOGRAPHY ================ */
-        h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        
-        .text-display {
-            font-family: var(--font-display);
-            font-weight: 800;
-            letter-spacing: -0.025em;
-        }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* ================ LAYOUT COMPONENTS ================ */
         .app-container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: var(--max-width);
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 var(--space-lg);
+            padding: 20px;
         }
         
-        /* ================ PREMIUM HEADER ================ */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background: var(--glass-bg);
-            backdrop-filter: var(--backdrop-blur);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            padding: 0 var(--space-lg);
-            transition: all var(--transition-base);
-        }
-        
-        .header.scrolled {
-            box-shadow: var(--shadow-lg);
-            background: var(--bg-surface);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            text-decoration: none;
-        }
-        
-        .logo-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .logo-icon::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .logo-text span:first-child {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.025em;
-            color: var(--text-primary);
-        }
-        
-        .logo-text span:last-child {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        
-        /* Header Navigation */
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            margin-left: auto;
-        }
-        
-        /* Status Indicator */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-xs) var(--space-sm);
-            background: var(--bg-secondary);
-            border-radius: var(--radius-full);
-            border: 1px solid var(--border-color);
-        }
-        
-        .status-dot {
-            width: 0.5rem;
-            height: 0.5rem;
-            background: var(--success);
-            border-radius: 50%;
-            position: relative;
-        }
-        
-        .status-dot::after {
-            content: '';
-            position: absolute;
-            inset: -0.25rem;
-            border-radius: 50%;
-            border: 2px solid var(--success);
-            opacity: 0.5;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.5); opacity: 0; }
-        }
-        
-        /* ================ MAIN CONTENT ================ */
-        .main-content {
-            flex: 1;
-            padding-top: var(--header-height);
-            padding-bottom: var(--bottom-nav-height);
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            min-height: 100vh;
-        }
-        
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--space-lg);
-            padding: var(--space-lg) 0;
-        }
-        
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 300px 1fr;
-            }
-        }
-        
-        /* ================ SIDEBAR ================ */
-        .sidebar {
-            display: none;
-        }
-        
-        @media (min-width: 768px) {
-            .sidebar {
-                display: block;
-                position: sticky;
-                top: calc(var(--header-height) + var(--space-lg));
-                height: calc(100vh - var(--header-height) - var(--space-lg) * 2);
-                overflow-y: auto;
-            }
-            
-            .sidebar-content {
-                background: var(--bg-surface);
-                border-radius: var(--radius-xl);
-                border: 1px solid var(--border-color);
-                padding: var(--space-lg);
-                box-shadow: var(--shadow-lg);
-            }
-        }
-        
-        /* ================ COMMAND CENTER ================ */
-        .command-center {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-        
-        .command-header {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
-            color: white;
-            padding: var(--space-xl);
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #6200ea);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
-        .command-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
         }
         
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .sidebar {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
-        /* Voice Orb */
-        .voice-orb-container {
-            position: relative;
-            display: inline-block;
-            margin: var(--space-lg) 0;
+        .voice-section {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .voice-orb {
-            width: 10rem;
-            height: 10rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
-            backdrop-filter: blur(10px);
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
             border-radius: 50%;
+            margin: 0 auto 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            transition: all var(--transition-base);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,123,255,0.3);
+            border: 5px solid rgba(255,255,255,0.8);
         }
         
         .voice-orb:hover {
             transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 40px rgba(0,123,255,0.4);
         }
         
         .voice-orb.listening {
-            animation: listeningPulse 2s infinite;
-            border-color: var(--warning);
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, var(--danger), var(--warning));
         }
         
-        @keyframes listeningPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            50% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
-        .voice-orb i {
-            font-size: 2.5rem;
+        #transcript {
+            min-height: 80px;
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .ai-response {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid var(--success);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .action-btn {
+            padding: 15px;
+            background: var(--primary);
             color: white;
-            z-index: 1;
-        }
-        
-        /* Wave Animation */
-        .wave {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 12rem;
-            height: 12rem;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            animation: waveExpand 3s infinite;
-        }
-        
-        .wave:nth-child(2) {
-            animation-delay: 1s;
-            width: 14rem;
-            height: 14rem;
-        }
-        
-        .wave:nth-child(3) {
-            animation-delay: 2s;
-            width: 16rem;
-            height: 16rem;
-        }
-        
-        @keyframes waveExpand {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
-        }
-        
-        /* ================ CONVERSATION INTERFACE ================ */
-        .conversation-container {
-            padding: var(--space-xl);
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .message {
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            gap: var(--space-md);
-            margin-bottom: var(--space-lg);
-            animation: messageSlideIn 0.3s ease-out;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
         
-        @keyframes messageSlideIn {
+        .action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: var(--light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .message-avatar {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-        
-        .message-content {
-            flex: 1;
-            background: var(--bg-secondary);
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            position: relative;
-        }
-        
-        .message-content.user {
-            background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
-            border-color: var(--primary-200);
-        }
-        
-        .message-content.ai {
-            background: var(--bg-surface);
-        }
-        
-        .message-timestamp {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            margin-top: var(--space-xs);
-        }
-        
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-            padding: var(--space-md);
-        }
-        
-        .typing-dot {
-            width: 0.5rem;
-            height: 0.5rem;
-            background: var(--primary-500);
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite;
-        }
-        
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-0.5rem); }
-        }
-        
-        /* ================ QUICK ACTIONS GRID ================ */
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: var(--space-md);
-            padding: var(--space-lg);
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .action-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-sm);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
-            transform: translateX(-100%);
-            transition: transform var(--transition-base);
-        }
-        
-        .action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .action-card:hover::before {
-            transform: translateX(0);
-        }
-        
-        .action-icon {
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            margin-bottom: var(--space-sm);
-        }
-        
-        /* ================ MODULES ================ */
-        .module {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            margin-bottom: var(--space-lg);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .module-header {
-            background: var(--bg-elevated);
-            padding: var(--space-lg);
-            border-bottom: 1px solid var(--border-color);
+        .contact-item {
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .module-content {
-            padding: var(--space-lg);
-        }
-        
-        /* ================ CONTACTS MODULE ================ */
-        .contacts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: var(--space-md);
-        }
-        
-        .contact-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            transition: all var(--transition-base);
-        }
-        
-        .contact-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary-300);
-        }
-        
-        .contact-avatar {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .mobile-app-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-weight: 600;
-            flex-shrink: 0;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            animation: slideUp 0.5s ease;
         }
         
-        /* ================ NOTES MODULE ================ */
-        .notes-editor {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            margin-bottom: var(--space-lg);
-        }
-        
-        .note-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md);
-            margin-bottom: var(--space-md);
-            transition: all var(--transition-base);
-            position: relative;
-            border-left: 4px solid var(--primary-500);
-        }
-        
-        .note-card:hover {
-            transform: translateX(4px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        /* ================ REMINDERS MODULE ================ */
-        .reminder-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md);
-            margin-bottom: var(--space-md);
-            position: relative;
-            border-left: 4px solid var(--warning);
-        }
-        
-        .reminder-card.urgent {
-            border-left-color: var(--danger);
-            animation: gentleShake 0.5s ease-in-out;
-        }
-        
-        @keyframes gentleShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
-        }
-        
-        /* ================ BOTTOM NAVIGATION ================ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--bottom-nav-height);
-            background: var(--glass-bg);
-            backdrop-filter: var(--backdrop-blur);
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-            padding: 0 var(--space-lg);
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-xs);
-            padding: var(--space-sm);
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: var(--radius-md);
-            transition: all var(--transition-base);
-            position: relative;
-        }
-        
-        .nav-item.active {
-            color: var(--primary-600);
-            background: var(--primary-50);
-        }
-        
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            bottom: -0.25rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0.25rem;
-            height: 0.25rem;
-            background: var(--primary-600);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity var(--transition-base);
-        }
-        
-        .nav-item.active::after {
-            opacity: 1;
-        }
-        
-        /* ================ FLOATING ACTION BUTTONS ================ */
-        .fab-container {
-            position: fixed;
-            bottom: calc(var(--bottom-nav-height) + var(--space-lg));
-            right: var(--space-lg);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-            z-index: 999;
-        }
-        
-        .fab {
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: var(--shadow-lg);
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .fab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity var(--transition-base);
-        }
-        
-        .fab:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .fab:hover::before {
-            opacity: 1;
-        }
-        
-        .fab.whatsapp {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-        }
-        
-        .fab.emergency {
-            background: linear-gradient(135deg, var(--danger), #dc2626);
-            animation: pulseEmergency 2s infinite;
-        }
-        
-        @keyframes pulseEmergency {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            50% { box-shadow: 0 0 0 1rem rgba(239, 68, 68, 0); }
-        }
-        
-        /* ================ MODALS ================ */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: var(--space-lg);
-            animation: fadeIn var(--transition-base);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-color);
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlideIn 0.3s ease-out;
-            box-shadow: var(--shadow-2xl);
-        }
-        
-        @keyframes modalSlideIn {
+        @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ================ FORM ELEMENTS ================ */
-        .input-group {
-            margin-bottom: var(--space-lg);
+        .install-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: white;
+            color: #764ba2;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
         }
         
-        .input-label {
-            display: block;
-            margin-bottom: var(--space-xs);
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: var(--space-md) var(--space-lg);
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            color: var(--text-primary);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            transition: all var(--transition-base);
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--primary-500);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        /* ================ BUTTONS ================ */
-        .btn {
-            padding: var(--space-md) var(--space-xl);
-            border: none;
-            border-radius: var(--radius-lg);
-            font-family: var(--font-sans);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-sm);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        /* ================ TOAST NOTIFICATIONS ================ */
-        .toast-container {
-            position: fixed;
-            bottom: calc(var(--bottom-nav-height) + var(--space-lg));
-            left: var(--space-lg);
-            right: var(--space-lg);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-sm);
-            pointer-events: none;
-        }
-        
-        @media (min-width: 640px) {
-            .toast-container {
-                left: auto;
-                right: var(--space-lg);
-                width: auto;
-                min-width: 300px;
-            }
+        .install-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
         
         .toast {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md) var(--space-lg);
-            box-shadow: var(--shadow-lg);
-            animation: toastSlideIn 0.3s ease-out;
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            pointer-events: auto;
-            position: relative;
-            overflow: hidden;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
         }
         
-        .toast::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--primary-500);
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
-        .toast.success::before { background: var(--success); }
-        .toast.error::before { background: var(--danger); }
-        .toast.warning::before { background: var(--warning); }
-        .toast.info::before { background: var(--info); }
-        
-        @keyframes toastSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* ================ LOADING STATES ================ */
-        .loading-spinner {
-            width: 2rem;
-            height: 2rem;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--primary-500);
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* ================ RESPONSIVE DESIGN ================ */
         @media (max-width: 768px) {
-            .header {
-                padding: 0 var(--space-md);
-            }
-            
             .main-content {
-                padding-left: var(--space-md);
-                padding-right: var(--space-md);
+                grid-template-columns: 1fr;
             }
             
-            .quick-actions-grid {
+            .quick-actions {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
-            .contacts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .quick-actions-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .voice-orb {
-                width: 8rem;
-                height: 8rem;
-            }
-        }
-        
-        /* ================ UTILITY CLASSES ================ */
-        .hidden { display: none !important; }
-        .block { display: block !important; }
-        .flex { display: flex !important; }
-        .grid { display: grid !important; }
-        
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
-        
-        .mt-1 { margin-top: var(--space-xs); }
-        .mt-2 { margin-top: var(--space-sm); }
-        .mt-4 { margin-top: var(--space-md); }
-        .mt-6 { margin-top: var(--space-lg); }
-        .mt-8 { margin-top: var(--space-xl); }
-        
-        .mb-1 { margin-bottom: var(--space-xs); }
-        .mb-2 { margin-bottom: var(--space-sm); }
-        .mb-4 { margin-bottom: var(--space-md); }
-        .mb-6 { margin-bottom: var(--space-lg); }
-        .mb-8 { margin-bottom: var(--space-xl); }
-        
-        .gap-2 { gap: var(--space-sm); }
-        .gap-4 { gap: var(--space-md); }
-        .gap-6 { gap: var(--space-lg); }
-        .gap-8 { gap: var(--space-xl); }
-        
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
-        
-        /* ================ ACCESSIBILITY ================ */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        
-        /* Focus styles for accessibility */
-        *:focus {
-            outline: 2px solid var(--primary-500);
-            outline-offset: 2px;
-        }
-        
-        *:focus:not(.focus-visible) {
-            outline: none;
         }
     </style>
 </head>
-<body class="light-theme">
-    <!-- App Container -->
+<body>
     <div class="app-container">
-        <!-- Premium Header -->
-        <header class="header" id="header">
-            <div class="container">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-brain"></i>
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> ALTECH AI Assistant</h1>
+            <p>Voice-controlled intelligent assistant with real calling & messaging</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <div style="margin: 15px 0;">
+                        <label>AI Provider:</label>
+                        <select id="aiProvider" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="smart">Smart Mode (Auto)</option>
+                            <option value="chatgpt">ChatGPT</option>
+                            <option value="local">Local AI</option>
+                        </select>
                     </div>
-                    <div class="logo-text">
-                        <span>ALTECH</span>
-                        <span>Advanced Intelligence</span>
+                    
+                    <div style="margin: 15px 0;">
+                        <label>Voice Speed:</label>
+                        <input type="range" id="voiceSpeed" min="0.5" max="2" step="0.1" value="1" style="width: 100%;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Slow</span>
+                            <span id="speedValue">Normal</span>
+                            <span>Fast</span>
+                        </div>
+                    </div>
+                    
+                    <button id="aiToggle" class="action-btn" style="width: 100%; margin-top: 10px;">
+                        <i class="fas fa-brain"></i> AI: ON
+                    </button>
+                </div>
+                
+                <div class="sidebar-section" style="margin-top: 25px;">
+                    <h3><i class="fas fa-history"></i> Recent Commands</h3>
+                    <div id="commandHistory" style="max-height: 200px; overflow-y: auto;">
+                        <p style="text-align: center; color: #666; padding: 20px;">No commands yet</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="voice-section">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="openTab('assistant')">Assistant</button>
+                    <button class="tab-btn" onclick="openTab('contacts')">Contacts</button>
+                    <button class="tab-btn" onclick="openTab('notes')">Notes</button>
+                    <button class="tab-btn" onclick="openTab('reminders')">Reminders</button>
+                </div>
+                
+                <!-- Assistant Tab -->
+                <div id="assistant" class="tab-content active">
+                    <div class="voice-orb" id="voiceOrb" onclick="toggleListening()">
+                        <i class="fas fa-microphone" style="font-size: 3em; color: white;"></i>
+                    </div>
+                    
+                    <div id="status" style="font-weight: 600; margin-bottom: 10px;">Ready to listen</div>
+                    <div id="transcript">Click the microphone and say a command...</div>
+                    
+                    <div class="ai-response">
+                        <h3><i class="fas fa-comment-alt"></i> AI Response</h3>
+                        <div id="aiOutput">Initializing AI Assistant...</div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="quickAction('call')">
+                            <i class="fas fa-phone"></i>
+                            <span>Make Call</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('note')">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>Add Note</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('reminder')">
+                            <i class="fas fa-bell"></i>
+                            <span>Set Reminder</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('search')">
+                            <i class="fas fa-search"></i>
+                            <span>Search Web</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('weather')">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span>Weather</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('time')">
+                            <i class="fas fa-clock"></i>
+                            <span>Current Time</span>
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 25px; text-align: center;">
+                        <h4>Try saying:</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <span class="command-example" onclick="speakCommand('Call Brian')">"Call Brian"</span>
+                            <span class="command-example" onclick="speakCommand('Add note meeting tomorrow at 3 PM')">"Add note meeting"</span>
+                            <span class="command-example" onclick="speakCommand('Search for Toyota cars')">"Search Toyota"</span>
+                            <span class="command-example" onclick="speakCommand('What time is it?')">"What time?"</span>
+                        </div>
                     </div>
                 </div>
                 
-                <nav class="header-nav">
-                    <div class="status-indicator">
-                        <div class="status-dot"></div>
-                        <span id="connectionStatus">Online</span>
-                    </div>
-                    
-                    <button class="btn btn-primary" id="aiModeToggle">
-                        <i class="fas fa-bolt"></i>
-                        <span>Smart Mode</span>
-                    </button>
-                    
-                    <button class="header-btn" id="themeToggle" aria-label="Toggle theme">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    
-                    <button class="header-btn" id="settingsToggle" aria-label="Open settings">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="container">
-                <div class="dashboard-grid">
-                    <!-- Sidebar (Desktop only) -->
-                    <aside class="sidebar">
-                        <div class="sidebar-content">
-                            <!-- User Profile -->
-                            <div class="user-profile mb-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="contact-avatar text-display">AU</div>
-                                    <div>
-                                        <h3 class="text-display" id="userName">Alex User</h3>
-                                        <p class="text-tertiary">Premium Member</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Quick Stats -->
-                            <div class="quick-stats mb-6">
-                                <h4 class="mb-4">Activity Today</h4>
-                                <div class="grid gap-4">
-                                    <div class="stat-item">
-                                        <div class="flex justify-between">
-                                            <span class="text-secondary">Commands</span>
-                                            <span class="text-primary font-semibold" id="commandsCount">12</span>
-                                        </div>
-                                        <div class="progress-bar mt-2">
-                                            <div class="progress-fill" style="width: 60%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="flex justify-between">
-                                            <span class="text-secondary">Memory Used</span>
-                                            <span class="text-primary font-semibold" id="memoryUsed">34%</span>
-                                        </div>
-                                        <div class="progress-bar mt-2">
-                                            <div class="progress-fill" style="width: 34%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Recent Activity -->
-                            <div class="recent-activity">
-                                <h4 class="mb-4">Recent Activity</h4>
-                                <div class="activity-list">
-                                    <!-- Will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <!-- Main Dashboard -->
-                    <div class="command-center">
-                        <!-- Voice Command Interface -->
-                        <div class="command-header">
-                            <h1 class="text-display text-3xl mb-2">How can I help you today?</h1>
-                            <p class="text-primary-100">Speak naturally or type your command</p>
-                            
-                            <div class="voice-orb-container">
-                                <div class="wave"></div>
-                                <div class="wave"></div>
-                                <div class="wave"></div>
-                                <div class="voice-orb" id="voiceOrb">
-                                    <i class="fas fa-microphone"></i>
-                                </div>
-                            </div>
-                            
-                            <p class="text-primary-200 mt-4" id="voiceStatus">Tap microphone to start speaking</p>
-                        </div>
-
-                        <!-- Conversation Display -->
-                        <div class="conversation-container" id="conversation">
-                            <!-- Messages will be inserted here -->
-                        </div>
-
-                        <!-- Quick Actions -->
-                        <div class="quick-actions-grid">
-                            <div class="action-card" onclick="quickAction('call')">
-                                <div class="action-icon">
-                                    <i class="fas fa-phone"></i>
-                                </div>
-                                <span class="font-semibold">Call Contact</span>
-                                <span class="text-tertiary text-sm">Voice or manual</span>
-                            </div>
-                            
-                            <div class="action-card" onclick="quickAction('note')">
-                                <div class="action-icon">
-                                    <i class="fas fa-sticky-note"></i>
-                                </div>
-                                <span class="font-semibold">Add Note</span>
-                                <span class="text-tertiary text-sm">Voice or text</span>
-                            </div>
-                            
-                            <div class="action-card" onclick="quickAction('reminder')">
-                                <div class="action-icon">
-                                    <i class="fas fa-bell"></i>
-                                </div>
-                                <span class="font-semibold">Set Reminder</span>
-                                <span class="text-tertiary text-sm">Smart scheduling</span>
-                            </div>
-                            
-                            <div class="action-card" onclick="quickAction('search')">
-                                <div class="action-icon">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                                <span class="font-semibold">Web Search</span>
-                                <span class="text-tertiary text-sm">Intelligent results</span>
-                            </div>
-                            
-                            <div class="action-card" onclick="quickAction('weather')">
-                                <div class="action-icon">
-                                    <i class="fas fa-cloud-sun"></i>
-                                </div>
-                                <span class="font-semibold">Weather</span>
-                                <span class="text-tertiary text-sm">Real-time forecast</span>
-                            </div>
-                            
-                            <div class="action-card" onclick="quickAction('calculate')">
-                                <div class="action-icon">
-                                    <i class="fas fa-calculator"></i>
-                                </div>
-                                <span class="font-semibold">Calculate</span>
-                                <span class="text-tertiary text-sm">Math & conversions</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modules Grid -->
-                <div class="modules-grid mt-8">
-                    <!-- Contacts Module -->
-                    <div class="module" id="contactsModule">
-                        <div class="module-header">
-                            <h3><i class="fas fa-users mr-2"></i>Contacts</h3>
-                            <button class="btn btn-primary" onclick="showAddContactModal()">
-                                <i class="fas fa-plus"></i> Add Contact
-                            </button>
-                        </div>
-                        <div class="module-content">
-                            <div class="contacts-grid" id="contactsList">
-                                <!-- Contacts will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Notes Module -->
-                    <div class="module" id="notesModule">
-                        <div class="module-header">
-                            <h3><i class="fas fa-sticky-note mr-2"></i>Notes</h3>
-                            <div class="flex gap-2">
-                                <button class="btn" onclick="startVoiceNote()">
-                                    <i class="fas fa-microphone"></i> Voice Note
-                                </button>
-                                <button class="btn btn-primary" onclick="showAddNoteModal()">
-                                    <i class="fas fa-plus"></i> New Note
-                                </button>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="notes-list" id="notesList">
-                                <!-- Notes will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reminders Module -->
-                    <div class="module" id="remindersModule">
-                        <div class="module-header">
-                            <h3><i class="fas fa-bell mr-2"></i>Reminders</h3>
-                            <button class="btn btn-primary" onclick="showAddReminderModal()">
-                                <i class="fas fa-plus"></i> Set Reminder
-                            </button>
-                        </div>
-                        <div class="module-content">
-                            <div class="reminders-list" id="remindersList">
-                                <!-- Reminders will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Bottom Navigation (Mobile) -->
-        <nav class="bottom-nav">
-            <a href="#assistant" class="nav-item active" data-tab="assistant">
-                <i class="fas fa-robot text-xl"></i>
-                <span class="text-xs">Assistant</span>
-            </a>
-            <a href="#contacts" class="nav-item" data-tab="contacts">
-                <i class="fas fa-users text-xl"></i>
-                <span class="text-xs">Contacts</span>
-            </a>
-            <a href="#notes" class="nav-item" data-tab="notes">
-                <i class="fas fa-sticky-note text-xl"></i>
-                <span class="text-xs">Notes</span>
-            </a>
-            <a href="#reminders" class="nav-item" data-tab="reminders">
-                <i class="fas fa-bell text-xl"></i>
-                <span class="text-xs">Reminders</span>
-            </a>
-            <a href="#search" class="nav-item" data-tab="search">
-                <i class="fas fa-search text-xl"></i>
-                <span class="text-xs">Search</span>
-            </a>
-        </nav>
-
-        <!-- Floating Action Buttons -->
-        <div class="fab-container">
-            <button class="fab emergency" id="emergencyBtn" title="Emergency Assistance">
-                <i class="fas fa-life-ring"></i>
-            </button>
-            <button class="fab whatsapp" id="whatsappBtn" title="Get Support">
-                <i class="fab fa-whatsapp"></i>
-            </button>
-            <button class="fab" id="voiceFab" title="Voice Assistant">
-                <i class="fas fa-microphone"></i>
-            </button>
-        </div>
-
-        <!-- Toast Container -->
-        <div class="toast-container" id="toastContainer"></div>
-
-        <!-- Modals -->
-        <div class="modal-overlay" id="addContactModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3><i class="fas fa-user-plus mr-2"></i>Add New Contact</h3>
-                    <button class="modal-close" onclick="closeModal('addContactModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-content p-6">
-                    <div class="input-group">
-                        <label class="input-label">Full Name</label>
-                        <input type="text" class="input-field" id="contactName" placeholder="John Doe">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Phone Number</label>
-                        <input type="tel" class="input-field" id="contactPhone" placeholder="+1 (555) 123-4567">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Email Address</label>
-                        <input type="email" class="input-field" id="contactEmail" placeholder="john@example.com">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Group</label>
-                        <select class="input-field" id="contactGroup">
-                            <option value="">Select Group</option>
-                            <option value="family">Family</option>
-                            <option value="friends">Friends</option>
-                            <option value="work">Work</option>
-                            <option value="emergency">Emergency</option>
-                        </select>
-                    </div>
-                    <div class="modal-actions flex gap-4 mt-6">
-                        <button class="btn btn-primary flex-1" onclick="saveContact()">
-                            <i class="fas fa-save"></i> Save Contact
+                <!-- Contacts Tab -->
+                <div id="contacts" class="tab-content">
+                    <h3><i class="fas fa-users"></i> Contacts</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button class="action-btn" onclick="addContact()" style="flex: 1;">
+                            <i class="fas fa-plus"></i> Add Contact
                         </button>
-                        <button class="btn flex-1" onclick="closeModal('addContactModal')">
-                            Cancel
+                        <button class="action-btn" onclick="importContacts()" style="flex: 1;">
+                            <i class="fas fa-file-import"></i> Import
                         </button>
+                    </div>
+                    
+                    <div id="contactsList">
+                        <!-- Contacts will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Notes Tab -->
+                <div id="notes" class="tab-content">
+                    <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+                    <textarea id="noteInput" placeholder="Type your note here..." 
+                              style="width: 100%; height: 150px; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;"></textarea>
+                    <button class="action-btn" onclick="saveNote()" style="width: 100%;">
+                        <i class="fas fa-save"></i> Save Note
+                    </button>
+                    
+                    <div id="notesList" style="margin-top: 25px;">
+                        <!-- Notes will be displayed here -->
+                    </div>
+                </div>
+                
+                <!-- Reminders Tab -->
+                <div id="reminders" class="tab-content">
+                    <h3><i class="fas fa-bell"></i> Reminders</h3>
+                    <div style="margin-bottom: 20px;">
+                        <input type="text" id="reminderText" placeholder="Reminder text..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px;">
+                        <input type="datetime-local" id="reminderTime" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                    <button class="action-btn" onclick="setReminder()" style="width: 100%;">
+                        <i class="fas fa-plus"></i> Set Reminder
+                    </button>
+                    
+                    <div id="remindersList" style="margin-top: 25px;">
+                        <!-- Reminders will be displayed here -->
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Add Note Modal -->
-        <div class="modal-overlay" id="addNoteModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3><i class="fas fa-sticky-note mr-2"></i>New Note</h3>
-                    <button class="modal-close" onclick="closeModal('addNoteModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-content p-6">
-                    <div class="input-group">
-                        <label class="input-label">Note Title</label>
-                        <input type="text" class="input-field" id="noteTitle" placeholder="Meeting Notes">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Note Content</label>
-                        <textarea class="input-field" id="noteContent" rows="6" placeholder="Type your note here..."></textarea>
-                    </div>
-                    <div class="modal-actions flex gap-4 mt-6">
-                        <button class="btn btn-primary flex-1" onclick="saveNote()">
-                            <i class="fas fa-save"></i> Save Note
-                        </button>
-                        <button class="btn flex-1" onclick="closeModal('addNoteModal')">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+        
+        <!-- Mobile App Banner -->
+        <div class="mobile-app-banner" id="mobileAppBanner">
+            <h3><i class="fas fa-mobile-alt"></i> Get Mobile App</h3>
+            <p>Install ALTECH AI Assistant on your phone for better experience</p>
+            <a href="#" class="install-btn" onclick="installApp()">
+                <i class="fas fa-download"></i> Install App
+            </a>
+            <div style="margin-top: 15px; font-size: 0.9em;">
+                <p>Supports: iOS, Android, and PWA</p>
             </div>
         </div>
-
-        <!-- Settings Panel -->
-        <div class="modal-overlay" id="settingsModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3><i class="fas fa-cog mr-2"></i>Settings</h3>
-                    <button class="modal-close" onclick="closeModal('settingsModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-content p-6">
-                    <div class="settings-section mb-6">
-                        <h4 class="mb-4">AI Settings</h4>
-                        <div class="space-y-4">
-                            <div class="setting-item flex justify-between items-center">
-                                <div>
-                                    <div class="font-semibold">Smart Mode</div>
-                                    <div class="text-tertiary text-sm">Advanced AI processing</div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="smartModeToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-item flex justify-between items-center">
-                                <div>
-                                    <div class="font-semibold">Voice Recognition</div>
-                                    <div class="text-tertiary text-sm">Enable voice commands</div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="voiceRecognitionToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-item flex justify-between items-center">
-                                <div>
-                                    <div class="font-semibold">Text-to-Speech</div>
-                                    <div class="text-tertiary text-sm">Read responses aloud</div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="ttsToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-section mb-6">
-                        <h4 class="mb-4">Privacy & Security</h4>
-                        <div class="space-y-4">
-                            <div class="setting-item flex justify-between items-center">
-                                <div>
-                                    <div class="font-semibold">End-to-End Encryption</div>
-                                    <div class="text-tertiary text-sm">Secure all communications</div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="encryptionToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-item flex justify-between items-center">
-                                <div>
-                                    <div class="font-semibold">Data Backup</div>
-                                    <div class="text-tertiary text-sm">Automatic cloud backup</div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="backupToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="modal-actions">
-                        <button class="btn btn-primary w-full" onclick="saveSettings()">
-                            <i class="fas fa-save"></i> Save Settings
-                        </button>
-                    </div>
-                </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" style="display: none;"></div>
+    
+    <!-- Modals -->
+    <div id="addContactModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
+            <h3>Add Contact</h3>
+            <input type="text" id="contactName" placeholder="Name" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="tel" id="contactPhone" placeholder="Phone Number" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="saveContact()" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer;">Save</button>
+                <button onclick="closeModal('addContactModal')" style="flex: 1; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
             </div>
+        </div>
+    </div>
+    
+    <div id="chooseContactModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
+            <h3>Multiple Contacts Found</h3>
+            <p id="multipleContactsText">Select which contact to call:</p>
+            <div id="contactOptions" style="max-height: 200px; overflow-y: auto; margin: 15px 0;">
+                <!-- Contact options will be added here -->
+            </div>
+            <button onclick="closeModal('chooseContactModal')" style="width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;">Cancel</button>
         </div>
     </div>
 
     <script>
-        // ================ GLOBAL STATE ================
-        const APP = {
-            // Core State
-            aiMode: 'smart',
-            isListening: false,
-            darkMode: false,
-            connectionStatus: 'online',
+        // ================ CORE VARIABLES ================
+        let recognition = null;
+        let isListening = false;
+        let aiEnabled = true;
+        let voiceSpeed = 1;
+        let myContacts = [];
+        let notes = [];
+        let reminders = [];
+        let conversationHistory = [];
+        let selectedContactForCall = null;
+
+        // ================ INITIALIZATION ================
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Initializing ALTECH AI Assistant...');
             
-            // Data Stores
-            contacts: [],
-            notes: [],
-            reminders: [],
-            conversation: [],
-            settings: {
-                smartMode: true,
-                voiceRecognition: true,
-                ttsEnabled: true,
-                encryption: true,
-                backup: true
-            },
+            // Initialize components
+            await initializeVoiceRecognition();
+            loadData();
+            updateUI();
             
-            // Statistics
-            stats: {
-                commandsToday: 0,
-                memoryUsage: 34,
-                voiceCommands: 0,
-                notesCreated: 0,
-                remindersSet: 0
-            },
-            
-            // Active Features
-            activeTab: 'assistant',
-            recognition: null,
-            deferredPrompt: null,
-            
-            // Initialize
-            init() {
-                console.log('🚀 Initializing ALTECH AI...');
-                
-                // Load saved data
-                this.loadData();
-                
-                // Initialize components
-                this.initUI();
-                this.initVoiceRecognition();
-                this.initEventListeners();
-                this.initPWA();
-                this.initNotifications();
-                
-                // Show welcome
-                setTimeout(() => {
-                    this.showWelcome();
-                    this.showToast('ALTECH AI is ready!', 'success');
-                }, 1000);
-                
-                console.log('✅ ALTECH AI initialized successfully');
-            },
-            
-            // ================ DATA MANAGEMENT ================
-            loadData() {
-                try {
-                    // Load contacts
-                    const savedContacts = localStorage.getItem('altech_contacts');
-                    this.contacts = savedContacts ? JSON.parse(savedContacts) : this.getDefaultContacts();
-                    
-                    // Load notes
-                    const savedNotes = localStorage.getItem('altech_notes');
-                    this.notes = savedNotes ? JSON.parse(savedNotes) : [];
-                    
-                    // Load reminders
-                    const savedReminders = localStorage.getItem('altech_reminders');
-                    this.reminders = savedReminders ? JSON.parse(savedReminders) : [];
-                    
-                    // Load settings
-                    const savedSettings = localStorage.getItem('altech_settings');
-                    this.settings = savedSettings ? JSON.parse(savedSettings) : this.settings;
-                    
-                    // Load conversation
-                    const savedConversation = localStorage.getItem('altech_conversation');
-                    this.conversation = savedConversation ? JSON.parse(savedConversation) : [];
-                    
-                    // Load stats
-                    const savedStats = localStorage.getItem('altech_stats');
-                    this.stats = savedStats ? JSON.parse(savedStats) : this.stats;
-                    
-                } catch (error) {
-                    console.error('Error loading data:', error);
-                    this.resetToDefaults();
-                }
-            },
-            
-            saveData() {
-                try {
-                    localStorage.setItem('altech_contacts', JSON.stringify(this.contacts));
-                    localStorage.setItem('altech_notes', JSON.stringify(this.notes));
-                    localStorage.setItem('altech_reminders', JSON.stringify(this.reminders));
-                    localStorage.setItem('altech_settings', JSON.stringify(this.settings));
-                    localStorage.setItem('altech_conversation', JSON.stringify(this.conversation));
-                    localStorage.setItem('altech_stats', JSON.stringify(this.stats));
-                } catch (error) {
-                    console.error('Error saving data:', error);
-                }
-            },
-            
-            getDefaultContacts() {
-                return [
-                    {
-                        id: '1',
-                        name: 'Emergency Services',
-                        phone: '911',
-                        email: '',
-                        group: 'emergency',
-                        avatar: 'ES'
-                    },
-                    {
-                        id: '2',
-                        name: 'Alex Johnson',
-                        phone: '+1 (555) 123-4567',
-                        email: 'alex@example.com',
-                        group: 'family',
-                        avatar: 'AJ'
-                    },
-                    {
-                        id: '3',
-                        name: 'Sarah Williams',
-                        phone: '+1 (555) 987-6543',
-                        email: 'sarah@example.com',
-                        group: 'work',
-                        avatar: 'SW'
-                    },
-                    {
-                        id: '4',
-                        name: 'Dr. Michael Chen',
-                        phone: '+1 (555) 456-7890',
-                        email: 'dr.chen@example.com',
-                        group: 'health',
-                        avatar: 'MC'
-                    }
-                ];
-            },
-            
-            resetToDefaults() {
-                this.contacts = this.getDefaultContacts();
-                this.notes = [];
-                this.reminders = [];
-                this.conversation = [];
-                this.settings = {
-                    smartMode: true,
-                    voiceRecognition: true,
-                    ttsEnabled: true,
-                    encryption: true,
-                    backup: true
-                };
-                this.stats = {
-                    commandsToday: 0,
-                    memoryUsage: 34,
-                    voiceCommands: 0,
-                    notesCreated: 0,
-                    remindersSet: 0
-                };
-                this.saveData();
-            },
-            
-            // ================ UI INITIALIZATION ================
-            initUI() {
-                // Update UI with loaded data
-                this.updateContactsUI();
-                this.updateNotesUI();
-                this.updateRemindersUI();
-                this.updateConversationUI();
-                this.updateStatsUI();
-                
-                // Apply theme
-                this.applyTheme();
-                
-                // Update settings toggles
-                document.getElementById('smartModeToggle').checked = this.settings.smartMode;
-                document.getElementById('voiceRecognitionToggle').checked = this.settings.voiceRecognition;
-                document.getElementById('ttsToggle').checked = this.settings.ttsEnabled;
-                document.getElementById('encryptionToggle').checked = this.settings.encryption;
-                document.getElementById('backupToggle').checked = this.settings.backup;
-                
-                // Set up bottom navigation
-                this.setupBottomNavigation();
-            },
-            
-            setupBottomNavigation() {
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(item => {
-                    item.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const tab = item.getAttribute('data-tab');
-                        this.switchTab(tab);
-                    });
-                });
-            },
-            
-            switchTab(tab) {
-                this.activeTab = tab;
-                
-                // Update active state
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.classList.remove('active');
-                    if (item.getAttribute('data-tab') === tab) {
-                        item.classList.add('active');
-                    }
-                });
-                
-                // Scroll to module
-                const module = document.getElementById(`${tab}Module`);
-                if (module) {
-                    module.scrollIntoView({ behavior: 'smooth' });
-                }
-            },
-            
-            applyTheme() {
-                if (this.darkMode) {
-                    document.body.classList.add('dark-theme');
-                    document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+            // Show welcome message
+            setTimeout(() => {
+                showToast('ALTECH AI Assistant is ready! Say "Hey ALTECH" or click the microphone.');
+                speakResponse("Welcome to ALTECH AI Assistant. I'm ready to help you with calls, notes, reminders, and more!");
+                updateAIResponse("Hello! I'm your ALTECH AI Assistant. Try saying: 'Call Brian', 'Add note meeting tomorrow', or 'What time is it?'");
+            }, 1000);
+        });
+
+        // ================ VOICE RECOGNITION ================
+        async function initializeVoiceRecognition() {
+            try {
+                if ('webkitSpeechRecognition' in window) {
+                    recognition = new webkitSpeechRecognition();
+                } else if ('SpeechRecognition' in window) {
+                    recognition = new SpeechRecognition();
                 } else {
-                    document.body.classList.remove('dark-theme');
-                    document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
-                }
-            },
-            
-            toggleTheme() {
-                this.darkMode = !this.darkMode;
-                this.applyTheme();
-                this.showToast(`Switched to ${this.darkMode ? 'dark' : 'light'} theme`, 'info');
-            },
-            
-            // ================ VOICE RECOGNITION ================
-            initVoiceRecognition() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    console.warn('Speech recognition not supported');
-                    this.settings.voiceRecognition = false;
+                    showToast('Speech recognition not supported in this browser', 'error');
                     return;
                 }
                 
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SpeechRecognition();
-                this.recognition.continuous = false;
-                this.recognition.interimResults = true;
-                this.recognition.lang = 'en-US';
-                this.recognition.maxAlternatives = 3;
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
                 
-                this.recognition.onstart = () => {
-                    this.isListening = true;
+                recognition.onstart = () => {
+                    isListening = true;
                     document.getElementById('voiceOrb').classList.add('listening');
-                    document.getElementById('voiceStatus').textContent = 'Listening... Speak now';
-                    this.showToast('Listening...', 'info');
+                    document.getElementById('status').textContent = 'Listening...';
+                    updateAIResponse('<div class="loading"></div> Listening...');
                 };
                 
-                this.recognition.onresult = (event) => {
-                    const transcript = Array.from(event.results)
-                        .map(result => result[0].transcript)
-                        .join('');
-                    
-                    if (event.results[0].isFinal) {
-                        this.processVoiceCommand(transcript);
-                    }
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('transcript').textContent = `You said: "${transcript}"`;
+                    handleVoiceCommand(transcript);
                 };
                 
-                this.recognition.onend = () => {
-                    this.isListening = false;
+                recognition.onend = () => {
+                    isListening = false;
                     document.getElementById('voiceOrb').classList.remove('listening');
-                    document.getElementById('voiceStatus').textContent = 'Tap microphone to start speaking';
+                    document.getElementById('status').textContent = 'Ready to listen';
                 };
                 
-                this.recognition.onerror = (event) => {
+                recognition.onerror = (event) => {
                     console.error('Speech recognition error:', event.error);
-                    this.showToast(`Voice error: ${event.error}`, 'error');
-                    this.isListening = false;
+                    isListening = false;
                     document.getElementById('voiceOrb').classList.remove('listening');
-                };
-                
-                // Setup voice orb click
-                document.getElementById('voiceOrb').addEventListener('click', () => {
-                    this.toggleVoiceRecognition();
-                });
-                
-                document.getElementById('voiceFab').addEventListener('click', () => {
-                    this.toggleVoiceRecognition();
-                });
-            },
-            
-            toggleVoiceRecognition() {
-                if (!this.settings.voiceRecognition) {
-                    this.showToast('Voice recognition is disabled in settings', 'warning');
-                    return;
-                }
-                
-                if (this.isListening) {
-                    this.recognition.stop();
-                } else {
-                    try {
-                        this.recognition.start();
-                    } catch (error) {
-                        this.showToast('Error starting voice recognition', 'error');
-                    }
-                }
-            },
-            
-            // ================ COMMAND PROCESSING ================
-            async processVoiceCommand(command) {
-                this.stats.commandsToday++;
-                this.stats.voiceCommands++;
-                this.updateStatsUI();
-                
-                // Add user message to conversation
-                this.addMessage('user', command);
-                
-                // Show typing indicator
-                this.showTypingIndicator();
-                
-                // Process command
-                const response = await this.processCommand(command);
-                
-                // Add AI response
-                this.addMessage('ai', response.message, response.html);
-                
-                // Speak response if TTS enabled
-                if (this.settings.ttsEnabled) {
-                    this.speakResponse(response.message);
-                }
-                
-                // Save data
-                this.saveData();
-            },
-            
-            async processCommand(command) {
-                const lowerCommand = command.toLowerCase();
-                
-                // Enhanced command patterns
-                const patterns = {
-                    // Call commands
-                    call: /^(call|phone|dial|ring)\s+(?:me\s+)?(?:to\s+)?(.+)/i,
-                    note: /^(?:add|create|make|write)\s+(?:a\s+)?note\s+(?:that\s+)?(.+)/i,
-                    reminder: /^(?:remind|set\s+reminder|set\s+alarm)\s+(?:me\s+)?(?:to\s+)?(.+)/i,
-                    search: /^(?:search|find|look\s+up)\s+(?:for\s+)?(.+)/i,
-                    weather: /^(?:weather|forecast)\s+(?:in\s+|for\s+)?(.+)/i,
-                    calculate: /^(?:calculate|what\s+is)\s+(.+)/i,
-                    time: /^(?:what(?:\'s|\s+is)\s+)?(?:the\s+)?time/i,
-                    date: /^(?:what(?:\'s|\s+is)\s+)?(?:the\s+)?date/i,
-                    help: /^help|what\s+can\s+you\s+do/i,
-                    joke: /^tell\s+me\s+a\s+joke/i,
-                    quote: /^(?:inspire\s+me|give\s+me\s+a\s+quote)/i
-                };
-                
-                // Check patterns
-                for (const [type, pattern] of Object.entries(patterns)) {
-                    const match = command.match(pattern);
-                    if (match) {
-                        return await this.handleCommand(type, match[1] || '', command);
-                    }
-                }
-                
-                // Default: AI response
-                return await this.handleCommand('ai', command, command);
-            },
-            
-            async handleCommand(type, param, originalCommand) {
-                switch (type) {
-                    case 'call':
-                        return await this.handleCallCommand(param);
-                    case 'note':
-                        return await this.handleNoteCommand(param);
-                    case 'reminder':
-                        return await this.handleReminderCommand(param);
-                    case 'search':
-                        return await this.handleSearchCommand(param);
-                    case 'weather':
-                        return await this.handleWeatherCommand(param);
-                    case 'calculate':
-                        return await this.handleCalculateCommand(param);
-                    case 'time':
-                        return this.handleTimeCommand();
-                    case 'date':
-                        return this.handleDateCommand();
-                    case 'help':
-                        return this.handleHelpCommand();
-                    case 'joke':
-                        return await this.handleJokeCommand();
-                    case 'quote':
-                        return await this.handleQuoteCommand();
-                    default:
-                        return await this.handleAICommand(originalCommand);
-                }
-            },
-            
-            // Command Handlers
-            async handleCallCommand(param) {
-                const contact = this.findContact(param);
-                if (contact) {
-                    // Simulate call
-                    setTimeout(() => {
-                        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                            window.location.href = `tel:${contact.phone}`;
-                        }
-                    }, 500);
                     
-                    return {
-                        message: `Calling ${contact.name}...`,
-                        html: `<div class="success-message">
-                            <strong>📞 Initiating Call</strong>
-                            <p>Calling <strong>${contact.name}</strong> at ${this.formatPhone(contact.phone)}</p>
-                            <p class="text-tertiary text-sm mt-2">If you're on a mobile device, the dialer will open automatically.</p>
-                        </div>`
-                    };
-                } else {
-                    return {
-                        message: `Contact not found. Would you like to add "${param}" as a new contact?`,
-                        html: `<div class="info-message">
-                            <strong>Contact Not Found</strong>
-                            <p>I couldn't find "${param}" in your contacts.</p>
-                            <button class="btn btn-primary mt-2" onclick="showAddContactModal('${param}')">
-                                <i class="fas fa-user-plus"></i> Add as New Contact
-                            </button>
-                        </div>`
-                    };
-                }
-            },
-            
-            async handleNoteCommand(param) {
-                const note = {
-                    id: Date.now().toString(),
-                    title: `Note from ${new Date().toLocaleTimeString()}`,
-                    content: param,
-                    createdAt: new Date().toISOString(),
-                    type: 'voice'
-                };
-                
-                this.notes.unshift(note);
-                this.stats.notesCreated++;
-                this.updateNotesUI();
-                
-                return {
-                    message: `Note saved: "${param.substring(0, 50)}..."`,
-                    html: `<div class="success-message">
-                        <strong>📝 Note Saved</strong>
-                        <p>${param}</p>
-                        <div class="text-tertiary text-sm mt-2">
-                            <i class="fas fa-clock"></i> ${new Date().toLocaleString()}
-                        </div>
-                    </div>`
-                };
-            },
-            
-            async handleReminderCommand(param) {
-                const time = this.parseTimeFromCommand(param);
-                const reminder = {
-                    id: Date.now().toString(),
-                    text: param.replace(/\b(at|in|on|tomorrow|today)\b.*$/i, '').trim(),
-                    time: time.toISOString(),
-                    createdAt: new Date().toISOString(),
-                    active: true
-                };
-                
-                this.reminders.push(reminder);
-                this.stats.remindersSet++;
-                this.updateRemindersUI();
-                
-                return {
-                    message: `Reminder set for ${time.toLocaleString()}`,
-                    html: `<div class="success-message">
-                        <strong>⏰ Reminder Set</strong>
-                        <p><strong>${reminder.text}</strong></p>
-                        <p class="text-tertiary">Scheduled for: ${time.toLocaleString()}</p>
-                    </div>`
-                };
-            },
-            
-            async handleSearchCommand(param) {
-                // Open search in new tab
-                setTimeout(() => {
-                    window.open(`https://www.google.com/search?q=${encodeURIComponent(param)}`, '_blank');
-                }, 1000);
-                
-                // Get AI summary
-                const summary = await this.getAISummary(param);
-                
-                return {
-                    message: `Searching for "${param}"...`,
-                    html: `<div class="info-message">
-                        <strong>🔍 Search Results</strong>
-                        <p>${summary}</p>
-                        <div class="mt-4">
-                            <button class="btn btn-primary" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(param)}', '_blank')">
-                                <i class="fas fa-external-link-alt"></i> Open in Google
-                            </button>
-                        </div>
-                    </div>`
-                };
-            },
-            
-            async handleWeatherCommand(param) {
-                const weather = await this.getWeatherData(param);
-                return {
-                    message: `Weather in ${param}: ${weather.temperature}°C, ${weather.condition}`,
-                    html: `<div class="success-message">
-                        <strong>🌤️ Weather in ${param}</strong>
-                        <div class="grid grid-cols-2 gap-4 mt-3">
-                            <div class="text-center">
-                                <div class="text-3xl font-bold">${weather.temperature}°C</div>
-                                <div class="text-tertiary text-sm">Temperature</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-xl">${weather.condition}</div>
-                                <div class="text-tertiary text-sm">Condition</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-lg">${weather.humidity}%</div>
-                                <div class="text-tertiary text-sm">Humidity</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-lg">${weather.wind} km/h</div>
-                                <div class="text-tertiary text-sm">Wind Speed</div>
-                            </div>
-                        </div>
-                    </div>`
-                };
-            },
-            
-            async handleCalculateCommand(param) {
-                try {
-                    // Safe evaluation of math expressions
-                    const expression = param.replace(/[^0-9+\-*/().\s]/g, '');
-                    const result = eval(expression);
-                    
-                    return {
-                        message: `${expression} = ${result}`,
-                        html: `<div class="success-message">
-                            <strong>🧮 Calculation Result</strong>
-                            <div class="text-center my-4">
-                                <div class="text-2xl text-tertiary">${expression}</div>
-                                <div class="text-4xl font-bold text-primary-600">= ${result}</div>
-                            </div>
-                        </div>`
-                    };
-                } catch (error) {
-                    return {
-                        message: "I couldn't calculate that expression.",
-                        html: `<div class="error-message">
-                            <strong>Calculation Error</strong>
-                            <p>Please try a simpler math expression.</p>
-                        </div>`
-                    };
-                }
-            },
-            
-            handleTimeCommand() {
-                const now = new Date();
-                const timeStr = now.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                
-                return {
-                    message: `The current time is ${timeStr}`,
-                    html: `<div class="info-message">
-                        <strong>🕒 Current Time</strong>
-                        <div class="text-center my-4">
-                            <div class="text-5xl font-bold">${timeStr}</div>
-                        </div>
-                    </div>`
-                };
-            },
-            
-            handleDateCommand() {
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                
-                return {
-                    message: `Today is ${dateStr}`,
-                    html: `<div class="info-message">
-                        <strong>📅 Today's Date</strong>
-                        <div class="text-center my-4">
-                            <div class="text-2xl">${dateStr}</div>
-                        </div>
-                    </div>`
-                };
-            },
-            
-            handleHelpCommand() {
-                return {
-                    message: "Here's what I can help you with...",
-                    html: `<div class="info-message">
-                        <strong>🤖 ALTECH AI Capabilities</strong>
-                        <div class="grid grid-cols-2 gap-3 mt-3">
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-phone text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Call Contacts</div>
-                            </div>
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-sticky-note text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Voice Notes</div>
-                            </div>
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-bell text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Smart Reminders</div>
-                            </div>
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-search text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Web Search</div>
-                            </div>
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-cloud-sun text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Weather</div>
-                            </div>
-                            <div class="p-3 bg-surface rounded-lg">
-                                <i class="fas fa-calculator text-primary-500"></i>
-                                <div class="text-sm font-semibold mt-1">Calculations</div>
-                            </div>
-                        </div>
-                    </div>`
-                };
-            },
-            
-            async handleJokeCommand() {
-                const jokes = [
-                    "Why don't scientists trust atoms? Because they make up everything!",
-                    "Why did the scarecrow win an award? He was outstanding in his field!",
-                    "What do you call a fake noodle? An impasta!",
-                    "Why don't eggs tell jokes? They'd crack each other up!",
-                    "What do you call a bear with no teeth? A gummy bear!"
-                ];
-                
-                const joke = jokes[Math.floor(Math.random() * jokes.length)];
-                
-                return {
-                    message: joke,
-                    html: `<div class="success-message">
-                        <strong>😄 Here's a joke for you!</strong>
-                        <p class="mt-2">${joke}</p>
-                    </div>`
-                };
-            },
-            
-            async handleQuoteCommand() {
-                const quotes = [
-                    {
-                        text: "The only way to do great work is to love what you do.",
-                        author: "Steve Jobs"
-                    },
-                    {
-                        text: "Innovation distinguishes between a leader and a follower.",
-                        author: "Steve Jobs"
-                    },
-                    {
-                        text: "The future belongs to those who believe in the beauty of their dreams.",
-                        author: "Eleanor Roosevelt"
-                    },
-                    {
-                        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-                        author: "Winston Churchill"
-                    }
-                ];
-                
-                const quote = quotes[Math.floor(Math.random() * quotes.length)];
-                
-                return {
-                    message: `${quote.text} - ${quote.author}`,
-                    html: `<div class="info-message">
-                        <strong>💫 Daily Inspiration</strong>
-                        <p class="text-italic mt-2">"${quote.text}"</p>
-                        <p class="text-tertiary text-right mt-2">- ${quote.author}</p>
-                    </div>`
-                };
-            },
-            
-            async handleAICommand(command) {
-                const response = await this.getAIResponse(command);
-                return {
-                    message: response,
-                    html: `<div class="success-message">
-                        <strong>🤖 AI Response</strong>
-                        <p class="mt-2">${response}</p>
-                    </div>`
-                };
-            },
-            
-            // ================ AI INTEGRATION ================
-            async getAIResponse(query) {
-                try {
-                    // Try multiple AI endpoints
-                    const endpoints = [
-                        {
-                            url: 'https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-70b-chat-hf',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Bearer dc2bc3e2cdd2c6ccad9f5df96d0df850c4e284b7'
-                            },
-                            body: {
-                                input: `Provide a helpful response to: "${query}"`,
-                                max_new_tokens: 150
-                            }
-                        }
-                    ];
-                    
-                    for (const endpoint of endpoints) {
-                        try {
-                            const response = await fetch(endpoint.url, {
-                                method: 'POST',
-                                headers: endpoint.headers,
-                                body: JSON.stringify(endpoint.body)
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                if (data.results?.[0]?.generated_text) {
-                                    return data.results[0].generated_text.trim();
-                                }
-                            }
-                        } catch (error) {
-                            console.log('AI endpoint failed:', error.message);
-                            continue;
-                        }
-                    }
-                    
-                    // Fallback responses
-                    return this.getFallbackResponse(query);
-                    
-                } catch (error) {
-                    console.error('AI response error:', error);
-                    return this.getFallbackResponse(query);
-                }
-            },
-            
-            getFallbackResponse(query) {
-                const responses = [
-                    `I understand you're asking about "${query}". While I'm preparing a detailed response, you might want to check the latest information online.`,
-                    `That's an interesting question about "${query}". Let me help you find more information about this topic.`,
-                    `Regarding "${query}", I can assist you with that. Would you like me to search for more specific information?`
-                ];
-                
-                return responses[Math.floor(Math.random() * responses.length)];
-            },
-            
-            async getAISummary(query) {
-                const response = await this.getAIResponse(query);
-                return response.substring(0, 200) + '...';
-            },
-            
-            async getWeatherData(location) {
-                // Mock weather data - in production, connect to weather API
-                return {
-                    location: location,
-                    temperature: Math.floor(Math.random() * 35) + 10,
-                    condition: ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy'][Math.floor(Math.random() * 4)],
-                    humidity: Math.floor(Math.random() * 70) + 30,
-                    wind: Math.floor(Math.random() * 40) + 5
-                };
-            },
-            
-            // ================ UTILITY FUNCTIONS ================
-            findContact(searchTerm) {
-                const term = searchTerm.toLowerCase();
-                return this.contacts.find(contact => 
-                    contact.name.toLowerCase().includes(term) ||
-                    contact.phone.includes(term)
-                );
-            },
-            
-            formatPhone(phone) {
-                const cleaned = phone.replace(/\D/g, '');
-                if (cleaned.length === 10) {
-                    return `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)}-${cleaned.substring(6)}`;
-                }
-                return phone;
-            },
-            
-            parseTimeFromCommand(command) {
-                const now = new Date();
-                const time = new Date(now);
-                
-                // Simple time parsing - in production, use a proper NLP library
-                if (command.includes('tomorrow')) {
-                    time.setDate(time.getDate() + 1);
-                }
-                if (command.includes('in 1 hour') || command.includes('in one hour')) {
-                    time.setHours(time.getHours() + 1);
-                }
-                if (command.includes('in 30 minutes')) {
-                    time.setMinutes(time.getMinutes() + 30);
-                }
-                
-                return time;
-            },
-            
-            // ================ UI UPDATES ================
-            updateContactsUI() {
-                const container = document.getElementById('contactsList');
-                if (!container) return;
-                
-                container.innerHTML = this.contacts.map(contact => `
-                    <div class="contact-card" onclick="APP.showContactDetails('${contact.id}')">
-                        <div class="contact-avatar">${contact.avatar}</div>
-                        <div class="flex-1">
-                            <div class="font-semibold">${contact.name}</div>
-                            <div class="text-tertiary text-sm">${this.formatPhone(contact.phone)}</div>
-                            ${contact.group ? `<span class="badge badge-${contact.group}">${contact.group}</span>` : ''}
-                        </div>
-                        <button class="btn" onclick="event.stopPropagation(); APP.callContact('${contact.id}')">
-                            <i class="fas fa-phone"></i>
-                        </button>
-                    </div>
-                `).join('');
-            },
-            
-            updateNotesUI() {
-                const container = document.getElementById('notesList');
-                if (!container) return;
-                
-                const recentNotes = this.notes.slice(0, 5);
-                container.innerHTML = recentNotes.map(note => `
-                    <div class="note-card">
-                        <div class="font-semibold">${note.title}</div>
-                        <p class="text-tertiary text-sm mt-1">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</p>
-                        <div class="text-tertiary text-xs mt-2">
-                            <i class="fas fa-clock"></i> ${new Date(note.createdAt).toLocaleString()}
-                        </div>
-                    </div>
-                `).join('');
-            },
-            
-            updateRemindersUI() {
-                const container = document.getElementById('remindersList');
-                if (!container) return;
-                
-                const activeReminders = this.reminders.filter(r => r.active).slice(0, 5);
-                container.innerHTML = activeReminders.map(reminder => {
-                    const time = new Date(reminder.time);
-                    const now = new Date();
-                    const isUrgent = (time - now) < 3600000; // Less than 1 hour
-                    
-                    return `
-                        <div class="reminder-card ${isUrgent ? 'urgent' : ''}">
-                            <div class="font-semibold">${reminder.text}</div>
-                            <div class="text-tertiary text-sm mt-1">
-                                <i class="fas fa-clock"></i> ${time.toLocaleString()}
-                            </div>
-                            <div class="flex gap-2 mt-2">
-                                <button class="btn btn-sm" onclick="APP.completeReminder('${reminder.id}')">
-                                    <i class="fas fa-check"></i> Complete
-                                </button>
-                                <button class="btn btn-sm" onclick="APP.snoozeReminder('${reminder.id}')">
-                                    <i class="fas fa-clock"></i> Snooze
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            },
-            
-            updateConversationUI() {
-                const container = document.getElementById('conversation');
-                if (!container) return;
-                
-                container.innerHTML = this.conversation.map(msg => `
-                    <div class="message ${msg.type}">
-                        <div class="message-avatar">
-                            <i class="fas fa-${msg.type === 'user' ? 'user' : 'robot'}"></i>
-                        </div>
-                        <div class="message-content ${msg.type}">
-                            ${msg.html || msg.content}
-                            <div class="message-timestamp">
-                                ${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
-                // Scroll to bottom
-                container.scrollTop = container.scrollHeight;
-            },
-            
-            updateStatsUI() {
-                document.getElementById('commandsCount').textContent = this.stats.commandsToday;
-                document.getElementById('memoryUsed').textContent = `${this.stats.memoryUsage}%`;
-            },
-            
-            addMessage(type, content, html = null) {
-                const message = {
-                    type,
-                    content,
-                    html: html || `<p>${content}</p>`,
-                    timestamp: new Date().toISOString()
-                };
-                
-                this.conversation.push(message);
-                this.updateConversationUI();
-                
-                // Keep only last 50 messages
-                if (this.conversation.length > 50) {
-                    this.conversation = this.conversation.slice(-50);
-                }
-            },
-            
-            showTypingIndicator() {
-                const container = document.getElementById('conversation');
-                const indicator = document.createElement('div');
-                indicator.className = 'message ai';
-                indicator.innerHTML = `
-                    <div class="message-avatar">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-content ai">
-                        <div class="typing-indicator">
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(indicator);
-                container.scrollTop = container.scrollHeight;
-            },
-            
-            // ================ TEXT-TO-SPEECH ================
-            speakResponse(text) {
-                if (!this.settings.ttsEnabled || !('speechSynthesis' in window)) return;
-                
-                try {
-                    window.speechSynthesis.cancel();
-                    
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.0;
-                    utterance.volume = 1.0;
-                    
-                    const voices = window.speechSynthesis.getVoices();
-                    if (voices.length > 0) {
-                        const englishVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
-                        utterance.voice = englishVoice;
-                    }
-                    
-                    window.speechSynthesis.speak(utterance);
-                } catch (error) {
-                    console.error('Speech synthesis error:', error);
-                }
-            },
-            
-            // ================ NOTIFICATIONS ================
-            initNotifications() {
-                if (!('Notification' in window)) return;
-                
-                if (Notification.permission === 'default') {
-                    Notification.requestPermission();
-                }
-            },
-            
-            showNotification(title, body) {
-                if (!('Notification' in window) || Notification.permission !== 'granted') return;
-                
-                new Notification(title, {
-                    body,
-                    icon: '/icon-192x192.png',
-                    badge: '/icon-72x72.png'
-                });
-            },
-            
-            // ================ PWA FUNCTIONALITY ================
-            initPWA() {
-                // Check if app is already installed
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    document.getElementById('installBtn')?.style.display = 'none';
-                }
-                
-                // Listen for beforeinstallprompt
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    this.deferredPrompt = e;
-                    
-                    // Show install button
-                    const installBtn = document.getElementById('installBtn');
-                    if (installBtn) {
-                        installBtn.style.display = 'flex';
-                        installBtn.addEventListener('click', () => this.installPWA());
-                    }
-                });
-                
-                // Listen for app installed
-                window.addEventListener('appinstalled', () => {
-                    this.showToast('ALTECH AI installed successfully!', 'success');
-                    document.getElementById('installBtn').style.display = 'none';
-                });
-            },
-            
-            async installPWA() {
-                if (this.deferredPrompt) {
-                    this.deferredPrompt.prompt();
-                    const { outcome } = await this.deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('User accepted PWA installation');
-                    }
-                    this.deferredPrompt = null;
-                }
-            },
-            
-            // ================ EVENT LISTENERS ================
-            initEventListeners() {
-                // Theme toggle
-                document.getElementById('themeToggle').addEventListener('click', () => {
-                    this.toggleTheme();
-                });
-                
-                // Settings toggle
-                document.getElementById('settingsToggle').addEventListener('click', () => {
-                    this.showModal('settingsModal');
-                });
-                
-                // AI mode toggle
-                document.getElementById('aiModeToggle').addEventListener('click', () => {
-                    this.toggleAIMode();
-                });
-                
-                // Emergency button
-                document.getElementById('emergencyBtn').addEventListener('click', () => {
-                    this.handleEmergency();
-                });
-                
-                // WhatsApp button
-                document.getElementById('whatsappBtn').addEventListener('click', () => {
-                    window.open('https://wa.me/254712345678?text=Hello%20ALTECH%20AI%20Support', '_blank');
-                });
-                
-                // Quick actions
-                document.querySelectorAll('.action-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        const action = e.currentTarget.getAttribute('onclick').match(/'([^']+)'/)[1];
-                        this.handleQuickAction(action);
-                    });
-                });
-                
-                // Keyboard shortcuts
-                document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.key === '/') {
-                        e.preventDefault();
-                        this.toggleVoiceRecognition();
-                    }
-                    if (e.key === 'Escape') {
-                        this.closeAllModals();
-                    }
-                });
-                
-                // Window scroll for header effect
-                window.addEventListener('scroll', () => {
-                    const header = document.getElementById('header');
-                    if (window.scrollY > 10) {
-                        header.classList.add('scrolled');
+                    if (event.error === 'not-allowed') {
+                        showToast('Microphone access denied. Please allow microphone permissions.', 'error');
+                        updateAIResponse('⚠️ Microphone permission required. Please allow microphone access in your browser settings.');
                     } else {
-                        header.classList.remove('scrolled');
-                    }
-                });
-                
-                // Check reminders periodically
-                setInterval(() => this.checkReminders(), 60000); // Every minute
-                
-                // Auto-save data
-                setInterval(() => this.saveData(), 30000); // Every 30 seconds
-            },
-            
-            // ================ MODAL MANAGEMENT ================
-            showModal(modalId) {
-                document.getElementById(modalId).style.display = 'flex';
-            },
-            
-            closeModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            },
-            
-            closeAllModals() {
-                document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.style.display = 'none';
-                });
-            },
-            
-            // ================ TOAST NOTIFICATIONS ================
-            showToast(message, type = 'info') {
-                const container = document.getElementById('toastContainer');
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
-                toast.innerHTML = `
-                    <i class="fas fa-${this.getToastIcon(type)}"></i>
-                    <span>${message}</span>
-                `;
-                
-                container.appendChild(toast);
-                
-                // Remove after 3 seconds
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            },
-            
-            getToastIcon(type) {
-                const icons = {
-                    success: 'check-circle',
-                    error: 'exclamation-circle',
-                    warning: 'exclamation-triangle',
-                    info: 'info-circle'
-                };
-                return icons[type] || 'info-circle';
-            },
-            
-            // ================ WELCOME MESSAGE ================
-            showWelcome() {
-                this.addMessage('ai', 
-                    'Welcome to ALTECH AI! I\'m your advanced intelligence assistant. ' +
-                    'I can help you with calls, notes, reminders, searches, and much more. ' +
-                    'Try saying "Call Alex" or "Add note meeting tomorrow".',
-                    `<div class="success-message">
-                        <strong>🌟 Welcome to ALTECH AI!</strong>
-                        <p class="mt-2">I'm your advanced intelligence assistant, ready to help you with:</p>
-                        <ul class="mt-2 space-y-1">
-                            <li>📞 Making calls and managing contacts</li>
-                            <li>📝 Creating voice and text notes</li>
-                            <li>⏰ Setting smart reminders</li>
-                            <li>🔍 Searching the web intelligently</li>
-                            <li>🌤️ Checking weather forecasts</li>
-                            <li>🧮 Performing calculations</li>
-                        </ul>
-                        <p class="mt-3">Try saying <strong>"Call Alex"</strong> or <strong>"Add note meeting tomorrow"</strong></p>
-                    </div>`
-                );
-            },
-            
-            // ================ QUICK ACTIONS ================
-            handleQuickAction(action) {
-                switch (action) {
-                    case 'call':
-                        this.showAddContactModal();
-                        break;
-                    case 'note':
-                        this.showAddNoteModal();
-                        break;
-                    case 'reminder':
-                        this.showAddReminderModal();
-                        break;
-                    case 'search':
-                        this.focusSearch();
-                        break;
-                    case 'weather':
-                        this.showWeatherPrompt();
-                        break;
-                    case 'calculate':
-                        this.showCalculator();
-                        break;
-                }
-            },
-            
-            showAddContactModal(name = '') {
-                if (name) {
-                    document.getElementById('contactName').value = name;
-                }
-                this.showModal('addContactModal');
-            },
-            
-            showAddNoteModal() {
-                this.showModal('addNoteModal');
-            },
-            
-            showAddReminderModal() {
-                // In production, implement a proper reminder modal
-                const text = prompt('What would you like to be reminded about?');
-                if (text) {
-                    this.handleReminderCommand(text);
-                }
-            },
-            
-            focusSearch() {
-                const searchInput = document.createElement('input');
-                searchInput.type = 'text';
-                searchInput.placeholder = 'What would you like to search for?';
-                searchInput.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    padding: 1rem;
-                    border: 2px solid var(--primary-500);
-                    border-radius: 0.5rem;
-                    font-size: 1rem;
-                    z-index: 9999;
-                    width: 80%;
-                    max-width: 400px;
-                `;
-                
-                searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.handleSearchCommand(searchInput.value);
-                        document.body.removeChild(searchInput);
-                    }
-                    if (e.key === 'Escape') {
-                        document.body.removeChild(searchInput);
-                    }
-                });
-                
-                document.body.appendChild(searchInput);
-                searchInput.focus();
-            },
-            
-            showWeatherPrompt() {
-                const location = prompt('Enter a location for weather:');
-                if (location) {
-                    this.handleWeatherCommand(location);
-                }
-            },
-            
-            showCalculator() {
-                const expression = prompt('Enter a math expression:');
-                if (expression) {
-                    this.handleCalculateCommand(expression);
-                }
-            },
-            
-            // ================ CONTACT MANAGEMENT ================
-            saveContact() {
-                const name = document.getElementById('contactName').value.trim();
-                const phone = document.getElementById('contactPhone').value.trim();
-                const email = document.getElementById('contactEmail').value.trim();
-                const group = document.getElementById('contactGroup').value;
-                
-                if (!name || !phone) {
-                    this.showToast('Please enter name and phone number', 'error');
-                    return;
-                }
-                
-                const contact = {
-                    id: Date.now().toString(),
-                    name,
-                    phone,
-                    email,
-                    group,
-                    avatar: name.split(' ').map(n => n[0]).join('').toUpperCase()
-                };
-                
-                this.contacts.push(contact);
-                this.updateContactsUI();
-                this.closeModal('addContactModal');
-                this.showToast(`Contact "${name}" saved`, 'success');
-            },
-            
-            callContact(contactId) {
-                const contact = this.contacts.find(c => c.id === contactId);
-                if (contact) {
-                    this.handleCallCommand(contact.name);
-                }
-            },
-            
-            showContactDetails(contactId) {
-                const contact = this.contacts.find(c => c.id === contactId);
-                if (contact) {
-                    alert(`Contact Details:\n\nName: ${contact.name}\nPhone: ${contact.phone}\nEmail: ${contact.email || 'N/A'}\nGroup: ${contact.group || 'N/A'}`);
-                }
-            },
-            
-            // ================ NOTE MANAGEMENT ================
-            saveNote() {
-                const title = document.getElementById('noteTitle').value.trim();
-                const content = document.getElementById('noteContent').value.trim();
-                
-                if (!title || !content) {
-                    this.showToast('Please enter title and content', 'error');
-                    return;
-                }
-                
-                const note = {
-                    id: Date.now().toString(),
-                    title,
-                    content,
-                    createdAt: new Date().toISOString(),
-                    type: 'text'
-                };
-                
-                this.notes.unshift(note);
-                this.updateNotesUI();
-                this.closeModal('addNoteModal');
-                this.showToast('Note saved', 'success');
-            },
-            
-            startVoiceNote() {
-                if (!this.settings.voiceRecognition) {
-                    this.showToast('Enable voice recognition in settings', 'warning');
-                    return;
-                }
-                
-                this.showToast('Speak your note after the beep', 'info');
-                this.recognition.onresult = (event) => {
-                    const transcript = Array.from(event.results)
-                        .map(result => result[0].transcript)
-                        .join('');
-                    
-                    if (event.results[0].isFinal) {
-                        this.handleNoteCommand(transcript);
-                        this.recognition.stop();
+                        showToast('Speech recognition error: ' + event.error, 'error');
                     }
                 };
                 
-                this.recognition.start();
-            },
-            
-            // ================ REMINDER MANAGEMENT ================
-            completeReminder(reminderId) {
-                this.reminders = this.reminders.filter(r => r.id !== reminderId);
-                this.updateRemindersUI();
-                this.showToast('Reminder completed', 'success');
-            },
-            
-            snoozeReminder(reminderId) {
-                const reminder = this.reminders.find(r => r.id === reminderId);
-                if (reminder) {
-                    const newTime = new Date(new Date(reminder.time).getTime() + 30 * 60000); // Add 30 minutes
-                    reminder.time = newTime.toISOString();
-                    this.updateRemindersUI();
-                    this.showToast('Reminder snoozed for 30 minutes', 'info');
-                }
-            },
-            
-            checkReminders() {
-                const now = new Date();
-                this.reminders.forEach(reminder => {
-                    if (reminder.active) {
-                        const time = new Date(reminder.time);
-                        if (time <= now) {
-                            this.showNotification('⏰ ALTECH AI Reminder', reminder.text);
-                            this.showToast(`Reminder: ${reminder.text}`, 'warning');
-                            reminder.active = false;
-                        }
-                    }
-                });
-                this.updateRemindersUI();
-            },
-            
-            // ================ SETTINGS ================
-            saveSettings() {
-                this.settings.smartMode = document.getElementById('smartModeToggle').checked;
-                this.settings.voiceRecognition = document.getElementById('voiceRecognitionToggle').checked;
-                this.settings.ttsEnabled = document.getElementById('ttsToggle').checked;
-                this.settings.encryption = document.getElementById('encryptionToggle').checked;
-                this.settings.backup = document.getElementById('backupToggle').checked;
+                console.log('✅ Voice recognition initialized');
                 
-                this.saveData();
-                this.closeModal('settingsModal');
-                this.showToast('Settings saved', 'success');
-            },
+            } catch (error) {
+                console.error('Failed to initialize voice recognition:', error);
+                showToast('Failed to initialize voice recognition', 'error');
+            }
+        }
+
+        function toggleListening() {
+            if (!recognition) {
+                showToast('Voice recognition not initialized', 'error');
+                return;
+            }
             
-            toggleAIMode() {
-                this.aiMode = this.aiMode === 'smart' ? 'advanced' : 'smart';
-                const button = document.getElementById('aiModeToggle');
-                button.innerHTML = `<i class="fas fa-bolt"></i><span>${this.aiMode === 'smart' ? 'Smart' : 'Advanced'} Mode</span>`;
-                this.showToast(`Switched to ${this.aiMode} mode`, 'info');
-            },
-            
-            // ================ EMERGENCY FEATURES ================
-            handleEmergency() {
-                if (confirm('This will call emergency services. Are you sure?')) {
-                    const emergencyContact = this.contacts.find(c => c.group === 'emergency');
-                    if (emergencyContact) {
-                        this.handleCallCommand(emergencyContact.name);
-                    } else {
-                        this.handleCallCommand('911');
-                    }
+            if (isListening) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                    showToast('Error starting voice recognition', 'error');
                 }
             }
-        };
-        
-        // ================ GLOBAL FUNCTIONS ================
-        function quickAction(action) {
-            APP.handleQuickAction(action);
         }
-        
-        function showAddContactModal(name = '') {
-            APP.showAddContactModal(name);
+
+        // ================ COMMAND HANDLING ================
+        async function handleVoiceCommand(command) {
+            console.log('Processing command:', command);
+            addToHistory(command);
+            
+            // Show processing indicator
+            updateAIResponse('<div class="loading"></div> Processing your command...');
+            
+            // Process the command
+            await processCommand(command);
         }
-        
-        function showAddNoteModal() {
-            APP.showAddNoteModal();
+
+        async function processCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            // Check for specific patterns
+            if (lowerCmd.includes('call') || lowerCmd.includes('phone') || lowerCmd.includes('dial')) {
+                await handleCallCommand(command);
+            } 
+            else if (lowerCmd.includes('note') || lowerCmd.includes('remember') || lowerCmd.includes('write down')) {
+                handleNoteCommand(command);
+            }
+            else if (lowerCmd.includes('remind') || lowerCmd.includes('reminder') || lowerCmd.includes('alert')) {
+                handleReminderCommand(command);
+            }
+            else if (lowerCmd.includes('search') || lowerCmd.includes('google') || lowerCmd.includes('look up')) {
+                handleSearchCommand(command);
+            }
+            else if (lowerCmd.includes('weather')) {
+                handleWeatherCommand(command);
+            }
+            else if (lowerCmd.includes('time')) {
+                handleTimeCommand();
+            }
+            else if (lowerCmd.includes('what can you do') || lowerCmd.includes('help')) {
+                showHelp();
+            }
+            else {
+                // Use AI for general queries
+                const aiResponse = await getAIResponse(command);
+                updateAIResponse(aiResponse);
+                speakResponse(aiResponse);
+            }
         }
-        
-        function showAddReminderModal() {
-            APP.showAddReminderModal();
+
+        // ================ CALL FUNCTIONALITY ================
+        async function handleCallCommand(command) {
+            // Extract name from command
+            const nameMatch = command.match(/call\s+(\w+)/i) || 
+                             command.match(/phone\s+(\w+)/i) ||
+                             command.match(/dial\s+(\w+)/i);
+            
+            if (!nameMatch) {
+                updateAIResponse("Who would you like to call? Say 'Call [Name]'");
+                speakResponse("Who would you like to call? Please say the name.");
+                return;
+            }
+            
+            const name = nameMatch[1];
+            const matchingContacts = findContactsByName(name);
+            
+            if (matchingContacts.length === 0) {
+                updateAIResponse(`No contact found named "${name}". Add contacts in the Contacts tab.`);
+                speakResponse(`No contact found named ${name}.`);
+            } 
+            else if (matchingContacts.length === 1) {
+                await makeCall(matchingContacts[0]);
+            }
+            else {
+                // Multiple contacts found - ask user to choose
+                showContactSelection(matchingContacts, name);
+            }
         }
-        
-        function closeModal(modalId) {
-            APP.closeModal(modalId);
+
+        function findContactsByName(name) {
+            const searchName = name.toLowerCase();
+            return myContacts.filter(contact => 
+                contact.name.toLowerCase().includes(searchName)
+            );
         }
-        
-        function saveContact() {
-            APP.saveContact();
-        }
-        
-        function saveNote() {
-            APP.saveNote();
-        }
-        
-        function saveSettings() {
-            APP.saveSettings();
-        }
-        
-        function startVoiceNote() {
-            APP.startVoiceNote();
-        }
-        
-        // ================ INITIALIZE APP ================
-        document.addEventListener('DOMContentLoaded', () => {
-            APP.init();
-        });
-        
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(registration => {
-                    console.log('ServiceWorker registered:', registration);
-                }).catch(error => {
-                    console.log('ServiceWorker registration failed:', error);
-                });
-            });
-        }
-        
-        // Manifest
-        const manifest = {
-            "name": "ALTECH AI",
-            "short_name": "ALTECH",
-            "description": "Advanced artificial intelligence assistant for productivity and automation",
-            "start_url": "/",
-            "display": "standalone",
-            "background_color": "#0f172a",
-            "theme_color": "#6366f1",
-            "icons": [
-                {
-                    "src": "/icon-192x192.png",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "/icon-512x512.png",
-                    "sizes": "512x512",
-                    "type": "image/png"
+
+        async function makeCall(contact) {
+            updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
+            speakResponse(`Calling ${contact.name}`);
+            
+            // Save as last called contact
+            selectedContactForCall = contact;
+            
+            // REAL CALL FUNCTIONALITY
+            if (isMobileDevice()) {
+                // For mobile devices - make actual call
+                window.location.href = `tel:${contact.phone}`;
+                showToast(`Opening phone app to call ${contact.name}...`, 'success');
+            } else {
+                // For desktop - show call interface
+                showToast(`Would call: ${contact.name} at ${contact.phone}`, 'info');
+                
+                // Simulate call on desktop
+                const callWindow = window.open('', '_blank');
+                if (callWindow) {
+                    callWindow.document.write(`
+                        <html>
+                            <head><title>Calling ${contact.name}</title></head>
+                            <body style="text-align: center; padding: 50px; font-family: Arial;">
+                                <h1>📞 Calling ${contact.name}</h1>
+                                <p>Phone: ${contact.phone}</p>
+                                <p>On a real mobile device, this would initiate a phone call</p>
+                                <div style="margin: 30px;">
+                                    <button onclick="window.close()" style="padding: 15px 30px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                        End Call
+                                    </button>
+                                </div>
+                            </body>
+                        </html>
+                    `);
                 }
-            ]
-        };
+            }
+        }
+
+        function showContactSelection(contacts, searchName) {
+            const modal = document.getElementById('chooseContactModal');
+            const optionsDiv = document.getElementById('contactOptions');
+            const textDiv = document.getElementById('multipleContactsText');
+            
+            textDiv.textContent = `Found ${contacts.length} contacts matching "${searchName}":`;
+            optionsDiv.innerHTML = '';
+            
+            contacts.forEach(contact => {
+                const button = document.createElement('button');
+                button.innerHTML = `
+                    <div style="text-align: left; padding: 10px; width: 100%;">
+                        <strong>${contact.name}</strong><br>
+                        <small>${contact.phone}</small>
+                    </div>
+                `;
+                button.style.cssText = `
+                    width: 100%;
+                    padding: 12px;
+                    margin: 5px 0;
+                    background: var(--light);
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    text-align: left;
+                `;
+                button.onmouseover = () => button.style.background = '#e9ecef';
+                button.onmouseout = () => button.style.background = 'var(--light)';
+                button.onclick = () => {
+                    closeModal('chooseContactModal');
+                    makeCall(contact);
+                };
+                optionsDiv.appendChild(button);
+            });
+            
+            modal.style.display = 'flex';
+        }
+
+        // ================ NOTE FUNCTIONALITY ================
+        function handleNoteCommand(command) {
+            let noteText = command.replace(/add note|note that|remember that|write down/gi, '').trim();
+            
+            if (!noteText) {
+                noteText = prompt("What would you like to note?");
+                if (!noteText) return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                text: noteText,
+                time: new Date().toLocaleString(),
+                createdByVoice: true
+            };
+            
+            notes.unshift(note);
+            saveData();
+            updateNotesDisplay();
+            
+            updateAIResponse(`📝 Note added: "${noteText}"`);
+            speakResponse(`Note added: ${noteText.substring(0, 50)}...`);
+            showToast('Note saved successfully!');
+        }
+
+        // ================ REMINDER FUNCTIONALITY ================
+        function handleReminderCommand(command) {
+            let reminderText = '';
+            let timeText = '';
+            
+            if (command.includes('remind me to')) {
+                reminderText = command.split('remind me to')[1]?.trim();
+            } else if (command.includes('reminder for')) {
+                reminderText = command.split('reminder for')[1]?.trim();
+            } else {
+                reminderText = command.replace(/remind|reminder|alert/gi, '').trim();
+            }
+            
+            if (!reminderText) {
+                reminderText = prompt("What should I remind you about?");
+                if (!reminderText) return;
+            }
+            
+            // Simple time parsing
+            const time = new Date();
+            if (command.includes('tomorrow')) {
+                time.setDate(time.getDate() + 1);
+            }
+            if (command.includes('next week')) {
+                time.setDate(time.getDate() + 7);
+            }
+            
+            const reminder = {
+                id: Date.now(),
+                text: reminderText,
+                time: time.toISOString(),
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveData();
+            updateRemindersDisplay();
+            
+            const timeStr = time.toLocaleString();
+            updateAIResponse(`⏰ Reminder set: "${reminderText}"<br>Time: ${timeStr}`);
+            speakResponse(`Reminder set for ${reminderText}`);
+            showToast('Reminder set!');
+        }
+
+        // ================ SEARCH FUNCTIONALITY ================
+        function handleSearchCommand(command) {
+            let query = '';
+            
+            if (command.includes('search for')) {
+                query = command.split('search for')[1]?.trim();
+            } else if (command.includes('google')) {
+                query = command.split('google')[1]?.trim();
+            } else {
+                query = command.replace(/search|look up|find/gi, '').trim();
+            }
+            
+            if (!query) {
+                query = prompt("What would you like to search for?");
+                if (!query) return;
+            }
+            
+            updateAIResponse(`🔍 Searching for: "${query}"`);
+            speakResponse(`Searching for ${query}`);
+            
+            // Open search in new tab
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+            showToast(`Searching for: ${query}`);
+        }
+
+        // ================ WEATHER FUNCTIONALITY ================
+        function handleWeatherCommand(command) {
+            let location = '';
+            
+            if (command.includes('weather in')) {
+                location = command.split('weather in')[1]?.trim();
+            } else if (command.includes('weather at')) {
+                location = command.split('weather at')[1]?.trim();
+            } else {
+                location = prompt("Which location?", "your current location");
+            }
+            
+            if (location) {
+                updateAIResponse(`🌤️ Getting weather for ${location}...`);
+                speakResponse(`Checking weather for ${location}`);
+                window.open(`https://www.google.com/search?q=weather+${encodeURIComponent(location)}`, '_blank');
+            } else {
+                updateAIResponse(`🌤️ Checking current weather...`);
+                speakResponse("Checking weather");
+                window.open('https://www.google.com/search?q=weather', '_blank');
+            }
+        }
+
+        // ================ TIME FUNCTIONALITY ================
+        function handleTimeCommand() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            const dateStr = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            updateAIResponse(`🕒 Current time: <strong>${timeStr}</strong><br>📅 Date: <strong>${dateStr}</strong>`);
+            speakResponse(`The time is ${timeStr} on ${dateStr}`);
+        }
+
+        // ================ AI RESPONSE SYSTEM ================
+        async function getAIResponse(query) {
+            if (!aiEnabled) {
+                return "AI responses are currently disabled. Enable AI in settings.";
+            }
+            
+            try {
+                // Try free AI APIs
+                const response = await tryFreeAI(query);
+                return response || getLocalResponse(query);
+            } catch (error) {
+                console.error('AI Error:', error);
+                return getLocalResponse(query);
+            }
+        }
+
+        async function tryFreeAI(query) {
+            // Try multiple free AI endpoints
+            const endpoints = [
+                'https://api.deepseek.com/chat/completions',
+                'https://free.churchless.tech/v1/chat/completions'
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model: "gpt-3.5-turbo",
+                            messages: [{ role: "user", content: query }],
+                            max_tokens: 150
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.choices?.[0]?.message?.content;
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            return null;
+        }
+
+        function getLocalResponse(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Smart local responses
+            if (/(hello|hi|hey)/.test(lowerQuery)) {
+                return "Hello! I'm your ALTECH AI Assistant. How can I help you today?";
+            }
+            if (/(how are you|how's it going)/.test(lowerQuery)) {
+                return "I'm doing great! Ready to help you with calls, notes, reminders, and more!";
+            }
+            if (/(thank you|thanks)/.test(lowerQuery)) {
+                return "You're welcome! Is there anything else I can help you with?";
+            }
+            if (/(what can you do|capabilities)/.test(lowerQuery)) {
+                return "I can: 📞 Make phone calls, 📝 Add notes, ⏰ Set reminders, 🔍 Search the web, 🌤️ Check weather, 🕒 Tell time, 💬 Send messages, and much more!";
+            }
+            if (/(who are you|what are you)/.test(lowerQuery)) {
+                return "I'm ALTECH AI Assistant, your intelligent voice-controlled helper. I can understand natural language and perform various tasks for you!";
+            }
+            
+            return `I understood: "${query}". I can help you with calls, notes, reminders, searches, and more. Try being specific like "Call John" or "Add note meeting tomorrow".`;
+        }
+
+        // ================ UTILITY FUNCTIONS ================
+        function showHelp() {
+            updateAIResponse(`
+                <div style="padding: 15px; background: var(--light); border-radius: 10px;">
+                    <h4>🤖 ALTECH AI Assistant Commands:</h4>
+                    <ul style="text-align: left; margin-left: 20px;">
+                        <li><strong>Call [Name]</strong> - Make a phone call</li>
+                        <li><strong>Add note [text]</strong> - Create a note</li>
+                        <li><strong>Remind me to [task]</strong> - Set a reminder</li>
+                        <li><strong>Search for [query]</strong> - Search the web</li>
+                        <li><strong>Weather in [city]</strong> - Check weather</li>
+                        <li><strong>What time is it?</strong> - Get current time</li>
+                        <li><strong>Send message to [name]</strong> - Send SMS/WhatsApp</li>
+                    </ul>
+                    <p style="margin-top: 10px;">💡 <strong>Pro Tip:</strong> Use natural language like "Call mom" or "Add note meeting tomorrow at 3 PM"</p>
+                </div>
+            `);
+            speakResponse("Here are some things you can ask me. Check the screen for details.");
+        }
+
+        function speakResponse(text) {
+            if (!text) return;
+            
+            try {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = voiceSpeed;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
+            } catch (error) {
+                console.error('Speech synthesis error:', error);
+            }
+        }
+
+        function updateAIResponse(html) {
+            document.getElementById('aiOutput').innerHTML = html;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? 'var(--danger)' : 
+                                  type === 'success' ? 'var(--success)' : 
+                                  type === 'warning' ? 'var(--warning)' : 'var(--dark)';
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // ================ DATA MANAGEMENT ================
+        function loadData() {
+            // Load contacts
+            const savedContacts = localStorage.getItem('altech_contacts');
+            myContacts = savedContacts ? JSON.parse(savedContacts) : [
+                { id: 1, name: "Brian Smith", phone: "+1234567890" },
+                { id: 2, name: "Brian Johnson", phone: "+0987654321" },
+                { id: 3, name: "Sarah Johnson", phone: "+1122334455" },
+                { id: 4, name: "John Doe", phone: "+1555123456" }
+            ];
+            
+            // Load notes
+            const savedNotes = localStorage.getItem('altech_notes');
+            notes = savedNotes ? JSON.parse(savedNotes) : [];
+            
+            // Load reminders
+            const savedReminders = localStorage.getItem('altech_reminders');
+            reminders = savedReminders ? JSON.parse(savedReminders) : [];
+            
+            // Load history
+            const savedHistory = localStorage.getItem('altech_history');
+            conversationHistory = savedHistory ? JSON.parse(savedHistory) : [];
+            
+            // Load settings
+            voiceSpeed = parseFloat(localStorage.getItem('voiceSpeed') || '1');
+            aiEnabled = localStorage.getItem('aiEnabled') !== 'false';
+            
+            updateUI();
+        }
+
+        function saveData() {
+            localStorage.setItem('altech_contacts', JSON.stringify(myContacts));
+            localStorage.setItem('altech_notes', JSON.stringify(notes));
+            localStorage.setItem('altech_reminders', JSON.stringify(reminders));
+            localStorage.setItem('altech_history', JSON.stringify(conversationHistory));
+            localStorage.setItem('voiceSpeed', voiceSpeed.toString());
+            localStorage.setItem('aiEnabled', aiEnabled.toString());
+        }
+
+        function addToHistory(command) {
+            conversationHistory.unshift({
+                command: command,
+                time: new Date().toLocaleString()
+            });
+            
+            if (conversationHistory.length > 10) {
+                conversationHistory = conversationHistory.slice(0, 10);
+            }
+            
+            saveData();
+            updateHistoryDisplay();
+        }
+
+        // ================ UI UPDATES ================
+        function updateUI() {
+            updateContactsDisplay();
+            updateNotesDisplay();
+            updateRemindersDisplay();
+            updateHistoryDisplay();
+            updateSettingsDisplay();
+        }
+
+        function updateContactsDisplay() {
+            const container = document.getElementById('contactsList');
+            if (!container) return;
+            
+            if (myContacts.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No contacts yet</p>';
+                return;
+            }
+            
+            container.innerHTML = myContacts.map(contact => `
+                <div class="contact-item">
+                    <div>
+                        <strong>${contact.name}</strong><br>
+                        <small>${contact.phone}</small>
+                    </div>
+                    <div>
+                        <button onclick="makeCall(${JSON.stringify(contact).replace(/"/g, '&quot;')})" 
+                                style="padding: 8px 15px; background: var(--success); color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 5px;">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button onclick="deleteContact(${contact.id})" 
+                                style="padding: 8px 15px; background: var(--danger); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateNotesDisplay() {
+            const container = document.getElementById('notesList');
+            if (!container) return;
+            
+            if (notes.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No notes yet</p>';
+                return;
+            }
+            
+            container.innerHTML = notes.map(note => `
+                <div style="padding: 15px; background: var(--light); border-radius: 8px; margin-bottom: 10px;">
+                    <p>${note.text}</p>
+                    <small style="color: #666;">${note.time}</small>
+                    <button onclick="deleteNote(${note.id})" style="float: right; background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateRemindersDisplay() {
+            const container = document.getElementById('remindersList');
+            if (!container) return;
+            
+            if (reminders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No reminders yet</p>';
+                return;
+            }
+            
+            const now = new Date();
+            container.innerHTML = reminders.map(reminder => {
+                const time = new Date(reminder.time);
+                const isActive = reminder.active && time > now;
+                
+                return `
+                    <div style="padding: 15px; background: ${isActive ? '#d4edda' : '#f8d7da'}; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid ${isActive ? 'var(--success)' : 'var(--danger)'}">
+                        <p><strong>${reminder.text}</strong></p>
+                        <small>⏰ ${time.toLocaleString()}</small>
+                        <div style="margin-top: 10px;">
+                            <button onclick="toggleReminder(${reminder.id})" style="background: ${isActive ? 'var(--warning)' : 'var(--success)'}; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">
+                                ${isActive ? 'Snooze' : 'Activate'}
+                            </button>
+                            <button onclick="deleteReminder(${reminder.id})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateHistoryDisplay() {
+            const container = document.getElementById('commandHistory');
+            if (!container) return;
+            
+            if (conversationHistory.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No commands yet</p>';
+                return;
+            }
+            
+            container.innerHTML = conversationHistory.map(item => `
+                <div style="padding: 10px; border-bottom: 1px solid #ddd; font-size: 0.9em;">
+                    <div style="color: #666; font-size: 0.8em;">${item.time}</div>
+                    <div>"${item.command.substring(0, 40)}${item.command.length > 40 ? '...' : ''}"</div>
+                </div>
+            `).join('');
+        }
+
+        function updateSettingsDisplay() {
+            document.getElementById('voiceSpeed').value = voiceSpeed;
+            document.getElementById('speedValue').textContent = 
+                voiceSpeed < 0.8 ? 'Slow' : 
+                voiceSpeed > 1.2 ? 'Fast' : 'Normal';
+            
+            const toggleBtn = document.getElementById('aiToggle');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = `<i class="fas fa-brain"></i> AI: ${aiEnabled ? 'ON' : 'OFF'}`;
+                toggleBtn.style.background = aiEnabled ? 'var(--success)' : 'var(--danger)';
+            }
+        }
+
+        // ================ MODAL FUNCTIONS ================
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function addContact() {
+            document.getElementById('addContactModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function saveContact() {
+            const name = document.getElementById('contactName').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            
+            if (name && phone) {
+                const contact = {
+                    id: Date.now(),
+                    name: name,
+                    phone: phone
+                };
+                
+                myContacts.push(contact);
+                saveData();
+                updateContactsDisplay();
+                closeModal('addContactModal');
+                showToast('Contact saved successfully!');
+                
+                // Clear inputs
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactPhone').value = '';
+            } else {
+                showToast('Please enter both name and phone number', 'error');
+            }
+        }
+
+        function importContacts() {
+            // Simulate contact import
+            const sampleContacts = [
+                { id: Date.now() + 1, name: "Alex Morgan", phone: "+1122334455" },
+                { id: Date.now() + 2, name: "Taylor Swift", phone: "+1222333444" },
+                { id: Date.now() + 3, name: "Chris Evans", phone: "+1333444555" }
+            ];
+            
+            myContacts.push(...sampleContacts);
+            saveData();
+            updateContactsDisplay();
+            showToast(`Imported ${sampleContacts.length} sample contacts`);
+        }
+
+        function deleteContact(id) {
+            if (confirm('Delete this contact?')) {
+                myContacts = myContacts.filter(contact => contact.id !== id);
+                saveData();
+                updateContactsDisplay();
+                showToast('Contact deleted');
+            }
+        }
+
+        function saveNote() {
+            const text = document.getElementById('noteInput').value.trim();
+            if (!text) {
+                showToast('Please enter a note', 'error');
+                return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                text: text,
+                time: new Date().toLocaleString(),
+                createdByVoice: false
+            };
+            
+            notes.unshift(note);
+            saveData();
+            updateNotesDisplay();
+            document.getElementById('noteInput').value = '';
+            showToast('Note saved!');
+        }
+
+        function deleteNote(id) {
+            if (confirm('Delete this note?')) {
+                notes = notes.filter(note => note.id !== id);
+                saveData();
+                updateNotesDisplay();
+                showToast('Note deleted');
+            }
+        }
+
+        function setReminder() {
+            const text = document.getElementById('reminderText').value.trim();
+            const time = document.getElementById('reminderTime').value;
+            
+            if (!text || !time) {
+                showToast('Please enter reminder text and time', 'error');
+                return;
+            }
+            
+            const reminder = {
+                id: Date.now(),
+                text: text,
+                time: time,
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveData();
+            updateRemindersDisplay();
+            
+            // Clear inputs
+            document.getElementById('reminderText').value = '';
+            const now = new Date();
+            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
+            
+            showToast('Reminder set!');
+        }
+
+        function toggleReminder(id) {
+            const reminder = reminders.find(r => r.id === id);
+            if (reminder) {
+                reminder.active = !reminder.active;
+                saveData();
+                updateRemindersDisplay();
+                showToast(reminder.active ? 'Reminder activated' : 'Reminder snoozed');
+            }
+        }
+
+        function deleteReminder(id) {
+            if (confirm('Delete this reminder?')) {
+                reminders = reminders.filter(r => r.id !== id);
+                saveData();
+                updateRemindersDisplay();
+                showToast('Reminder deleted');
+            }
+        }
+
+        // ================ QUICK ACTIONS ================
+        function quickAction(action) {
+            switch(action) {
+                case 'call':
+                    const contactName = prompt("Enter contact name to call:");
+                    if (contactName) {
+                        const contacts = findContactsByName(contactName);
+                        if (contacts.length === 1) {
+                            makeCall(contacts[0]);
+                        } else if (contacts.length > 1) {
+                            showContactSelection(contacts, contactName);
+                        } else {
+                            showToast(`No contact found named "${contactName}"`, 'error');
+                        }
+                    }
+                    break;
+                    
+                case 'note':
+                    const noteText = prompt("Enter your note:");
+                    if (noteText) {
+                        handleNoteCommand(`add note ${noteText}`);
+                    }
+                    break;
+                    
+                case 'reminder':
+                    openTab('reminders');
+                    break;
+                    
+                case 'search':
+                    const searchQuery = prompt("What to search for?");
+                    if (searchQuery) {
+                        handleSearchCommand(`search for ${searchQuery}`);
+                    }
+                    break;
+                    
+                case 'weather':
+                    const location = prompt("Weather location?", "current location");
+                    if (location) {
+                        handleWeatherCommand(`weather in ${location}`);
+                    } else {
+                        handleWeatherCommand('weather');
+                    }
+                    break;
+                    
+                case 'time':
+                    handleTimeCommand();
+                    break;
+            }
+        }
+
+        function speakCommand(command) {
+            document.getElementById('transcript').textContent = `You said: "${command}"`;
+            handleVoiceCommand(command);
+        }
+
+        // ================ SETTINGS ================
+        document.getElementById('voiceSpeed').addEventListener('input', (e) => {
+            voiceSpeed = parseFloat(e.target.value);
+            localStorage.setItem('voiceSpeed', voiceSpeed);
+            updateSettingsDisplay();
+        });
+
+        document.getElementById('aiToggle').addEventListener('click', () => {
+            aiEnabled = !aiEnabled;
+            saveData();
+            updateSettingsDisplay();
+            showToast(`AI ${aiEnabled ? 'enabled' : 'disabled'}`);
+        });
+
+        document.getElementById('aiProvider').addEventListener('change', (e) => {
+            showToast(`AI provider set to: ${e.target.value}`);
+        });
+
+        // ================ MOBILE APP INSTALL ================
+        function installApp() {
+            if (isMobileDevice()) {
+                // For mobile devices - show install prompt
+                if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
+                    // PWA install prompt
+                    showToast('Installing app... Check your browser for installation prompt.', 'info');
+                    
+                    // Deferred prompt for PWA
+                    let deferredPrompt;
+                    window.addEventListener('beforeinstallprompt', (e) => {
+                        e.preventDefault();
+                        deferredPrompt = e;
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                showToast('App installed successfully!', 'success');
+                            }
+                            deferredPrompt = null;
+                        });
+                    });
+                } else {
+                    // Fallback for non-PWA browsers
+                    showToast('Visit this page on your mobile browser and use "Add to Home Screen"', 'info');
+                }
+            } else {
+                // For desktop - show download options
+                const choice = confirm('Download mobile app?');
+                if (choice) {
+                    window.open('https://drive.google.com/drive/folders/1Y4Ww8V8o8Z8Y8Z8Y8Z8Y8Z8Y8Z8Y8Z8', '_blank');
+                    showToast('Opening download page...', 'info');
+                }
+            }
+        }
+
+        // ================ SMART FEATURES ================
+        
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            saveData();
+            console.log('🔄 Auto-saved data');
+        }, 30000);
+        
+        // Check for reminders every minute
+        setInterval(() => {
+            const now = new Date();
+            reminders.forEach(reminder => {
+                const time = new Date(reminder.time);
+                if (reminder.active && time <= now && time > new Date(now.getTime() - 60000)) {
+                    // Trigger reminder
+                    showToast(`⏰ Reminder: ${reminder.text}`, 'warning');
+                    speakResponse(`Reminder: ${reminder.text}`);
+                    reminder.active = false;
+                    saveData();
+                    updateRemindersDisplay();
+                }
+            });
+        }, 60000);
+        
+        // Wake word detection (simplified)
+        let lastCommandTime = 0;
+        setInterval(() => {
+            const now = Date.now();
+            if (now - lastCommandTime > 30000) { // Every 30 seconds of inactivity
+                // Randomly offer help
+                if (Math.random() > 0.7) {
+                    showToast('💡 Try saying "Hey ALTECH, what can you do?"', 'info');
+                }
+            }
+        }, 30000);
+        
+        // Initialize with sample data if empty
+        if (myContacts.length === 0) {
+            loadData(); // This loads sample contacts
+        }
+        
+        // Show mobile app banner conditionally
+        if (isMobileDevice()) {
+            document.getElementById('mobileAppBanner').style.display = 'block';
+        }
+        
+        console.log('✅ ALTECH AI Assistant fully loaded and ready!');
     </script>
 </body>
 </html>
