@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTECH AI Assistant </title>
+    <title>ALTECH AI Assistant - Ultimate Free Version</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="/manifest.json">
     <style>
         :root {
             --primary: #007bff;
@@ -665,12 +664,12 @@
                         <i class="fas fa-microphone" style="font-size: 3em; color: white;"></i>
                     </div>
                     
-                    <div id="status" style="font-weight: 600; margin-bottom: 10px;">Ready to listen</div>
+                    <div id="status" style="font-weight: 600; margin-bottom: 10px;">Click microphone to speak</div>
                     <div id="transcript">Click the microphone and say a command...</div>
                     
                     <div class="ai-response">
                         <h3><i class="fas fa-comment-alt"></i> AI Response</h3>
-                        <div id="aiOutput">ALTECH AI Assistant initialized. Say "Hey ALTECH" followed by your command.</div>
+                        <div id="aiOutput">ALTECH AI Assistant initialized. Click microphone to start speaking.</div>
                     </div>
                     
                     <div class="feature-grid">
@@ -952,7 +951,7 @@
         <div id="adminPanel" class="admin-panel" style="display: none;">
             <h3><i class="fas fa-lock"></i> Admin Panel</h3>
             <div style="display: flex; gap: 10px; margin: 20px 0;">
-                <input type="password" id="adminPin" placeholder="Enter PIN" style="flex: 2; padding: 12px; border-radius: 8px; border: none;">
+                <input type="password" id="adminPin" placeholder="Enter PIN (Default: 1234)" style="flex: 2; padding: 12px; border-radius: 8px; border: none;">
                 <button onclick="loginAdmin()" class="action-btn" style="flex: 1;">Login</button>
                 <button onclick="toggleAdmin()" class="action-btn" style="flex: 1; background: var(--danger);">Close</button>
             </div>
@@ -1014,7 +1013,7 @@
         <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
             <h3>Contact ALTECH</h3>
             <input type="text" id="leadName" placeholder="Your Name" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
-            <input type="tel" id="leadPhone" placeholder="Phone Number" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="tel" id="leadPhone" placeholder="Your Phone Number" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
             <textarea id="leadMessage" placeholder="Message (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; height: 100px;"></textarea>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button onclick="submitLead()" style="flex: 1; padding: 12px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">Submit</button>
@@ -1037,10 +1036,18 @@
         let currentMode = 'smart';
         let wakeWord = 'Hey ALTECH';
         let isAdmin = false;
-        let adminPin = '1234'; // Default PIN
+        let adminPin = '1234'; // Default admin PIN
         let isLocked = false;
         let audio = null;
         let currentMusic = null;
+        
+        // ALTECH contact information
+        const ALTECH_CONTACT = {
+            name: "ALTECH Support",
+            phone: "0706389206",
+            email: "support@altech.com",
+            website: "https://altech.com"
+        };
         
         // Knowledge base for offline AI
         const knowledgeBase = {
@@ -1204,7 +1211,7 @@
                 youtube: "https://youtube.com",
                 gmail: "https://gmail.com",
                 whatsapp: "https://web.whatsapp.com",
-                altech: "https://github.com",
+                altech: "https://github.com/altech",
                 google: "https://google.com",
                 facebook: "https://facebook.com",
                 twitter: "https://twitter.com",
@@ -1213,10 +1220,10 @@
                 instagram: "https://instagram.com"
             },
             music: {
-                study: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-                focus: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-                relax: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-                motivation: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+                study: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_d5c6e6c825.mp3",
+                focus: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_350d6c0e0f.mp3",
+                relax: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_5d5a7b2e61.mp3",
+                motivation: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_48f7c3b0c8.mp3"
             },
             wheelOptions: [
                 "Yes", "No", "Maybe", "Try Again",
@@ -1229,20 +1236,12 @@
 
         // ================ INITIALIZATION ================
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Initializing ALTECH AI Assistant Ultimate Edition...');
-            
-            // Register Service Worker for PWA
-            if ('serviceWorker' in navigator) {
-                try {
-                    await navigator.serviceWorker.register('/sw.js');
-                    console.log('✅ Service Worker registered');
-                } catch (error) {
-                    console.log('❌ Service Worker registration failed:', error);
-                }
-            }
+            console.log('🚀 Initializing ALTECH AI Assistant...');
+            console.log('📞 ALTECH Contact:', ALTECH_CONTACT.phone);
+            console.log('🔑 Admin PIN:', adminPin);
             
             // Initialize components
-            await initializeVoiceRecognition();
+            initializeVoiceRecognition();
             loadData();
             updateUI();
             setupWakeWord();
@@ -1250,9 +1249,23 @@
             
             // Show welcome message
             setTimeout(() => {
-                showToast('🎉 ALTECH AI Assistant Ultimate Edition is ready!', 'success');
-                speakResponse("Welcome to ALTECH AI Assistant Ultimate Edition. I'm your intelligent helper for study, business, and entertainment!");
-                updateAIResponse("<div style='padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px;'><h4>🎯 ALTECH AI Assistant Ultimate</h4><p>I can help you with: 📚 Study Assistant, 💼 Business Tools, 🎮 Entertainment, 📞 Real Calls, 📝 Notes & Tasks, 🎵 Music, and much more!</p><p>Try saying: <strong>'Hey ALTECH, what can you do?'</strong></p></div>");
+                showToast('🎉 ALTECH AI Assistant is ready!', 'success');
+                speakResponse("Welcome to ALTECH AI Assistant! I can help you with calls, notes, tasks, study, business tools, and entertainment. Try saying 'Help' to see what I can do.");
+                updateAIResponse(`
+                    <div style="padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px;">
+                        <h4>🎯 ALTECH AI Assistant</h4>
+                        <p>I can help you with:</p>
+                        <ul>
+                            <li>📞 Make phone calls</li>
+                            <li>📝 Manage notes & tasks</li>
+                            <li>🎓 Study assistance</li>
+                            <li>💼 Business tools</li>
+                            <li>🎮 Entertainment</li>
+                            <li>🔧 Device controls</li>
+                        </ul>
+                        <p><strong>Try saying:</strong> "Add task", "Explain OOP", "Tell me a joke", or "Open YouTube"</p>
+                    </div>
+                `);
             }, 1000);
             
             // Auto-promo mode
@@ -1264,70 +1277,70 @@
             
             // Check for reminders every 30 seconds
             setInterval(checkReminders, 30000);
-            
-            // Auto-clear completed tasks weekly
-            setInterval(clearCompletedTasks, 604800000); // 7 days
         });
 
-        // ================ VOICE RECOGNITION ================
-        async function initializeVoiceRecognition() {
+        // ================ FIXED VOICE RECOGNITION ================
+        function initializeVoiceRecognition() {
             try {
-                if ('webkitSpeechRecognition' in window) {
-                    recognition = new webkitSpeechRecognition();
-                } else if ('SpeechRecognition' in window) {
-                    recognition = new SpeechRecognition();
-                } else {
+                // Check browser support
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                
+                if (!SpeechRecognition) {
                     showToast('Speech recognition not supported in this browser', 'error');
+                    updateAIResponse("⚠️ Voice recognition not supported. Use Chrome or Edge for best experience.");
                     return;
                 }
                 
+                recognition = new SpeechRecognition();
                 recognition.continuous = false;
                 recognition.interimResults = true;
                 recognition.lang = 'en-US';
-                recognition.maxAlternatives = 3;
                 
                 recognition.onstart = () => {
+                    console.log('🎤 Voice recognition started');
                     isListening = true;
                     document.getElementById('voiceOrb').classList.add('listening');
-                    document.getElementById('status').textContent = 'Listening...';
-                    updateAIResponse('<div class="loading"></div> Listening...');
+                    document.getElementById('status').textContent = 'Listening... Speak now';
+                    updateAIResponse('<div class="loading"></div> Listening... Speak your command.');
                 };
                 
                 recognition.onresult = (event) => {
-                    let finalTranscript = '';
-                    let interimTranscript = '';
+                    let transcript = '';
                     
+                    // Get the transcript from results
                     for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
                         if (event.results[i].isFinal) {
-                            finalTranscript += transcript;
-                        } else {
-                            interimTranscript += transcript;
+                            transcript += event.results[i][0].transcript;
                         }
                     }
                     
-                    if (finalTranscript) {
-                        document.getElementById('transcript').textContent = `You said: "${finalTranscript}"`;
-                        handleVoiceCommand(finalTranscript);
-                    } else if (interimTranscript) {
-                        document.getElementById('transcript').textContent = `Listening: "${interimTranscript}"`;
+                    if (transcript) {
+                        console.log('Heard:', transcript);
+                        document.getElementById('transcript').textContent = `You said: "${transcript}"`;
+                        handleVoiceCommand(transcript);
                     }
                 };
                 
                 recognition.onend = () => {
+                    console.log('🎤 Voice recognition ended');
                     isListening = false;
                     document.getElementById('voiceOrb').classList.remove('listening');
-                    document.getElementById('status').textContent = 'Ready to listen';
+                    document.getElementById('status').textContent = 'Click microphone to speak';
                 };
                 
                 recognition.onerror = (event) => {
                     console.error('Speech recognition error:', event.error);
                     isListening = false;
                     document.getElementById('voiceOrb').classList.remove('listening');
+                    document.getElementById('status').textContent = 'Click microphone to try again';
                     
                     if (event.error === 'not-allowed') {
                         showToast('Microphone access denied. Please allow microphone permissions.', 'error');
-                        updateAIResponse('⚠️ Microphone permission required. Please allow microphone access in your browser settings.');
+                        updateAIResponse('⚠️ Microphone permission required. Click the lock icon in your browser address bar to allow microphone access.');
+                    } else if (event.error === 'no-speech') {
+                        showToast('No speech detected. Please try again.', 'warning');
+                    } else {
+                        showToast('Speech recognition error: ' + event.error, 'error');
                     }
                 };
                 
@@ -1336,21 +1349,8 @@
             } catch (error) {
                 console.error('Failed to initialize voice recognition:', error);
                 showToast('Failed to initialize voice recognition', 'error');
+                updateAIResponse('❌ Voice recognition failed to initialize. Please refresh the page.');
             }
-        }
-
-        function setupWakeWord() {
-            wakeWord = localStorage.getItem('wakeWord') || 'Hey ALTECH';
-            document.getElementById('wakeWord').value = wakeWord;
-            document.getElementById('currentWakeWord').textContent = wakeWord;
-            
-            // Update wake word when changed
-            document.getElementById('wakeWord').addEventListener('change', (e) => {
-                wakeWord = e.target.value;
-                localStorage.setItem('wakeWord', wakeWord);
-                document.getElementById('currentWakeWord').textContent = wakeWord;
-                showToast(`Wake word set to: "${wakeWord}"`, 'success');
-            });
         }
 
         function toggleListening() {
@@ -1368,12 +1368,28 @@
                 recognition.stop();
             } else {
                 try {
+                    document.getElementById('transcript').textContent = 'Listening... Speak now';
+                    updateAIResponse('<div class="loading"></div> Starting voice recognition...');
                     recognition.start();
                 } catch (error) {
                     console.error('Error starting recognition:', error);
                     showToast('Error starting voice recognition', 'error');
+                    updateAIResponse('❌ Error starting voice recognition. Please try again.');
                 }
             }
+        }
+
+        function setupWakeWord() {
+            wakeWord = localStorage.getItem('wakeWord') || 'Hey ALTECH';
+            document.getElementById('wakeWord').value = wakeWord;
+            document.getElementById('currentWakeWord').textContent = wakeWord;
+            
+            document.getElementById('wakeWord').addEventListener('change', (e) => {
+                wakeWord = e.target.value;
+                localStorage.setItem('wakeWord', wakeWord);
+                document.getElementById('currentWakeWord').textContent = wakeWord;
+                showToast(`Wake word set to: "${wakeWord}"`, 'success');
+            });
         }
 
         // ================ COMMAND HANDLING ================
@@ -1381,43 +1397,24 @@
             console.log('Processing command:', command);
             addToHistory(command);
             
-            // Check for wake word
-            const lowerCmd = command.toLowerCase();
-            const lowerWake = wakeWord.toLowerCase();
-            
-            if (!lowerCmd.includes(lowerWake) && lowerWake !== '') {
-                // Not for us, ignore
-                return;
-            }
-            
-            // Remove wake word from command
-            const cleanCmd = command.replace(new RegExp(lowerWake, 'gi'), '').trim();
+            // Remove wake word if present
+            const cleanCmd = command.replace(new RegExp(wakeWord, 'gi'), '').trim();
             
             // Show processing indicator
             updateAIResponse('<div class="loading"></div> Processing your command...');
             
-            // Process based on current mode
-            switch(currentMode) {
-                case 'study':
-                    await handleStudyCommand(cleanCmd);
-                    break;
-                case 'business':
-                    await handleBusinessCommand(cleanCmd);
-                    break;
-                case 'entertainment':
-                    await handleEntertainmentCommand(cleanCmd);
-                    break;
-                default:
-                    await processCommand(cleanCmd);
-            }
+            // Process the command
+            setTimeout(() => {
+                processCommand(cleanCmd || command);
+            }, 500);
         }
 
-        async function processCommand(command) {
+        function processCommand(command) {
             const lowerCmd = command.toLowerCase();
             
             // Check for specific patterns
             if (lowerCmd.includes('call') || lowerCmd.includes('phone') || lowerCmd.includes('dial')) {
-                await handleCallCommand(command);
+                handleCallCommand(command);
             } 
             else if (lowerCmd.includes('task') || lowerCmd.includes('todo')) {
                 handleTaskCommand(command);
@@ -1485,17 +1482,21 @@
             else if (lowerCmd.includes('spin') || lowerCmd.includes('wheel') || lowerCmd.includes('decide')) {
                 spinWheel();
             }
-            else if (lowerCmd.includes('contact') || lowerCmd.includes('lead') || lowerCmd.includes('business')) {
+            else if (lowerCmd.includes('contact altech') || lowerCmd.includes('lead') || lowerCmd.includes('business')) {
                 collectLead();
             }
             else if (lowerCmd.includes('feedback') || lowerCmd.includes('suggest') || lowerCmd.includes('report')) {
                 openFeedback();
             }
+            else if (lowerCmd.includes('admin') || lowerCmd.includes('password') || lowerCmd.includes('pin')) {
+                showToast('Admin panel opened. Default PIN: 1234', 'info');
+                toggleAdmin();
+            }
             else {
                 // Use AI for general queries
-                const aiResponse = await getAIResponse(command);
+                const aiResponse = getAIResponse(command);
                 updateAIResponse(aiResponse);
-                speakResponse(aiResponse);
+                speakResponse(aiResponse.substring(0, 150));
             }
         }
 
@@ -1586,15 +1587,15 @@
         }
 
         function completeTask(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task) {
-                task.completed = !task.completed;
-                task.completedAt = task.completed ? new Date().toISOString() : null;
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                tasks[taskIndex].completedAt = tasks[taskIndex].completed ? new Date().toISOString() : null;
                 saveData();
                 updateTasksDisplay();
                 
-                const action = task.completed ? 'completed' : 'uncompleted';
-                updateAIResponse(`✅ Task ${action}: "${task.text}"`);
+                const action = tasks[taskIndex].completed ? 'completed' : 'uncompleted';
+                updateAIResponse(`✅ Task ${action}: "${tasks[taskIndex].text}"`);
                 speakResponse(`Task ${action}`);
                 showToast(`Task ${action}!`);
             }
@@ -1648,30 +1649,6 @@
         }
 
         // ================ STUDY ASSISTANT ================
-        async function handleStudyCommand(command) {
-            const lowerCmd = command.toLowerCase();
-            
-            if (lowerCmd.includes('explain') || lowerCmd.includes('what is') || lowerCmd.includes('define')) {
-                handleExplainCommand(command);
-            }
-            else if (lowerCmd.includes('question') || lowerCmd.includes('test') || lowerCmd.includes('quiz')) {
-                generateQuestion();
-            }
-            else if (lowerCmd.includes('exam') || lowerCmd.includes('start')) {
-                const subject = command.match(/programming|web|cybersecurity|math/i);
-                if (subject) {
-                    startExam(subject[0].toLowerCase());
-                } else {
-                    startExam('programming');
-                }
-            }
-            else {
-                const aiResponse = await getStudyResponse(command);
-                updateAIResponse(aiResponse);
-                speakResponse(aiResponse.substring(0, 150));
-            }
-        }
-
         function handleExplainCommand(command) {
             const lowerCmd = command.toLowerCase();
             let topic = '';
@@ -1820,51 +1797,7 @@
             document.getElementById('answerReveal').style.display = 'block';
         }
 
-        async function getStudyResponse(query) {
-            // Try to find in knowledge base
-            const lowerQuery = query.toLowerCase();
-            
-            for (const category in knowledgeBase.programming) {
-                if (lowerQuery.includes(category.toLowerCase())) {
-                    return knowledgeBase.programming[category];
-                }
-            }
-            
-            // General study responses
-            const studyResponses = [
-                "I can help you with programming concepts, exam questions, and study tips. Try asking me to explain OOP, HTML, CSS, or give you a practice question.",
-                "For study help, you can ask me to explain concepts, start an exam, or give you random questions to test your knowledge.",
-                "Need help with coding? I can explain programming concepts and test your knowledge with interactive questions."
-            ];
-            
-            return studyResponses[Math.floor(Math.random() * studyResponses.length)];
-        }
-
         // ================ BUSINESS TOOLS ================
-        async function handleBusinessCommand(command) {
-            const lowerCmd = command.toLowerCase();
-            
-            if (lowerCmd.includes('contact') || lowerCmd.includes('lead') || lowerCmd.includes('business')) {
-                collectLead();
-            }
-            else if (lowerCmd.includes('whatsapp') || lowerCmd.includes('message')) {
-                sendToWhatsApp();
-            }
-            else if (lowerCmd.includes('feedback') || lowerCmd.includes('suggest') || lowerCmd.includes('report')) {
-                openFeedback();
-            }
-            else if (lowerCmd.includes('promo') || lowerCmd.includes('market')) {
-                showPromo();
-            }
-            else if (lowerCmd.includes('open') || lowerCmd.includes('launch')) {
-                handleWebsiteCommand(command);
-            }
-            else {
-                updateAIResponse("I can help you with lead collection, WhatsApp integration, feedback collection, and website launching. Try saying 'Collect lead' or 'Open YouTube'.");
-                speakResponse("Business mode activated. I can help with lead collection and marketing tools.");
-            }
-        }
-
         function collectLead() {
             document.getElementById('leadModal').style.display = 'flex';
             updateAIResponse("Please enter your contact details to connect with ALTECH.");
@@ -1887,8 +1820,8 @@
                 });
                 localStorage.setItem('altech_leads', JSON.stringify(leads));
                 
-                // Send to WhatsApp (simulated)
-                const whatsappUrl = `https://wa.me/254706389206?text=${encodeURIComponent(
+                // Send to WhatsApp
+                const whatsappUrl = `https://wa.me/${ALTECH_CONTACT.phone}?text=${encodeURIComponent(
                     `Hello ALTECH! My name is ${name}. Phone: ${phone}. ${message ? 'Message: ' + message : ''}`
                 )}`;
                 
@@ -1896,7 +1829,7 @@
                 
                 // Close modal and show confirmation
                 closeModal('leadModal');
-                updateAIResponse(`✅ Lead submitted successfully! We've opened WhatsApp for you to send the message.`);
+                updateAIResponse(`✅ Lead submitted successfully! We've opened WhatsApp for you to contact ALTECH at ${ALTECH_CONTACT.phone}.`);
                 speakResponse(`Lead submitted. Opening WhatsApp now.`);
                 showToast('Lead submitted! Opening WhatsApp...', 'success');
                 
@@ -1910,13 +1843,12 @@
         }
 
         function sendToWhatsApp() {
-            const phone = prompt("Enter phone number (with country code):", "+254706389206");
-            const message = prompt("Enter message:", "Hello from ALTECH AI Assistant!");
+            const message = prompt("Enter message to send to ALTECH:", "Hello from ALTECH AI Assistant!");
             
-            if (phone && message) {
-                const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+            if (message) {
+                const whatsappUrl = `https://wa.me/${ALTECH_CONTACT.phone}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
-                showToast('Opening WhatsApp...', 'info');
+                showToast(`Opening WhatsApp to ${ALTECH_CONTACT.phone}...`, 'info');
             }
         }
 
@@ -1931,21 +1863,18 @@
                 });
                 localStorage.setItem('altech_feedback', JSON.stringify(feedbacks));
                 
-                // Simulate sending to Google Forms
-                const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLSf.../viewform?usp=pp_url&entry.1234567890=${encodeURIComponent(feedback)}`;
-                
-                updateAIResponse(`✅ Feedback submitted! Thank you for your input. <br><br><a href="${formUrl}" target="_blank">Click here to submit via Google Forms</a>`);
+                updateAIResponse(`✅ Feedback submitted! Thank you for your input. ALTECH will review it soon.`);
                 speakResponse("Feedback submitted. Thank you!");
-                showToast('Feedback saved locally!', 'success');
+                showToast('Feedback saved!', 'success');
             }
         }
 
         function showPromo() {
             const promoMessages = [
-                "🚀 ALTECH builds amazing websites and applications! Need a professional website? Just say 'Build me a website' to get started!",
-                "💡 Did you know ALTECH offers web development services? Say 'Contact ALTECH' to get a free consultation!",
-                "🎯 Looking to boost your online presence? ALTECH can help! We specialize in modern, responsive websites.",
-                "👨‍💻 Need a developer? ALTECH has skilled developers ready to work on your project. Let's build something amazing together!"
+                `🚀 ALTECH builds amazing websites and applications! Need a professional website? Contact us at ${ALTECH_CONTACT.phone} or say 'Contact ALTECH' to get started!`,
+                `💡 Did you know ALTECH offers web development services? Call ${ALTECH_CONTACT.phone} for a free consultation!`,
+                `🎯 Looking to boost your online presence? ALTECH can help! We specialize in modern, responsive websites. Contact: ${ALTECH_CONTACT.phone}`,
+                `👨‍💻 Need a developer? ALTECH has skilled developers ready to work on your project. WhatsApp: ${ALTECH_CONTACT.phone}`
             ];
             
             const randomPromo = promoMessages[Math.floor(Math.random() * promoMessages.length)];
@@ -1955,39 +1884,12 @@
 
         function showPromoMessage() {
             if (Math.random() > 0.5) {
-                const promo = "💡 Did you know ALTECH builds websites? Say 'Build me a website' to learn more!";
+                const promo = `💡 Did you know ALTECH builds websites? Contact: ${ALTECH_CONTACT.phone}`;
                 showToast(promo, 'info');
             }
         }
 
         // ================ ENTERTAINMENT FEATURES ================
-        async function handleEntertainmentCommand(command) {
-            const lowerCmd = command.toLowerCase();
-            
-            if (lowerCmd.includes('joke') || lowerCmd.includes('funny')) {
-                tellJoke();
-            }
-            else if (lowerCmd.includes('quote') || lowerCmd.includes('inspiration')) {
-                dailyQuote();
-            }
-            else if (lowerCmd.includes('motivate') || lowerCmd.includes('inspire')) {
-                motivateMe();
-            }
-            else if (lowerCmd.includes('music') || lowerCmd.includes('play') || lowerCmd.includes('song')) {
-                handleMusicCommand(command);
-            }
-            else if (lowerCmd.includes('spin') || lowerCmd.includes('wheel') || lowerCmd.includes('decide')) {
-                spinWheel();
-            }
-            else if (lowerCmd.includes('truth') || lowerCmd.includes('dare')) {
-                truthOrDare();
-            }
-            else {
-                updateAIResponse("Entertainment mode! I can tell jokes, play music, give quotes, and help you make decisions. Try saying 'Tell me a joke' or 'Play study music'.");
-                speakResponse("Entertainment mode activated. Let's have some fun!");
-            }
-        }
-
         function tellJoke() {
             const joke = knowledgeBase.jokes[Math.floor(Math.random() * knowledgeBase.jokes.length)];
             document.getElementById('jokeContainer').innerHTML = joke;
@@ -2037,19 +1939,24 @@
                 audio = document.getElementById('audioPlayer');
             }
             
-            const musicUrl = knowledgeBase.music[type] || knowledgeBase.music.study;
-            audio.src = musicUrl;
-            audio.play().catch(e => {
-                console.error('Audio play failed:', e);
-                showToast('Cannot play music in this browser', 'error');
-            });
-            
-            currentMusic = type;
-            document.getElementById('nowPlaying').textContent = `Playing: ${type} music`;
-            
-            updateAIResponse(`🎵 Now playing ${type} music...`);
-            speakResponse(`Playing ${type} music`);
-            showToast(`Playing ${type} music`, 'success');
+            const musicUrl = knowledgeBase.music[type];
+            if (musicUrl) {
+                audio.src = musicUrl;
+                audio.play().catch(e => {
+                    console.error('Audio play failed:', e);
+                    showToast('Cannot play music. Trying alternative source...', 'error');
+                    // Try alternative source
+                    audio.src = `https://www.soundhelix.com/examples/mp3/SoundHelix-Song-${Math.floor(Math.random() * 3) + 1}.mp3`;
+                    audio.play();
+                });
+                
+                currentMusic = type;
+                document.getElementById('nowPlaying').textContent = `Playing: ${type} music`;
+                
+                updateAIResponse(`🎵 Now playing ${type} music...`);
+                speakResponse(`Playing ${type} music`);
+                showToast(`Playing ${type} music`, 'success');
+            }
         }
 
         function stopMusic() {
@@ -2086,49 +1993,22 @@
             
             // Random spin between 720 and 1440 degrees (2-4 full rotations)
             const spinDegrees = 720 + Math.floor(Math.random() * 720);
-            const finalRotation = spinDegrees % 360;
             
             wheel.style.transform = `rotate(${spinDegrees}deg)`;
             
-            // Calculate result
-            const options = knowledgeBase.wheelOptions;
-            const anglePerOption = 360 / options.length;
-            const resultIndex = Math.floor((360 - (finalRotation % 360)) / anglePerOption) % options.length;
-            const result = options[resultIndex];
-            
+            // Calculate result after spin
             setTimeout(() => {
+                const options = knowledgeBase.wheelOptions;
+                const finalRotation = spinDegrees % 360;
+                const anglePerOption = 360 / options.length;
+                const resultIndex = Math.floor((360 - (finalRotation % 360)) / anglePerOption) % options.length;
+                const result = options[resultIndex];
+                
                 resultDiv.textContent = `🎯 Result: ${result}`;
                 updateAIResponse(`<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); border-radius: 10px;"><h4>Decision Wheel Result</h4><h2>${result}</h2></div>`);
                 speakResponse(`The wheel says: ${result}`);
                 showToast(`Wheel says: ${result}`, 'info');
             }, 3000);
-        }
-
-        function truthOrDare() {
-            const truths = [
-                "What's your biggest fear?",
-                "What's the most embarrassing thing you've done?",
-                "What's your secret talent?",
-                "What's the biggest lie you've told?",
-                "What's your guilty pleasure?"
-            ];
-            
-            const dares = [
-                "Do 10 pushups right now!",
-                "Sing a song at the top of your voice",
-                "Dance for 30 seconds",
-                "Tell a joke to the next person you see",
-                "Do your best impression"
-            ];
-            
-            const choice = Math.random() > 0.5 ? 'truth' : 'dare';
-            const message = choice === 'truth' 
-                ? `TRUTH: ${truths[Math.floor(Math.random() * truths.length)]}`
-                : `DARE: ${dares[Math.floor(Math.random() * dares.length)]}`;
-            
-            updateAIResponse(`<div style="padding: 20px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #333; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.2em;">${message}</div>`);
-            speakResponse(message);
-            showToast(`${choice.toUpperCase()}!`, 'warning');
         }
 
         // ================ DEVICE CONTROLS ================
@@ -2166,19 +2046,16 @@
             const lowerCmd = command.toLowerCase();
             
             if (lowerCmd.includes('up') || lowerCmd.includes('increase') || lowerCmd.includes('higher')) {
-                // Simulate volume up
                 updateAIResponse("🔊 Volume increased");
                 speakResponse("Volume increased");
                 showToast('Volume +', 'info');
             }
             else if (lowerCmd.includes('down') || lowerCmd.includes('decrease') || lowerCmd.includes('lower')) {
-                // Simulate volume down
                 updateAIResponse("🔉 Volume decreased");
                 speakResponse("Volume decreased");
                 showToast('Volume -', 'info');
             }
             else if (lowerCmd.includes('mute') || lowerCmd.includes('silent')) {
-                // Simulate mute
                 updateAIResponse("🔇 Volume muted");
                 speakResponse("Volume muted");
                 showToast('Muted', 'info');
@@ -2219,8 +2096,6 @@
         }
 
         function handleScreenshotCommand() {
-            // Using html2canvas library would be needed for real screenshots
-            // For now, simulate it
             updateAIResponse("📸 Taking screenshot... (Simulated)");
             speakResponse("Taking screenshot");
             
@@ -2274,7 +2149,6 @@
                 const domains = ['.com', '.org', '.net', '.co.ke', '.io'];
                 for (const domain of domains) {
                     url = `https://${site}${domain}`;
-                    // In real implementation, you'd check if the site exists
                     break;
                 }
             } else {
@@ -2289,6 +2163,87 @@
             } else {
                 updateAIResponse(`Sorry, I don't know how to open "${site}". Try: YouTube, Gmail, WhatsApp, or ALTECH.`);
                 speakResponse(`I don't know how to open ${site}.`);
+            }
+        }
+
+        // ================ CALL FUNCTIONALITY ================
+        function handleCallCommand(command) {
+            const lowerCmd = command.toLowerCase();
+            
+            // Check if calling ALTECH
+            if (lowerCmd.includes('altech') || lowerCmd.includes('support')) {
+                makeCall(ALTECH_CONTACT);
+                return;
+            }
+            
+            // Extract name from command
+            const nameMatch = command.match(/call\s+(\w+)/i) || 
+                             command.match(/phone\s+(\w+)/i) ||
+                             command.match(/dial\s+(\w+)/i);
+            
+            if (!nameMatch) {
+                updateAIResponse("Who would you like to call? Say 'Call [Name]' or 'Call ALTECH'");
+                speakResponse("Who would you like to call? Please say the name.");
+                return;
+            }
+            
+            const name = nameMatch[1];
+            const matchingContacts = findContactsByName(name);
+            
+            if (matchingContacts.length === 0) {
+                updateAIResponse(`No contact found named "${name}". Add contacts in the Contacts tab.`);
+                speakResponse(`No contact found named ${name}.`);
+            } 
+            else if (matchingContacts.length === 1) {
+                makeCall(matchingContacts[0]);
+            }
+            else {
+                // Multiple contacts found
+                let contactList = matchingContacts.map(c => `${c.name} (${c.phone})`).join(', ');
+                updateAIResponse(`Multiple contacts found: ${contactList}. Please be more specific.`);
+                speakResponse(`Multiple contacts found. Please be more specific.`);
+            }
+        }
+
+        function findContactsByName(name) {
+            const searchName = name.toLowerCase();
+            return myContacts.filter(contact => 
+                contact.name.toLowerCase().includes(searchName)
+            );
+        }
+
+        function makeCall(contact) {
+            updateAIResponse(`📞 Calling <strong>${contact.name}</strong> at ${contact.phone}`);
+            speakResponse(`Calling ${contact.name}`);
+            
+            // REAL CALL FUNCTIONALITY
+            if (isMobileDevice()) {
+                // For mobile devices - make actual call
+                window.location.href = `tel:${contact.phone}`;
+                showToast(`Opening phone app to call ${contact.name}...`, 'success');
+            } else {
+                // For desktop - show call interface
+                showToast(`Would call: ${contact.name} at ${contact.phone}`, 'info');
+                
+                // Simulate call on desktop
+                const callWindow = window.open('', '_blank');
+                if (callWindow) {
+                    callWindow.document.write(`
+                        <html>
+                            <head><title>Calling ${contact.name}</title></head>
+                            <body style="text-align: center; padding: 50px; font-family: Arial;">
+                                <h1>📞 Calling ${contact.name}</h1>
+                                <p>Phone: ${contact.phone}</p>
+                                <p>On a real mobile device, this would initiate a phone call</p>
+                                <div style="margin: 30px;">
+                                    <button onclick="window.close()" style="padding: 15px 30px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                        End Call
+                                    </button>
+                                </div>
+                            </body>
+                        </html>
+                    `);
+                }
             }
         }
 
@@ -2333,8 +2288,8 @@
                 .replace(/sqrt/gi, 'Math.sqrt');
             
             try {
-                // Safe evaluation
-                const result = evaluateMathExpression(expression);
+                // Safe evaluation - use Function constructor for safety
+                const result = new Function('return ' + expression)();
                 updateAIResponse(`🧮 Calculation: ${expression} = <strong>${result}</strong>`);
                 speakResponse(`${expression} equals ${result}`);
                 showToast(`Result: ${result}`, 'success');
@@ -2346,21 +2301,26 @@
             }
         }
 
-        function evaluateMathExpression(expr) {
-            // Very basic safe evaluation
-            // In production, use a math library like math.js
-            expr = expr.replace(/[^0-9\+\-\*\/\.\s\(\)]/g, '');
+        // ================ OTHER COMMANDS ================
+        function handleTimeCommand() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            });
+            const dateStr = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
             
-            // Simple operations only
-            if (/^[\d\s\+\-\*\/\.\(\)]+$/.test(expr)) {
-                // eslint-disable-next-line no-eval
-                return eval(expr);
-            } else {
-                throw new Error('Invalid expression');
-            }
+            updateAIResponse(`🕒 Current time: <strong>${timeStr}</strong><br>📅 Date: <strong>${dateStr}</strong>`);
+            speakResponse(`The time is ${timeStr} on ${dateStr}`);
         }
 
-        // ================ DATE & TIME COMMANDS ================
         function handleDateCommand(command) {
             const now = new Date();
             const lowerCmd = command.toLowerCase();
@@ -2391,31 +2351,12 @@
                 updateAIResponse(`🎄 Days until Christmas: <strong>${daysLeft} days</strong>`);
                 speakResponse(`There are ${daysLeft} days until Christmas`);
             }
-            else if (lowerCmd.includes('day') && lowerCmd.includes('next')) {
-                // Find next specific day
-                const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                const targetDay = days.find(day => lowerCmd.includes(day));
-                if (targetDay) {
-                    const targetIndex = days.indexOf(targetDay);
-                    const currentIndex = now.getDay();
-                    let daysToAdd = targetIndex - currentIndex;
-                    if (daysToAdd <= 0) daysToAdd += 7;
-                    
-                    const nextDay = new Date(now);
-                    nextDay.setDate(now.getDate() + daysToAdd);
-                    const dateStr = nextDay.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-                    
-                    updateAIResponse(`📅 Next ${targetDay}: <strong>${dateStr}</strong> (in ${daysToAdd} days)`);
-                    speakResponse(`Next ${targetDay} is ${dateStr}, which is in ${daysToAdd} days`);
-                }
-            }
         }
 
-        // ================ OTHER COMMAND HANDLERS ================
         function handleIdentityCommand() {
-            const response = "I'm ALTECH AI Assistant Ultimate Edition, built for Students, Developers & Hustlers. I can help you with study, business, entertainment, and daily tasks using voice commands!";
+            const response = `I'm ALTECH AI Assistant, built by ALTECH. I can help you with calls, notes, tasks, study, business tools, and entertainment! Contact ALTECH at ${ALTECH_CONTACT.phone} for more information.`;
             updateAIResponse(response);
-            speakResponse(response);
+            speakResponse(response.substring(0, 150));
         }
 
         function handleThanksCommand() {
@@ -2428,6 +2369,144 @@
             const response = responses[Math.floor(Math.random() * responses.length)];
             updateAIResponse(response);
             speakResponse(response);
+        }
+
+        function handleSearchCommand(command) {
+            let query = '';
+            
+            if (command.includes('search for')) {
+                query = command.split('search for')[1]?.trim();
+            } else if (command.includes('google')) {
+                query = command.split('google')[1]?.trim();
+            } else {
+                query = command.replace(/search|look up|find/gi, '').trim();
+            }
+            
+            if (!query) {
+                query = prompt("What would you like to search for?");
+                if (!query) return;
+            }
+            
+            updateAIResponse(`🔍 Searching for: "${query}"`);
+            speakResponse(`Searching for ${query}`);
+            
+            // Open search in new tab
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+            showToast(`Searching for: ${query}`);
+        }
+
+        function handleWeatherCommand(command) {
+            let location = '';
+            
+            if (command.includes('weather in')) {
+                location = command.split('weather in')[1]?.trim();
+            } else if (command.includes('weather at')) {
+                location = command.split('weather at')[1]?.trim();
+            } else {
+                location = prompt("Which location?", "Nairobi");
+            }
+            
+            if (location) {
+                updateAIResponse(`🌤️ Getting weather for ${location}...`);
+                speakResponse(`Checking weather for ${location}`);
+                window.open(`https://www.google.com/search?q=weather+${encodeURIComponent(location)}`, '_blank');
+            }
+        }
+
+        function handleNoteCommand(command) {
+            let noteText = command.replace(/add note|note that|remember that|write down/gi, '').trim();
+            
+            if (!noteText) {
+                noteText = prompt("What would you like to note?");
+                if (!noteText) return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                text: noteText,
+                time: new Date().toLocaleString(),
+                createdByVoice: true
+            };
+            
+            notes.unshift(note);
+            saveData();
+            updateNotesDisplay();
+            
+            updateAIResponse(`📝 Note added: "${noteText}"`);
+            speakResponse(`Note added: ${noteText.substring(0, 50)}...`);
+            showToast('Note saved successfully!');
+        }
+
+        function handleReminderCommand(command) {
+            let reminderText = '';
+            let timeText = '';
+            
+            if (command.includes('remind me to')) {
+                reminderText = command.split('remind me to')[1]?.trim();
+            } else if (command.includes('reminder for')) {
+                reminderText = command.split('reminder for')[1]?.trim();
+            } else {
+                reminderText = command.replace(/remind|reminder|alert/gi, '').trim();
+            }
+            
+            if (!reminderText) {
+                reminderText = prompt("What should I remind you about?");
+                if (!reminderText) return;
+            }
+            
+            // Simple time parsing
+            const time = new Date();
+            if (command.includes('tomorrow')) {
+                time.setDate(time.getDate() + 1);
+            }
+            if (command.includes('next week')) {
+                time.setDate(time.getDate() + 7);
+            }
+            
+            const reminder = {
+                id: Date.now(),
+                text: reminderText,
+                time: time.toISOString(),
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveData();
+            updateRemindersDisplay();
+            
+            const timeStr = time.toLocaleString();
+            updateAIResponse(`⏰ Reminder set: "${reminderText}"<br>Time: ${timeStr}`);
+            speakResponse(`Reminder set for ${reminderText}`);
+            showToast('Reminder set!');
+        }
+
+        // ================ AI RESPONSE SYSTEM ================
+        function getAIResponse(query) {
+            if (!aiEnabled) {
+                return "AI responses are currently disabled. Enable AI in settings.";
+            }
+            
+            const lowerQuery = query.toLowerCase();
+            
+            // Smart local responses
+            if (/(hello|hi|hey)/.test(lowerQuery)) {
+                return "Hello! I'm your ALTECH AI Assistant. How can I help you today?";
+            }
+            if (/(how are you|how's it going)/.test(lowerQuery)) {
+                return "I'm doing great! Ready to help you with calls, notes, reminders, and more!";
+            }
+            if (/(who made you|who created you)/.test(lowerQuery)) {
+                return `I was created by ALTECH. You can contact them at ${ALTECH_CONTACT.phone} for custom AI solutions!`;
+            }
+            if (/(what can you do|capabilities)/.test(lowerQuery)) {
+                return "I can: 📞 Make phone calls, 📝 Add notes, ⏰ Set reminders, 🔍 Search the web, 🌤️ Check weather, 🕒 Tell time, 🎓 Study help, 💼 Business tools, 🎮 Entertainment, and much more!";
+            }
+            if (/(altech|contact|phone)/.test(lowerQuery)) {
+                return `ALTECH contact: ${ALTECH_CONTACT.phone}. You can say "Contact ALTECH" to submit a lead or "Call ALTECH" to call them directly.`;
+            }
+            
+            return `I understood: "${query}". I can help you with calls, notes, reminders, searches, study, business, and more. Try being specific like "Call ALTECH" or "Add note meeting tomorrow".`;
         }
 
         // ================ ADMIN FUNCTIONS ================
@@ -2448,9 +2527,9 @@
                 
                 updateAIResponse("🔓 Admin mode activated");
                 speakResponse("Admin mode activated");
-                showToast('Admin mode ON', 'success');
+                showToast('Admin mode ON - Default PIN: 1234', 'success');
             } else {
-                showToast('Invalid PIN', 'error');
+                showToast('Invalid PIN. Default PIN: 1234', 'error');
             }
         }
 
@@ -2464,7 +2543,8 @@
                 'Total Reminders': reminders.length,
                 'Leads Collected': JSON.parse(localStorage.getItem('altech_leads') || '[]').length,
                 'Feedback Received': JSON.parse(localStorage.getItem('altech_feedback') || '[]').length,
-                'Storage Used': Math.round(JSON.stringify(localStorage).length / 1024) + ' KB'
+                'ALTECH Phone': ALTECH_CONTACT.phone,
+                'Admin PIN': adminPin
             };
             
             statsDiv.innerHTML = Object.entries(stats).map(([key, value]) => 
@@ -2568,18 +2648,31 @@
         function showHelp() {
             const helpText = `
                 <div style="padding: 20px; background: var(--light); border-radius: 10px;">
-                    <h4>🤖 ALTECH AI Assistant Ultimate - Command Guide</h4>
+                    <h4>🤖 ALTECH AI Assistant - Command Guide</h4>
                     
-                    <h5>🎓 Study Mode:</h5>
+                    <h5>📞 Calling:</h5>
                     <ul>
-                        <li>"Explain OOP" - Learn programming concepts</li>
-                        <li>"Start exam" - Take a practice test</li>
+                        <li>"Call ALTECH" - Call ${ALTECH_CONTACT.phone}</li>
+                        <li>"Call [Name]" - Call a contact</li>
+                    </ul>
+                    
+                    <h5>📝 Productivity:</h5>
+                    <ul>
+                        <li>"Add task [description]" - Create todo</li>
+                        <li>"Add note [text]" - Save notes</li>
+                        <li>"Remind me to [task]" - Set reminders</li>
+                    </ul>
+                    
+                    <h5>🎓 Study:</h5>
+                    <ul>
+                        <li>"Explain OOP" - Learn programming</li>
+                        <li>"Start exam" - Take practice test</li>
                         <li>"Give me a question" - Random Q&A</li>
                     </ul>
                     
-                    <h5>💼 Business Tools:</h5>
+                    <h5>💼 Business:</h5>
                     <ul>
-                        <li>"Contact ALTECH" - Submit lead information</li>
+                        <li>"Contact ALTECH" - Submit lead</li>
                         <li>"Send to WhatsApp" - Open WhatsApp</li>
                         <li>"Open YouTube" - Launch websites</li>
                     </ul>
@@ -2587,36 +2680,22 @@
                     <h5>🎮 Entertainment:</h5>
                     <ul>
                         <li>"Tell me a joke" - Get a funny joke</li>
-                        <li>"Play music" - Listen to study/focus music</li>
+                        <li>"Play music" - Listen to music</li>
                         <li>"Spin wheel" - Decision maker</li>
                         <li>"Motivate me" - Get inspired</li>
                     </ul>
                     
-                    <h5>🛠️ Productivity:</h5>
-                    <ul>
-                        <li>"Add task [description]" - Create todo</li>
-                        <li>"Add note [text]" - Save notes</li>
-                        <li>"Remind me to [task]" - Set reminders</li>
-                        <li>"Call [name]" - Make phone calls</li>
-                    </ul>
-                    
-                    <h5>⚙️ Device Controls:</h5>
-                    <ul>
-                        <li>"Turn on flashlight" - Screen flashlight</li>
-                        <li>"Fullscreen" - Toggle fullscreen</li>
-                        <li>"Take screenshot" - Capture screen</li>
-                        <li>"Volume up/down" - Adjust volume</li>
-                    </ul>
-                    
-                    <h5>🔢 Utilities:</h5>
+                    <h5>🔧 Utilities:</h5>
                     <ul>
                         <li>"Calculate [expression]" - Voice calculator</li>
                         <li>"What time is it?" - Current time</li>
-                        <li>"What's today's date?" - Current date</li>
                         <li>"Weather in [city]" - Weather info</li>
+                        <li>"Turn on flashlight" - Screen flashlight</li>
                     </ul>
                     
                     <p style="margin-top: 15px; font-weight: bold;">💡 Pro Tip: Start with "${wakeWord}" followed by your command!</p>
+                    <p>📞 ALTECH Contact: <strong>${ALTECH_CONTACT.phone}</strong></p>
+                    <p>🔑 Admin PIN: <strong>1234</strong></p>
                 </div>
             `;
             
@@ -2664,7 +2743,7 @@
                     if (Notification.permission === 'granted') {
                         new Notification('⏰ ALTECH Reminder', {
                             body: reminder.text,
-                            icon: '/icon.png'
+                            icon: 'https://cdn-icons-png.flaticon.com/512/4712/4712035.png'
                         });
                     }
                     
@@ -2677,13 +2756,17 @@
             });
         }
 
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         // ================ DATA MANAGEMENT ================
         function loadData() {
-            // Load contacts
+            // Load contacts (include ALTECH as default)
             const savedContacts = localStorage.getItem('altech_contacts');
             myContacts = savedContacts ? JSON.parse(savedContacts) : [
-                { id: 1, name: "Brian Smith", phone: "+1234567890" },
-                { id: 2, name: "Brian Johnson", phone: "+0987654321" },
+                { id: 1, name: ALTECH_CONTACT.name, phone: ALTECH_CONTACT.phone },
+                { id: 2, name: "Brian Smith", phone: "+1234567890" },
                 { id: 3, name: "Sarah Johnson", phone: "+1122334455" },
                 { id: 4, name: "John Doe", phone: "+1555123456" }
             ];
@@ -2942,6 +3025,172 @@
             }
         }
 
+        // ================ MODAL FUNCTIONS ================
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update mode if needed
+            if (tabId === 'study') currentMode = 'study';
+            else if (tabId === 'business') currentMode = 'business';
+            else if (tabId === 'entertainment') currentMode = 'entertainment';
+            else if (tabId === 'assistant') currentMode = 'smart';
+            
+            updateModeIndicator();
+        }
+
+        function addContact() {
+            document.getElementById('addContactModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function saveContact() {
+            const name = document.getElementById('contactName').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            
+            if (name && phone) {
+                const contact = {
+                    id: Date.now(),
+                    name: name,
+                    phone: phone
+                };
+                
+                myContacts.push(contact);
+                saveData();
+                updateContactsDisplay();
+                closeModal('addContactModal');
+                showToast('Contact saved successfully!');
+                
+                // Clear inputs
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactPhone').value = '';
+            } else {
+                showToast('Please enter both name and phone number', 'error');
+            }
+        }
+
+        function importContacts() {
+            // Simulate contact import
+            const sampleContacts = [
+                { id: Date.now() + 1, name: "Alex Morgan", phone: "+1122334455" },
+                { id: Date.now() + 2, name: "Taylor Swift", phone: "+1222333444" },
+                { id: Date.now() + 3, name: "Chris Evans", phone: "+1333444555" }
+            ];
+            
+            myContacts.push(...sampleContacts);
+            saveData();
+            updateContactsDisplay();
+            showToast(`Imported ${sampleContacts.length} sample contacts`);
+        }
+
+        function deleteContact(id) {
+            if (confirm('Delete this contact?')) {
+                myContacts = myContacts.filter(contact => contact.id !== id);
+                saveData();
+                updateContactsDisplay();
+                showToast('Contact deleted');
+            }
+        }
+
+        function saveNote() {
+            const text = document.getElementById('noteInput').value.trim();
+            if (!text) {
+                showToast('Please enter a note', 'error');
+                return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                text: text,
+                time: new Date().toLocaleString(),
+                createdByVoice: false
+            };
+            
+            notes.unshift(note);
+            saveData();
+            updateNotesDisplay();
+            document.getElementById('noteInput').value = '';
+            showToast('Note saved!');
+        }
+
+        function deleteNote(id) {
+            if (confirm('Delete this note?')) {
+                notes = notes.filter(note => note.id !== id);
+                saveData();
+                updateNotesDisplay();
+                showToast('Note deleted');
+            }
+        }
+
+        function setReminder() {
+            const text = document.getElementById('reminderText').value.trim();
+            const time = document.getElementById('reminderTime').value;
+            
+            if (!text || !time) {
+                showToast('Please enter reminder text and time', 'error');
+                return;
+            }
+            
+            const reminder = {
+                id: Date.now(),
+                text: text,
+                time: time,
+                created: new Date().toISOString(),
+                active: true
+            };
+            
+            reminders.push(reminder);
+            saveData();
+            updateRemindersDisplay();
+            
+            // Clear inputs
+            document.getElementById('reminderText').value = '';
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('reminderTime').value = now.toISOString().slice(0, 16);
+            
+            showToast('Reminder set!');
+        }
+
+        function toggleReminder(id) {
+            const reminder = reminders.find(r => r.id === id);
+            if (reminder) {
+                reminder.active = !reminder.active;
+                saveData();
+                updateRemindersDisplay();
+                showToast(reminder.active ? 'Reminder activated' : 'Reminder snoozed');
+            }
+        }
+
+        function deleteReminder(id) {
+            if (confirm('Delete this reminder?')) {
+                reminders = reminders.filter(r => r.id !== id);
+                saveData();
+                updateRemindersDisplay();
+                showToast('Reminder deleted');
+            }
+        }
+
+        function explainConcept(concept) {
+            handleExplainCommand(`explain ${concept}`);
+        }
+
         // ================ EVENT LISTENERS ================
         document.getElementById('voiceSpeed').addEventListener('input', (e) => {
             voiceSpeed = parseFloat(e.target.value);
@@ -2975,32 +3224,15 @@
 
         // ================ PWA INSTALL ================
         function installApp() {
-            if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
-                let deferredPrompt;
-                
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    
-                    // Show install prompt
-                    deferredPrompt.prompt();
-                    
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            showToast('App installed successfully!', 'success');
-                        }
-                        deferredPrompt = null;
-                    });
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(() => {
+                    showToast('App ready to install. Check browser menu.', 'info');
+                }).catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                    showToast('Visit this page on Chrome/Edge and use "Install" in menu', 'info');
                 });
             } else {
-                // Show instructions for manual install
-                const instructions = `To install this app:
-1. Open the menu (three dots) in your browser
-2. Select "Install app" or "Add to Home Screen"
-3. Follow the prompts`;
-                
-                updateAIResponse(`<div style="padding: 20px; background: var(--light); border-radius: 10px;"><h4>📱 Install Instructions</h4><p>${instructions}</p></div>`);
-                speakResponse("Check the screen for installation instructions.");
+                showToast('Use Chrome/Edge and click "Install" in browser menu', 'info');
             }
         }
 
@@ -3008,15 +3240,26 @@
         function quickAction(action) {
             switch(action) {
                 case 'call':
-                    const contactName = prompt("Enter contact name to call:");
+                    const contactName = prompt("Enter contact name to call:", "ALTECH");
                     if (contactName) {
-                        const contacts = findContactsByName(contactName);
-                        if (contacts.length === 1) {
-                            makeCall(contacts[0]);
-                        } else if (contacts.length > 1) {
-                            showContactSelection(contacts, contactName);
+                        if (contactName.toLowerCase().includes('altech')) {
+                            makeCall(ALTECH_CONTACT);
                         } else {
-                            showToast(`No contact found named "${contactName}"`, 'error');
+                            const contacts = findContactsByName(contactName);
+                            if (contacts.length === 1) {
+                                makeCall(contacts[0]);
+                            } else if (contacts.length > 1) {
+                                let contactList = contacts.map(c => `${c.name} (${c.phone})`).join('\n');
+                                const choice = prompt(`Multiple contacts found:\n${contactList}\nEnter exact name:`);
+                                if (choice) {
+                                    const exactContact = contacts.find(c => c.name.toLowerCase() === choice.toLowerCase());
+                                    if (exactContact) {
+                                        makeCall(exactContact);
+                                    }
+                                }
+                            } else {
+                                showToast(`No contact found named "${contactName}"`, 'error');
+                            }
                         }
                     }
                     break;
@@ -3047,7 +3290,7 @@
                     break;
                     
                 case 'weather':
-                    const location = prompt("Weather location?", "current location");
+                    const location = prompt("Weather location?", "Nairobi");
                     if (location) {
                         handleWeatherCommand(`weather in ${location}`);
                     } else {
@@ -3073,35 +3316,10 @@
             handleVoiceCommand(`${wakeWord} ${command}`);
         }
 
-        // ================ TAB FUNCTIONS ================
-        function openTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-            
-            // Update mode if needed
-            if (tabId === 'study') currentMode = 'study';
-            else if (tabId === 'business') currentMode = 'business';
-            else if (tabId === 'entertainment') currentMode = 'entertainment';
-            else if (tabId === 'assistant') currentMode = 'smart';
-            
-            updateModeIndicator();
-        }
-
         // ================ INITIALIZE ================
-        console.log('✅ ALTECH AI Assistant Ultimate Edition fully loaded!');
+        console.log('✅ ALTECH AI Assistant fully loaded!');
+        console.log('📞 ALTECH Contact:', ALTECH_CONTACT.phone);
+        console.log('🔑 Admin PIN:', adminPin);
         
         // Request notification permission
         if ('Notification' in window && Notification.permission === 'default') {
