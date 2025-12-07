@@ -1,56 +1,239 @@
 {
-  "name": "ALTECH AI Assistant",
-  "short_name": "ALTECH AI",
-  "description": "Advanced AI assistant with voice control, notes, reminders, and search",
+  "name": "ALTECH AI",
+  "short_name": "ALTECH",
+  "description": "Advanced artificial intelligence assistant for productivity, automation, and intelligent task management",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#007bff",
-  "theme_color": "#007bff",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
-  "scope": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "categories": ["productivity", "utilities", "lifestyle"],
   "lang": "en",
-  "categories": ["productivity", "utilities"],
+  "dir": "ltr",
+  "scope": "/",
+  "id": "/",
+  "prefer_related_applications": false,
+  
   "icons": [
     {
-      "src": "icons/icon-72x72.png",
+      "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-96x96.png",
+      "src": "/icons/icon-96x96.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-128x128.png",
+      "src": "/icons/icon-128x128.png",
       "sizes": "128x128",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-144x144.png",
+      "src": "/icons/icon-144x144.png",
       "sizes": "144x144",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-152x152.png",
+      "src": "/icons/icon-152x152.png",
       "sizes": "152x152",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-384x384.png",
+      "src": "/icons/icon-384x384.png",
       "sizes": "384x384",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "ALTECH AI Voice Assistant Interface"
+    },
+    {
+      "src": "/screenshots/mobile-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Contact Management and Calling"
+    },
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard with AI Conversation"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "short_name": "Note",
+      "description": "Create a new voice or text note",
+      "url": "/?action=new-note",
+      "icons": [{ "src": "/icons/shortcut-note.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Quick Call",
+      "short_name": "Call",
+      "description": "Call a frequent contact",
+      "url": "/?action=quick-call",
+      "icons": [{ "src": "/icons/shortcut-call.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Set Reminder",
+      "short_name": "Reminder",
+      "description": "Create a new reminder",
+      "url": "/?action=new-reminder",
+      "icons": [{ "src": "/icons/shortcut-reminder.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Ask AI",
+      "short_name": "Ask",
+      "description": "Ask the AI assistant anything",
+      "url": "/?action=ask-ai",
+      "icons": [{ "src": "/icons/shortcut-ai.png", "sizes": "96x96" }]
+    }
+  ],
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+altech",
+      "url": "/?command=%s"
+    }
+  ],
+  
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  
+  "handle_links": "preferred",
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "text/plain": [".txt"],
+        "application/json": [".json"]
+      },
+      "icons": [
+        {
+          "src": "/icons/file-handler.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "attachments",
+          "accept": ["image/*", "text/plain", "application/pdf"]
+        }
+      ]
+    }
+  },
+  
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+  
+  "permissions": [
+    "notifications",
+    "clipboard-write",
+    "clipboard-read",
+    "geolocation",
+    "microphone",
+    "camera",
+    "background-sync",
+    "periodic-background-sync",
+    "storage"
+  ],
+  
+  "host_permissions": [
+    "https://api.altech.ai/*"
+  ],
+  
+  "optional_permissions": [
+    "contacts",
+    "file-system"
+  ],
+  
+  "register_protocol_handler": {
+    "protocol": "tel",
+    "url": "/call?number=%s"
+  },
+  
+  "related_applications": [],
+  
+  "features": [
+    "cross-origin-isolated",
+    "shared-array-buffers"
+  ],
+  
+  "iarc_rating_id": "e10b5d3f-7c5a-4c5d-9b5a-3c7d5a4c5d9b",
+  
+  "capture_links": "new-client",
+  
+  "scope_extensions": [
+    {
+      "origin": "https://api.altech.ai"
+    }
+  ],
+  
+  "user_preferences": {
+    "color_scheme": "auto"
+  },
+  
+  "fingerprints": false,
+  
+  "version": "3.0.0",
+  
+  "author": "ALTECH AI Technologies",
+  "website": "https://altech.ai",
+  "contact": "support@altech.ai"
 }
